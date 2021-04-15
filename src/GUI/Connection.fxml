@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.layout.AnchorPane?>
+
+<AnchorPane fx:id="connectionPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="503.0" prefWidth="895.0" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.ConnectionController">
+   <children>
+      <Button fx:id="regresarButton" focusTraversable="false" layoutX="724.0" layoutY="430.0" mnemonicParsing="false" onAction="#regresarOnAction" prefHeight="29.0" prefWidth="107.0" text="Regresar" />
+   </children>
+</AnchorPane>
