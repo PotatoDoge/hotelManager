@@ -8,7 +8,7 @@ import javafx.stage.Stage;
 import java.util.Objects;
 
 public class Main extends Application {
-    static final String JDBC_DRIVER = "com.mysql.jdbc.Driver";
+    static final String JDBC_DRIVER = "org.mariadb.jdbc.Driver";
     /***
      * First window that the user sees
      * <--- a connection is made with the DB --->
@@ -28,7 +28,7 @@ public class Main extends Application {
             primaryStage.show();
         }
         catch (Exception e){
-            System.out.println("ERROR");
+            System.out.println("ERROR MAIN");
             System.out.println(e);
         }
     }
