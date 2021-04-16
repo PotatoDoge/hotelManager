@@ -16,8 +16,8 @@
          <Font name="Umpush Bold" size="46.0" />
       </font>
    </Text>
-   <TextField fx:id="usernameTextArea" focusTraversable="false" layoutX="344.0" layoutY="203.0" prefHeight="35.0" prefWidth="209.0" promptText="Username" />
-   <PasswordField fx:id="passwordTextArea" focusTraversable="false" layoutX="343.0" layoutY="271.0" prefHeight="35.0" prefWidth="209.0" promptText="Password" />
+   <TextField fx:id="usernameTextArea" focusTraversable="false" layoutX="344.0" layoutY="203.0" prefHeight="35.0" prefWidth="209.0" promptText="Username" styleClass="textArea"  stylesheets="@style.css"/>
+   <PasswordField fx:id="passwordTextArea" focusTraversable="false" layoutX="343.0" layoutY="271.0" prefHeight="35.0" prefWidth="209.0" promptText="Password" styleClass="textArea" stylesheets="@style.css"/>
    <Button fx:id="logInButton" focusTraversable="false" layoutX="393.0" layoutY="380.0" mnemonicParsing="false" onAction="#logInOnAction" prefHeight="35.0" prefWidth="110.0" text="Log In" />
    <VBox layoutY="398.0" prefHeight="109.0" prefWidth="100.0">
       <fx:define>

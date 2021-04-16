@@ -1,7 +1,6 @@
 package Controllers;
 import Tools.Con;
 import Tools.Window;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
@@ -10,7 +9,6 @@ import javafx.scene.layout.AnchorPane;
 
 import java.io.IOException;
 import java.sql.*;
-
 
 public class LogInScreenController {
 
@@ -29,6 +27,9 @@ public class LogInScreenController {
 
     private final Con c = new Con();
 
+    /**
+     * Método que camia la escena cuando el botón de settings es picado
+     */
     public void settingsOnAction() {
         try {
             wn.changeStage(logInPane,"/GUI/Connection.fxml");
@@ -37,10 +38,13 @@ public class LogInScreenController {
         }
     }
 
-
+    /**
+     * Método que se encarga de la lógica del log in
+     */
     public void logInOnAction() {
+        boolean logInAllowed = false;
         if(c.getPASS().equals("") || c.getUSER().equals("")|| c.getAddress().equals("")){
-            wn.popUpMessage("Llenar campos","Todos los campos para conectar con la base de\ndatos tienen que estar llenos.");
+            wn.popUpMessage("Llenar campos","Todos los campos para conectar con la base de\ndatos tienen que haber sido llenados\nal menos una vez.");
         }
         else if(usernameTextArea.getText().isEmpty() || passwordTextArea.getText().isEmpty()){
             wn.popUpMessage("Llenar campos","El usuario y contraseña de esta ventana deben\nestar llenos");
@@ -54,18 +58,22 @@ public class LogInScreenController {
                 ResultSet rs = c.getPst().executeQuery();
                 while(rs.next()){
                     if(passwordTextArea.getText().equals(rs.getString("ps"))){
-                        System.out.println("SI existe");
+                        logInAllowed = true;
                         break;
                     }
                 }
+                c.getConn().close();
             }
             catch (Exception e){
-                System.out.println(c.getUSER());
-                System.out.println(c.getDB_URL());
-                System.out.println(c.getPASS());
                 System.out.println("ERROR LOGIN");
                 System.out.println(e);
             }
+        }
+        if(logInAllowed){
+            //cambio de escena al main menu
+        }
+        else{
+            wn.popUpMessage("Datos incorrectos","Checar que el usuario y la contraseña\nsean correctos.");
         }
     }
 }
