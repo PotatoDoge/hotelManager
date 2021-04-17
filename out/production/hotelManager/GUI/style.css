@@ -2,12 +2,12 @@
       -fx-background-image: url("/Media/logInBG.png")
 }
 
-.mainvbox{
-      -fx-background-color: transparent;
+.mainMenubg{
+      -fx-background-image: url("/Media/fondoMain.jpg")
 }
 
-.mainMenubg{
-      -fx-background-image: url("/Media/main.jpg")
+.mainvbox{
+      -fx-background-color: transparent;
 }
 
 .buttonMain{
