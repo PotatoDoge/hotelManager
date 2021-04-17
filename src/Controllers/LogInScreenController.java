@@ -70,7 +70,12 @@ public class LogInScreenController {
             }
         }
         if(logInAllowed){
-            //cambio de escena al main menu
+            try{
+                wn.changeStage(logInPane, "/GUI/MainMenu.fxml");
+            }
+            catch (Exception e){
+                System.out.println(e);
+            }
         }
         else{
             wn.popUpMessage("Datos incorrectos","Checar que el usuario y la contraseña\nsean correctos.");

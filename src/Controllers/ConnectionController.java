@@ -4,6 +4,7 @@ import Tools.Con;
 import Tools.Window;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 
@@ -18,13 +19,13 @@ public class ConnectionController {
     @FXML
     public TextField direccionBD;
     @FXML
-    public TextField passwordBD;
+    public PasswordField passwordBD;
     @FXML
     public TextField usuarioBD;
     @FXML
     private AnchorPane connectionPane;
     @FXML
-    public Button regresarButton;
+    private Button regresarButton;
 
     /**
      * Método que regresa a la página de log in
