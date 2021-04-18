@@ -2,7 +2,6 @@ package Controllers;
 
 import Tools.ConTool;
 import Tools.Window;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
@@ -47,6 +46,9 @@ public class MainMenuEmployeeController implements Initializable {
         esconderElementosEnPantalla();
     }
 
+    /**
+     * Método que regresa a la pantalla de log in
+     */
     public void salirOnAction() {
         try {
             wn.changeStage(mainMenuPane,"/GUI/LogInScreen.fxml");
@@ -55,6 +57,9 @@ public class MainMenuEmployeeController implements Initializable {
         }
     }
 
+    /**
+     * Método que desbloquea campos cuando se le da clic en Huesped -> Nuevo
+     */
     public void nuevoHuespedOnAction() {
         esconderElementosEnPantalla();
         nombreHuespedID.setVisible(true);
@@ -65,7 +70,10 @@ public class MainMenuEmployeeController implements Initializable {
         guardarHuesped.setVisible(true);
     }
 
-    public void guardarHuespedOnAction() throws SQLException {
+    /**
+     * Método que se encarga de guardar los datos del cliente
+     */
+    public void guardarHuespedOnAction(){
         if(!(nombreHuespedID.getText().isEmpty() && aPHuespedID.getText().isEmpty() && aMHuespedId.getText().isEmpty() && telHuespedID.getText().isEmpty() && nacionalidadID.getText().isEmpty())){
             if(nacionalidadID.getText().length() > 3){
                 wn.popUpMessage("Editar campo","EL campo nacionalidad no puede\ncontener más e 3 caractere");
@@ -105,6 +113,9 @@ public class MainMenuEmployeeController implements Initializable {
         }
     }
 
+    /**
+     * Método que esconde todos los campos
+     */
     public void esconderElementosEnPantalla(){
         nombreHuespedID.setVisible(false);
         aPHuespedID.setVisible(false);
@@ -117,6 +128,11 @@ public class MainMenuEmployeeController implements Initializable {
         guardarHuesped.setVisible(false);
     }
 
+    /**
+     * Método que checa el último número de cliente registrado
+     * @return número del último cliente +1
+     * @throws SQLException exception
+     */
     public int generarNumeroCliente() throws SQLException {
         int nc = 0;
         c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
@@ -130,6 +146,9 @@ public class MainMenuEmployeeController implements Initializable {
         return nc+1;
     }
 
+    /**
+     * Método que desbloquea campos cuando se le da clic en Huesped -> Editar
+     */
     public void editarHuespedOnAction() {
         esconderElementosEnPantalla();
         nombreHuespedID.setVisible(true);
@@ -142,6 +161,10 @@ public class MainMenuEmployeeController implements Initializable {
         actualizarID.setVisible(true);
     }
 
+    /**
+     * Método que busca los datos del huesped y llena las areas a editar
+     * @throws SQLException exception
+     */
     public void buscarHuespedOnAction() throws SQLException {
         boolean found = false;
         if(!buscarHuespedID.getText().isEmpty()){
@@ -173,6 +196,9 @@ public class MainMenuEmployeeController implements Initializable {
         }
     }
 
+    /**
+     *Método que se encarga de actualizar los datos del cliente
+     */
     public void actualizarOnAction() {
         if(!(nombreHuespedID.getText().isEmpty() && aPHuespedID.getText().isEmpty() && aMHuespedId.getText().isEmpty() && telHuespedID.getText().isEmpty() && nacionalidadID.getText().isEmpty())){
             if(nacionalidadID.getText().length() > 3){
