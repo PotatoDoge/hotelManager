@@ -14,14 +14,13 @@
           <Menu mnemonicParsing="false" text="Huesped">
             <items>
               <MenuItem mnemonicParsing="false" onAction="#nuevoHuespedOnAction" text="Nuevo" />
-                  <MenuItem mnemonicParsing="false" text="Borrar" />
-                  <MenuItem mnemonicParsing="false" text="Editar" />
+                  <MenuItem mnemonicParsing="false" onAction="#editarHuespedOnAction" text="Editar" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Reservaciones">
             <items>
               <MenuItem mnemonicParsing="false" text="Nueva" />
-                  <MenuItem mnemonicParsing="false" text="Borrar" />
+                  <MenuItem mnemonicParsing="false" text="Cancelar" />
                   <MenuItem mnemonicParsing="false" text="Editar" />
                   <MenuItem mnemonicParsing="false" text="Check-in" />
                   <MenuItem mnemonicParsing="false" text="Check-out" />
@@ -40,5 +39,8 @@
       <TextField fx:id="telHuespedID" focusTraversable="false" layoutX="70.0" layoutY="203.0" promptText="Teléfono" visible="false" />
       <TextField fx:id="nacionalidadID" focusTraversable="false" layoutX="69.0" layoutY="245.0" promptText="Nacionalidad" visible="false" />
       <Button fx:id="guardarHuesped" focusTraversable="false" layoutX="119.0" layoutY="303.0" mnemonicParsing="false" onAction="#guardarHuespedOnAction" text="Guardar" visible="false" />
+      <TextField fx:id="codigoClienteID" focusTraversable="false" layoutX="277.0" layoutY="82.0" promptText="Código de cliente" visible="false" />
+      <Button fx:id="buscarHuespedID" focusTraversable="false" layoutX="331.0" layoutY="122.0" mnemonicParsing="false" onAction="#buscarHuespedOnAction" text="Buscar" visible="false" />
+      <Button fx:id="actualizarID" focusTraversable="false" layoutX="321.0" layoutY="176.0" mnemonicParsing="false" onAction="#actualizarOnAction" text="Actualizar" visible="false" />
    </children>
 </AnchorPane>
