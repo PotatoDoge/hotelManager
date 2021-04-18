@@ -4,6 +4,8 @@
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
@@ -15,6 +17,7 @@
             <items>
               <MenuItem mnemonicParsing="false" onAction="#nuevoHuespedOnAction" text="Nuevo" />
                   <MenuItem mnemonicParsing="false" onAction="#editarHuespedOnAction" text="Editar" />
+                  <MenuItem mnemonicParsing="false" onAction="#verClientesOnAction" text="Ver" />
             </items>
           </Menu>
           <Menu mnemonicParsing="false" text="Reservaciones">
@@ -42,5 +45,15 @@
       <TextField fx:id="codigoClienteID" focusTraversable="false" layoutX="277.0" layoutY="82.0" promptText="Código de cliente" visible="false" />
       <Button fx:id="buscarHuespedID" focusTraversable="false" layoutX="331.0" layoutY="122.0" mnemonicParsing="false" onAction="#buscarHuespedOnAction" text="Buscar" visible="false" />
       <Button fx:id="actualizarID" focusTraversable="false" layoutX="321.0" layoutY="176.0" mnemonicParsing="false" onAction="#actualizarOnAction" text="Actualizar" visible="false" />
+      <TableView fx:id="tablaClientesID" layoutX="25.0" layoutY="41.0" prefHeight="440.0" prefWidth="846.0">
+        <columns>
+          <TableColumn fx:id="claveTabla" prefWidth="126.0" text="Clave" />
+          <TableColumn fx:id="nombreTabla" prefWidth="124.0" text="Nombre" />
+            <TableColumn fx:id="primerApTabla" prefWidth="137.0" text="Primer Apellido" />
+            <TableColumn fx:id="segundoApTabla" prefWidth="161.0" text="Segundo Apellido" />
+            <TableColumn fx:id="telefonoTabla" prefWidth="194.0" text="Teléfono" />
+            <TableColumn fx:id="nacionalidadTabla" prefWidth="103.0" text="Nacionalidad" />
+        </columns>
+      </TableView>
    </children>
 </AnchorPane>
