@@ -2,30 +2,45 @@ package Controllers;
 
 import Tools.Con;
 import Tools.Window;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 
 import java.io.IOException;
+import java.net.URL;
+import java.sql.DriverManager;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ResourceBundle;
 
-public class ConnectionController {
+public class ConnectionController implements Initializable {
 
     private final Window wn = new Window();
 
     private final Con c = new Con();
-
     @FXML
-    public TextField direccionBD;
+    private Button nuevaID;
     @FXML
-    public PasswordField passwordBD;
+    private TextField nombreBD;
     @FXML
-    public TextField usuarioBD;
+    private TextField direccionBD;
+    @FXML
+    private PasswordField passwordBD;
+    @FXML
+    private TextField usuarioBD;
     @FXML
     private AnchorPane connectionPane;
     @FXML
     private Button regresarButton;
+
+    @Override
+    public void initialize(URL location, ResourceBundle resources) { }
 
     /**
      * Método que regresa a la página de log in
@@ -46,7 +61,6 @@ public class ConnectionController {
             wn.popUpMessage("Llenar todos los campos","Todos los campos tienen que estar llenos.");
         }
         else{
-
             c.setUSER(usuarioBD.getText());
             c.setPASS(passwordBD.getText());
             c.setAddress(direccionBD.getText());

@@ -71,7 +71,7 @@ public class LogInScreenController {
         }
         if(logInAllowed){
             try{
-                wn.changeStage(logInPane, "/GUI/MainMenu.fxml");
+                wn.changeStage(logInPane, "/GUI/MainMenuManager.fxml");
             }
             catch (Exception e){
                 System.out.println(e);
