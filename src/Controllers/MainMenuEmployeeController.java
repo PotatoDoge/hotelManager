@@ -1,11 +1,18 @@
 package Controllers;
 
 import Tools.ConTool;
+import Tools.TableClientes;
 import Tools.Window;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
+import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 
 import java.io.IOException;
@@ -18,8 +25,15 @@ import java.util.ResourceBundle;
 public class MainMenuEmployeeController implements Initializable {
 
     private final Window wn = new Window();
-
     private  final ConTool c = new ConTool();
+    private final TableClientes tc = new TableClientes();
+    public TableColumn <TableClientes, String> claveTabla;
+    public TableColumn <TableClientes, String> nombreTabla;
+    public TableColumn <TableClientes, String> primerApTabla;
+    public TableColumn <TableClientes, String> segundoApTabla;
+    public TableColumn <TableClientes, String> telefonoTabla;
+    public TableColumn <TableClientes, String> nacionalidadTabla;
+    public TableView  <TableClientes> tablaClientesID;
     @FXML
     private Button actualizarID;
     @FXML
@@ -40,6 +54,8 @@ public class MainMenuEmployeeController implements Initializable {
     private Button guardarHuesped;
     @FXML
     private AnchorPane mainMenuPane;
+
+    ObservableList<TableClientes> oblist = FXCollections.observableArrayList();
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -126,6 +142,7 @@ public class MainMenuEmployeeController implements Initializable {
         codigoClienteID.setVisible(false);
         actualizarID.setVisible(false);
         guardarHuesped.setVisible(false);
+        tablaClientesID.setVisible(false);
     }
 
     /**
@@ -234,5 +251,33 @@ public class MainMenuEmployeeController implements Initializable {
                 codigoClienteID.setFocusTraversable(false);
             }
         }
+    }
+
+    public void verClientesOnAction() {
+        esconderElementosEnPantalla();
+        tablaClientesID.getItems().clear();
+        tablaClientesID.setVisible(true);
+        try{
+            c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
+            c.setStmt(c.getConn().createStatement());
+            String sql = "SELECT * FROM cliente";
+            c.setPst(c.getConn().prepareStatement(sql));
+            ResultSet rst = c.getPst().executeQuery();
+            while(rst.next()){
+                oblist.add(new TableClientes(rst.getString("codigoCliente"), rst.getString("nombre"), rst.getString("primerApellido"),
+                           rst.getString("segundoApellido"), rst.getString("telefono"),rst.getString("nacionalidad")));
+            }
+            c.getConn().close();
+        }
+        catch (Exception e){
+            System.out.println(e);
+        }
+        claveTabla.setCellValueFactory(new PropertyValueFactory<>("claveCliente"));
+        nombreTabla.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+        primerApTabla.setCellValueFactory(new PropertyValueFactory<>("primerApellido"));
+        segundoApTabla.setCellValueFactory(new PropertyValueFactory<>("segundoApellido"));
+        telefonoTabla.setCellValueFactory(new PropertyValueFactory<>("telefono"));
+        nacionalidadTabla.setCellValueFactory(new PropertyValueFactory<>("nacionalidad"));
+        tablaClientesID.setItems(oblist);
     }
 }
