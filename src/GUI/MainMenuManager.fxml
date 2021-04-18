@@ -5,9 +5,9 @@
 <?import javafx.scene.control.MenuItem?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="mainMenuPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="503.0" prefWidth="895.0" styleClass="mainMenubg" stylesheets="style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.MainMenuController">
+<AnchorPane fx:id="mainMenuPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="503.0" prefWidth="895.0" styleClass="mainMenubg" stylesheets="style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.MainMenuManagerController">
    <children>
-      <MenuBar prefHeight="29.0" prefWidth="437.0">
+      <MenuBar prefHeight="29.0" prefWidth="506.0">
         <menus>
           <Menu mnemonicParsing="false" text="Huesped">
             <items>
@@ -43,6 +43,17 @@
                 <MenuItem mnemonicParsing="false" text="Nuevo" />
                   <MenuItem mnemonicParsing="false" text="Borrar" />
                   <MenuItem mnemonicParsing="false" text="Editar" />
+              </items>
+            </Menu>
+            <Menu mnemonicParsing="false" text="Mostrar">
+              <items>
+                <MenuItem mnemonicParsing="false" text="Empleados" />
+                  <MenuItem mnemonicParsing="false" text="Gerentes" />
+                  <MenuItem mnemonicParsing="false" text="Habitaciones" />
+                  <MenuItem mnemonicParsing="false" text="Zonas" />
+                  <MenuItem mnemonicParsing="false" text="Areas" />
+                  <MenuItem mnemonicParsing="false" text="Reservaciones" />
+                  <MenuItem mnemonicParsing="false" text="Clientes" />
               </items>
             </Menu>
             <Menu mnemonicParsing="false" text="Salir">

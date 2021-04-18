@@ -4,7 +4,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.Statement;
 
-public class Con {
+public class ConTool {
 
     private static String USER = ""; //this will be set in the gui
     private static String PASS = ""; //this will be set in the gui
@@ -21,7 +21,7 @@ public class Con {
     }
 
     public void setUSER(String USER) {
-        Con.USER = USER;
+        ConTool.USER = USER;
     }
 
     public String getDatabaseName() {
@@ -29,7 +29,7 @@ public class Con {
     }
 
     public void setDatabaseName(String databaseName) {
-        Con.databaseName = databaseName;
+        ConTool.databaseName = databaseName;
     }
 
     public String getPASS() {
@@ -37,7 +37,7 @@ public class Con {
     }
 
     public void setPASS(String PASS) {
-        Con.PASS = PASS;
+        ConTool.PASS = PASS;
     }
 
     public Statement getStmt() {
@@ -45,7 +45,7 @@ public class Con {
     }
 
     public void setStmt(Statement stmt) {
-        Con.stmt = stmt;
+        ConTool.stmt = stmt;
     }
 
     public Connection getConn() {
@@ -53,7 +53,7 @@ public class Con {
     }
 
     public void setConn(Connection conn) {
-        Con.conn = conn;
+        ConTool.conn = conn;
     }
 
     public PreparedStatement getPst() {
@@ -61,7 +61,7 @@ public class Con {
     }
 
     public void setPst(PreparedStatement pst) {
-        Con.pst = pst;
+        ConTool.pst = pst;
     }
 
     public String getDB_URL() {
@@ -69,7 +69,7 @@ public class Con {
     }
 
     public void setDB_URL(String DB_URL) {
-        Con.DB_URL = DB_URL;
+        ConTool.DB_URL = DB_URL;
     }
 
     public String getSQLTABLE(){
@@ -84,7 +84,7 @@ public class Con {
     }
 
     public void setAddress(String address){
-        Con.address = address;
+        ConTool.address = address;
         DB_URL = "jdbc:mariadb://"+address+"/"+SQLTable+"?useUnicode=true&useJDBCCompliantTimezoneShift=true&useLegacyDatetimeCode=false&serverTimezone=UTC";
     }
 }

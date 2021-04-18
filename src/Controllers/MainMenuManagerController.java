@@ -6,7 +6,7 @@ import javafx.scene.layout.AnchorPane;
 
 import java.io.IOException;
 
-public class MainMenuController {
+public class MainMenuManagerController {
 
     private final Window wn = new Window();
     @FXML

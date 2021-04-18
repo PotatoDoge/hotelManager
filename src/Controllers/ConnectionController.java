@@ -1,29 +1,23 @@
 package Controllers;
 
-import Tools.Con;
+import Tools.ConTool;
 import Tools.Window;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.Button;
-import javafx.scene.control.ComboBox;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 
 import java.io.IOException;
 import java.net.URL;
-import java.sql.DriverManager;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 import java.util.ResourceBundle;
 
 public class ConnectionController implements Initializable {
 
     private final Window wn = new Window();
 
-    private final Con c = new Con();
+    private final ConTool c = new ConTool();
     @FXML
     private Button nuevaID;
     @FXML

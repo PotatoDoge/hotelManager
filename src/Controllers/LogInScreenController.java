@@ -1,5 +1,5 @@
 package Controllers;
-import Tools.Con;
+import Tools.ConTool;
 import Tools.Window;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
@@ -25,7 +25,7 @@ public class LogInScreenController {
 
     private final Window wn = new Window();
 
-    private final Con c = new Con();
+    private final ConTool c = new ConTool();
 
     /**
      * Método que camia la escena cuando el botón de settings es picado
@@ -42,6 +42,7 @@ public class LogInScreenController {
      * Método que se encarga de la lógica del log in
      */
     public void logInOnAction() {
+        boolean gerente = false;
         boolean logInAllowed = false;
         if(c.getPASS().equals("") || c.getUSER().equals("")|| c.getAddress().equals("")){
             wn.popUpMessage("Llenar campos","Todos los campos para conectar con la base de\ndatos tienen que haber sido llenados\nal menos una vez.");
@@ -53,13 +54,28 @@ public class LogInScreenController {
             try{
                 c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
                 c.setStmt(c.getConn().createStatement());
-                String SQL = "SELECT * FROM users WHERE usr='" + usernameTextArea.getText() + "'";
+                String SQL = "SELECT * FROM gerente WHERE codigoGerente='" + usernameTextArea.getText() + "'";
                 c.setPst(c.getConn().prepareStatement(SQL));
                 ResultSet rs = c.getPst().executeQuery();
                 while(rs.next()){
-                    if(passwordTextArea.getText().equals(rs.getString("ps"))){
+                    if(passwordTextArea.getText().equals(rs.getString("password"))){
                         logInAllowed = true;
+                        gerente = true;
                         break;
+                    }
+                }
+                c.getConn().close();
+                if(!gerente){
+                    c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
+                    c.setStmt(c.getConn().createStatement());
+                    String sql = "SELECT * FROM empleado WHERE codigoEmpleado='" + usernameTextArea.getText() + "'";
+                    c.setPst(c.getConn().prepareStatement(sql));
+                    ResultSet rst = c.getPst().executeQuery();
+                    while(rst.next()){
+                        if(passwordTextArea.getText().equals(rst.getString("password"))){
+                            logInAllowed = true;
+                            break;
+                        }
                     }
                 }
                 c.getConn().close();
@@ -69,11 +85,18 @@ public class LogInScreenController {
                 System.out.println(e);
             }
         }
-        if(logInAllowed){
+        if(logInAllowed && gerente){
             try{
                 wn.changeStage(logInPane, "/GUI/MainMenuManager.fxml");
             }
             catch (Exception e){
+                System.out.println(e);
+            }
+        }
+        else if(logInAllowed){
+            try {
+                wn.changeStage(logInPane,"/GUI/MainMenuEmployee.fxml");
+            } catch (IOException e) {
                 System.out.println(e);
             }
         }
