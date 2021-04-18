@@ -191,10 +191,8 @@ public class MainMenuEmployeeController implements Initializable {
             c.setPst(c.getConn().prepareStatement(sql));
             ResultSet rst = c.getPst().executeQuery();
             while(rst.next()){
-                System.out.println("EN EL WHILE");
                 if(rst.getString("codigoCliente").equals(codigoClienteID.getText())){
                     found = true;
-                    System.out.println("encontro");
                     nombreHuespedID.setText(rst.getString("nombre"));
                     aPHuespedID.setText(rst.getString("primerApellido"));
                     aMHuespedId.setText(rst.getString("segundoApellido"));
