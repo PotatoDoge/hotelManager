@@ -6,7 +6,7 @@ import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
-
+import java.util.Random;
 import java.io.IOException;
 import java.sql.*;
 
@@ -96,7 +96,8 @@ public class LogInScreenController {
         else if(logInAllowed){
             try {
                 wn.changeStage(logInPane,"/GUI/MainMenuEmployee.fxml");
-            } catch (IOException e) {
+            }
+            catch (Exception e) {
                 System.out.println(e);
             }
         }

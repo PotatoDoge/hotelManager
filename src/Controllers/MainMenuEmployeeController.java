@@ -8,10 +8,7 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
-import javafx.scene.control.Button;
-import javafx.scene.control.TableColumn;
-import javafx.scene.control.TableView;
-import javafx.scene.control.TextField;
+import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 
@@ -26,14 +23,33 @@ public class MainMenuEmployeeController implements Initializable {
 
     private final Window wn = new Window();
     private  final ConTool c = new ConTool();
-    private final TableClientes tc = new TableClientes();
-    public TableColumn <TableClientes, String> claveTabla;
-    public TableColumn <TableClientes, String> nombreTabla;
-    public TableColumn <TableClientes, String> primerApTabla;
-    public TableColumn <TableClientes, String> segundoApTabla;
-    public TableColumn <TableClientes, String> telefonoTabla;
-    public TableColumn <TableClientes, String> nacionalidadTabla;
-    public TableView  <TableClientes> tablaClientesID;
+
+    @FXML
+    private DatePicker fechaLlegadaReservacion;
+    @FXML
+    private DatePicker fechaSalidaReservacion;
+    @FXML
+    private TableColumn <TableClientes, String> claveTabla;
+    @FXML
+    private TableColumn <TableClientes, String> nombreTabla;
+    @FXML
+    private TableColumn <TableClientes, String> primerApTabla;
+    @FXML
+    private TableColumn <TableClientes, String> segundoApTabla;
+    @FXML
+    private TableColumn <TableClientes, String> telefonoTabla;
+    @FXML
+    private TableColumn <TableClientes, String> nacionalidadTabla;
+    @FXML
+    private TableView  <TableClientes> tablaClientesID;
+    @FXML
+    private TextField claveClienteReservar;
+    @FXML
+    private TextField numPersonasReservar;
+    @FXML
+    private ComboBox <String> tipoReservar;
+    @FXML
+    public Button reservarBoton;
     @FXML
     private Button actualizarID;
     @FXML
@@ -55,7 +71,8 @@ public class MainMenuEmployeeController implements Initializable {
     @FXML
     private AnchorPane mainMenuPane;
 
-    ObservableList<TableClientes> oblist = FXCollections.observableArrayList();
+    private final ObservableList<TableClientes> oblist = FXCollections.observableArrayList();
+    private final ObservableList<String> tipoHab = FXCollections.observableArrayList("Sencilla","Doble","Premium");
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -92,7 +109,7 @@ public class MainMenuEmployeeController implements Initializable {
     public void guardarHuespedOnAction(){
         if(!(nombreHuespedID.getText().isEmpty() && aPHuespedID.getText().isEmpty() && aMHuespedId.getText().isEmpty() && telHuespedID.getText().isEmpty() && nacionalidadID.getText().isEmpty())){
             if(nacionalidadID.getText().length() > 3){
-                wn.popUpMessage("Editar campo","EL campo nacionalidad no puede\ncontener más e 3 caractere");
+                wn.popUpMessage("Editar campo","EL campo nacionalidad no puede\ncontener más e 3 caracteres");
             }
             else if(telHuespedID.getText().length() > 20){
                 wn.popUpMessage("Teléfono muy largo","EL número de teléfono no puede\nexceder de 20 números.");
@@ -143,6 +160,13 @@ public class MainMenuEmployeeController implements Initializable {
         actualizarID.setVisible(false);
         guardarHuesped.setVisible(false);
         tablaClientesID.setVisible(false);
+        claveClienteReservar.setVisible(false);
+        numPersonasReservar.setVisible(false);
+        tipoReservar.setVisible(false);
+        tipoReservar.setItems(null);
+        reservarBoton.setVisible(false);
+        fechaLlegadaReservacion.setVisible(false);
+        fechaSalidaReservacion.setVisible(false);
     }
 
     /**
@@ -251,6 +275,9 @@ public class MainMenuEmployeeController implements Initializable {
         }
     }
 
+    /**
+     * Método que muestra la tabla de los clientes registrados
+     */
     public void verClientesOnAction() {
         esconderElementosEnPantalla();
         tablaClientesID.getItems().clear();
@@ -270,6 +297,7 @@ public class MainMenuEmployeeController implements Initializable {
         catch (Exception e){
             System.out.println(e);
         }
+        oblist.clear();
         claveTabla.setCellValueFactory(new PropertyValueFactory<>("claveCliente"));
         nombreTabla.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         primerApTabla.setCellValueFactory(new PropertyValueFactory<>("primerApellido"));
@@ -277,5 +305,80 @@ public class MainMenuEmployeeController implements Initializable {
         telefonoTabla.setCellValueFactory(new PropertyValueFactory<>("telefono"));
         nacionalidadTabla.setCellValueFactory(new PropertyValueFactory<>("nacionalidad"));
         tablaClientesID.setItems(oblist);
+    }
+
+    public void nuevaReservacionOnAction() {
+        esconderElementosEnPantalla();
+        claveClienteReservar.setVisible(true);
+        fechaSalidaReservacion.setVisible(true);
+        fechaLlegadaReservacion.setVisible(true);
+        numPersonasReservar.setVisible(true);
+        tipoReservar.setVisible(true);
+        tipoReservar.setItems(tipoHab);
+        reservarBoton.setVisible(true);
+    }
+
+    public void reservarOnAction() throws SQLException {
+        if(claveClienteReservar.getText().isEmpty() || fechaLlegadaReservacion.getValue() == null || fechaSalidaReservacion.getValue() == null || numPersonasReservar.getText().isEmpty() || tipoReservar.getValue() == null){
+            wn.popUpMessage("Llenar campos","Todos los campos deben estar llenos.");
+        }
+        else if(!checarSiClienteExiste(claveClienteReservar.getText()) && !(claveClienteReservar.getText().isEmpty())){
+            wn.popUpMessage("Clave equivocada","No existe el cliente ingresado");
+        }
+        else if(Integer.parseInt(numPersonasReservar.getText()) > 4 && !(numPersonasReservar.getText().isEmpty())){
+            wn.popUpMessage("Máximo de personas","El máximo de personas por habitación\nes de 4.");
+        }
+        else{
+            try{
+                c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
+                c.setStmt(c.getConn().createStatement());
+                int nR = generarNumeroReservacion();
+                String res = "RES_"+ nR;
+                String SQL = "INSERT INTO reservacion(codigoReservacion,numRes) values('"+res+"',"+nR+")";
+                c.getStmt().executeUpdate(SQL);
+                String SQL_2 = "INSERT INTO cliente_reservacion(codigoCliente,codigoReservacion,numPersonas,tipo,checkIn,checkOut) values((SELECT codigoCliente FROM cliente where codigoCliente='"+claveClienteReservar.getText()+"')" +
+                        ",(SELECT codigoReservacion FROM reservacion where codigoReservacion='"+res+"'),"+numPersonasReservar.getText()+",'"+tipoReservar.getValue()+"','"+fechaLlegadaReservacion.getValue()+"','"+fechaSalidaReservacion.getValue()+"')";
+                c.getStmt().executeUpdate(SQL_2);
+                c.getConn().close();
+                wn.popUpMessage("Reservación hecha","La reservación fue realizada de manera\nexitosa");
+            }
+            catch (Exception e){
+                System.out.println(e);
+            }
+        }
+    }
+
+    public boolean checarSiClienteExiste(String clave) throws SQLException {
+        c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
+        c.setStmt(c.getConn().createStatement());
+        String SQL = "SELECT * FROM cliente";
+        c.setPst(c.getConn().prepareStatement(SQL));
+        ResultSet rs = c.getPst().executeQuery();
+        while(rs.next()){
+            if(clave.equals(rs.getString("codigoCliente"))){
+                return true;
+            }
+        }
+        return false;
+    }
+
+    public int generarNumeroReservacion() throws SQLException {
+        int nc = 0;
+        c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
+        c.setStmt(c.getConn().createStatement());
+        String sql = "SELECT * FROM reservacion";
+        c.setPst(c.getConn().prepareStatement(sql));
+        ResultSet rst = c.getPst().executeQuery();
+        while(rst.next()){
+            nc = rst.getInt("numRes");
+        }
+        return nc+1;
+    }
+
+    public void verHuespedOnAction(ActionEvent actionEvent) {
+        // MOSTRAR HUESPED
+    }
+
+    public void verReservacionOnAction(ActionEvent actionEvent) {
     }
 }
