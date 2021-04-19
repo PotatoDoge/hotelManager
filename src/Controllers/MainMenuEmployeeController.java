@@ -2,6 +2,7 @@ package Controllers;
 
 import Tools.ConTool;
 import Tools.TableClientes;
+import Tools.TableReservacion;
 import Tools.Window;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -23,7 +24,24 @@ public class MainMenuEmployeeController implements Initializable {
 
     private final Window wn = new Window();
     private  final ConTool c = new ConTool();
-
+    @FXML
+    private Button cancelarReservacionBoton;
+    @FXML
+    private TextField codigoCancelarReservacionID;
+    @FXML
+    private TableView <TableReservacion>tablaRes;
+    @FXML
+    private TableColumn <TableReservacion, String> clienteTablaRes;
+    @FXML
+    private TableColumn <TableReservacion, String> resTablaRes;
+    @FXML
+    private TableColumn <TableReservacion, String> cuartoTablaRes;
+    @FXML
+    private TableColumn <TableReservacion, String> inTablaRes;
+    @FXML
+    private TableColumn <TableReservacion, String> outTablaRes;
+    @FXML
+    private TableColumn <TableReservacion, String> personasTablaRes;
     @FXML
     private DatePicker fechaLlegadaReservacion;
     @FXML
@@ -72,6 +90,9 @@ public class MainMenuEmployeeController implements Initializable {
     private AnchorPane mainMenuPane;
 
     private final ObservableList<TableClientes> oblist = FXCollections.observableArrayList();
+
+    private final ObservableList<TableReservacion> oblist2 = FXCollections.observableArrayList();
+
     private final ObservableList<String> tipoHab = FXCollections.observableArrayList("Sencilla","Doble","Premium");
 
     @Override
@@ -167,6 +188,9 @@ public class MainMenuEmployeeController implements Initializable {
         reservarBoton.setVisible(false);
         fechaLlegadaReservacion.setVisible(false);
         fechaSalidaReservacion.setVisible(false);
+        tablaRes.setVisible(false);
+        codigoCancelarReservacionID.setVisible(false);
+        cancelarReservacionBoton.setVisible(false);
     }
 
     /**
@@ -279,6 +303,7 @@ public class MainMenuEmployeeController implements Initializable {
      * Método que muestra la tabla de los clientes registrados
      */
     public void verClientesOnAction() {
+        oblist.clear();
         esconderElementosEnPantalla();
         tablaClientesID.getItems().clear();
         tablaClientesID.setVisible(true);
@@ -297,7 +322,6 @@ public class MainMenuEmployeeController implements Initializable {
         catch (Exception e){
             System.out.println(e);
         }
-        oblist.clear();
         claveTabla.setCellValueFactory(new PropertyValueFactory<>("claveCliente"));
         nombreTabla.setCellValueFactory(new PropertyValueFactory<>("nombre"));
         primerApTabla.setCellValueFactory(new PropertyValueFactory<>("primerApellido"));
@@ -362,6 +386,20 @@ public class MainMenuEmployeeController implements Initializable {
         return false;
     }
 
+    public boolean checarSiReservacionExiste(String clave) throws SQLException {
+        c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
+        c.setStmt(c.getConn().createStatement());
+        String SQL = "SELECT * FROM reservacion";
+        c.setPst(c.getConn().prepareStatement(SQL));
+        ResultSet rs = c.getPst().executeQuery();
+        while(rs.next()){
+            if(clave.equals(rs.getString("codigoReservacion"))){
+                return true;
+            }
+        }
+        return false;
+    }
+
     public int generarNumeroReservacion() throws SQLException {
         int nc = 0;
         c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
@@ -380,5 +418,66 @@ public class MainMenuEmployeeController implements Initializable {
     }
 
     public void verReservacionOnAction(ActionEvent actionEvent) {
+        oblist2.clear();
+        esconderElementosEnPantalla();
+        tablaRes.getItems().clear();
+        tablaRes.setVisible(true);
+        try{
+            c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
+            c.setStmt(c.getConn().createStatement());
+            String sql = "SELECT * FROM cliente_reservacion";
+            c.setPst(c.getConn().prepareStatement(sql));
+            ResultSet rst = c.getPst().executeQuery();
+            while(rst.next()){
+                oblist2.add(new TableReservacion(rst.getString("codigoCliente"),rst.getString("codigoReservacion"),rst.getString("tipo"),
+                                             rst.getString("checkIn"),rst.getString("checkOut"),rst.getString("numPersonas")));
+                System.out.println(rst.getString("codigoReservacion"));
+            }
+            c.getConn().close();
+        }
+        catch (Exception e){
+            System.out.println(e);
+        }
+        clienteTablaRes.setCellValueFactory(new PropertyValueFactory<>("codigoCliente"));
+        resTablaRes.setCellValueFactory(new PropertyValueFactory<>("codigoRes"));
+        cuartoTablaRes.setCellValueFactory(new PropertyValueFactory<>("tipo"));
+        inTablaRes.setCellValueFactory(new PropertyValueFactory<>("checkIn"));
+        outTablaRes.setCellValueFactory(new PropertyValueFactory<>("checkOut"));
+        personasTablaRes.setCellValueFactory(new PropertyValueFactory<>("numPersonas"));
+        tablaRes.setItems(oblist2);
+    }
+
+    public void cancelarResOnAction() {
+        esconderElementosEnPantalla();
+        cancelarReservacionBoton.setVisible(true);
+        codigoCancelarReservacionID.setVisible(true);
+    }
+
+    public void cancelarReservacionOnAction(ActionEvent actionEvent) throws SQLException {
+        if(!codigoCancelarReservacionID.getText().isEmpty()){
+            if(checarSiReservacionExiste(codigoCancelarReservacionID.getText())){
+                try{
+                    c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
+                    c.setStmt(c.getConn().createStatement());
+                    String SQL = "DELETE FROM cliente_reservacion where codigoReservacion='"+codigoCancelarReservacionID.getText()+"'";
+                    c.getStmt().executeUpdate(SQL);
+                    String sql = "DELETE FROM reservacion where codigoReservacion='"+codigoCancelarReservacionID.getText()+"'";
+                    c.getStmt().executeUpdate(sql);
+                    c.getConn().close();
+                }
+                catch (Exception e){
+                    System.out.println(e);
+                }
+            }
+            else{
+                wn.popUpMessage("No existe la reservación","La reservación no existe");
+            }
+
+        }
+        else{
+            wn.popUpMessage("Llenar el campo","El campo debe estar lleno");
+        }
+
+        wn.popUpMessage("Cancelado con éxito","La reservación fue cancelada con éxito");
     }
 }

@@ -25,11 +25,11 @@
                 <Menu mnemonicParsing="false" text="Reservaciones">
                     <items>
                         <MenuItem mnemonicParsing="false" onAction="#nuevaReservacionOnAction" text="Nueva" />
-                        <MenuItem mnemonicParsing="false" text="Cancelar" />
+                        <MenuItem mnemonicParsing="false" onAction="#cancelarResOnAction" text="Cancelar" />
                         <MenuItem mnemonicParsing="false" text="Check-in" />
                         <MenuItem mnemonicParsing="false" text="Check-out" />
-                  <MenuItem mnemonicParsing="false" onAction="#verReservacionOnAction" text="Ver Reservaciones" />
-                  <MenuItem mnemonicParsing="false" onAction="#verHuespedOnAction" text="Ver Huespedes Activos" />
+                        <MenuItem mnemonicParsing="false" onAction="#verReservacionOnAction" text="Ver Reservaciones" />
+                        <MenuItem mnemonicParsing="false" onAction="#verHuespedOnAction" text="Ver Huespedes Activos" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Salir">
@@ -64,5 +64,17 @@
         <Button fx:id="reservarBoton" focusTraversable="false" layoutX="116.0" layoutY="303.0" mnemonicParsing="false" onAction="#reservarOnAction" text="Reservar" visible="false" />
         <DatePicker fx:id="fechaLlegadaReservacion" focusTraversable="false" layoutX="69.0" layoutY="122.0" promptText="Fecha de Llegada" visible="false" />
         <DatePicker fx:id="fechaSalidaReservacion" focusTraversable="false" layoutX="69.0" layoutY="161.0" promptText="Fecha de Salida" visible="false" />
+        <TableView fx:id="tablaRes" layoutX="33.0" layoutY="61.0" prefHeight="416.0" prefWidth="814.0" visible="false">
+            <columns>
+                <TableColumn fx:id="clienteTablaRes" prefWidth="100.0" text="Cliente" />
+                <TableColumn fx:id="resTablaRes" prefWidth="104.0" text="Reservacion" />
+                <TableColumn fx:id="cuartoTablaRes" prefWidth="136.0" text="TIpo de cuarto" />
+                <TableColumn fx:id="inTablaRes" prefWidth="146.0" text="Fecha de llegada" />
+                <TableColumn fx:id="outTablaRes" prefWidth="164.0" text="Fecha de salida" />
+                <TableColumn fx:id="personasTablaRes" prefWidth="163.0" text="Personas" />
+            </columns>
+        </TableView>
+      <TextField fx:id="codigoCancelarReservacionID" layoutX="90.0" layoutY="82.0" promptText="Código Reservación" />
+      <Button fx:id="cancelarReservacionBoton" layoutX="138.0" layoutY="135.0" mnemonicParsing="false" onAction="#cancelarReservacionOnAction" text="Cancelar" />
     </children>
 </AnchorPane>
