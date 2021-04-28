@@ -1,17 +1,18 @@
 package Controllers;
 import Tools.ConTool;
+import Tools.User;
 import Tools.Window;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
-import java.util.Random;
 import java.io.IOException;
 import java.sql.*;
 
 public class LogInScreenController {
 
+    private final User user = new User();
     @FXML
     private Button settingsButton;
     @FXML
@@ -87,6 +88,8 @@ public class LogInScreenController {
         }
         if(logInAllowed && gerente){
             try{
+                user.setUsername(usernameTextArea.getText());
+                user.setPassword(passwordTextArea.getText());
                 wn.changeStage(logInPane, "/GUI/MainMenuManager.fxml");
             }
             catch (Exception e){
@@ -95,6 +98,8 @@ public class LogInScreenController {
         }
         else if(logInAllowed){
             try {
+                user.setUsername(usernameTextArea.getText());
+                user.setPassword(passwordTextArea.getText());
                 wn.changeStage(logInPane,"/GUI/MainMenuEmployee.fxml");
             }
             catch (Exception e) {

@@ -11,6 +11,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
+<?import javafx.scene.control.PasswordField?>
 <AnchorPane fx:id="mainMenuPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="503.0" prefWidth="895.0" styleClass="mainMenubg" stylesheets="style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.MainMenuEmployeeController">
     <children>
         <MenuBar prefHeight="29.0" prefWidth="265.0">
@@ -74,7 +75,9 @@
                 <TableColumn fx:id="personasTablaRes" prefWidth="163.0" text="Personas" />
             </columns>
         </TableView>
-      <TextField fx:id="codigoCancelarReservacionID" layoutX="90.0" layoutY="82.0" promptText="Código Reservación" />
-      <Button fx:id="cancelarReservacionBoton" layoutX="138.0" layoutY="135.0" mnemonicParsing="false" onAction="#cancelarReservacionOnAction" text="Cancelar" />
+        <TextField fx:id="codigoCancelarReservacionID" focusTraversable="false" layoutX="90.0" layoutY="82.0" promptText="Código Reservación" visible="false" />
+        <PasswordField fx:id="passwordCancelarReservacionID" focusTraversable="false" layoutX="90.0" layoutY="122.0" promptText="Contraseña" visible="false"/>
+        <Button fx:id="cancelarReservacionBoton" focusTraversable="false" layoutX="138.0" layoutY="165.0" mnemonicParsing="false" onAction="#cancelarReservacionOnAction" text="Cancelar" visible="false" />
     </children>
 </AnchorPane>
+

@@ -1,9 +1,7 @@
 package Controllers;
 
-import Tools.ConTool;
-import Tools.TableClientes;
-import Tools.TableReservacion;
-import Tools.Window;
+import Tools.*;
+import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -24,6 +22,10 @@ public class MainMenuEmployeeController implements Initializable {
 
     private final Window wn = new Window();
     private  final ConTool c = new ConTool();
+    private final User user = new User();
+
+    @FXML
+    private PasswordField passwordCancelarReservacionID;
     @FXML
     private Button cancelarReservacionBoton;
     @FXML
@@ -191,6 +193,7 @@ public class MainMenuEmployeeController implements Initializable {
         tablaRes.setVisible(false);
         codigoCancelarReservacionID.setVisible(false);
         cancelarReservacionBoton.setVisible(false);
+        passwordCancelarReservacionID.setVisible(false);
     }
 
     /**
@@ -331,6 +334,9 @@ public class MainMenuEmployeeController implements Initializable {
         tablaClientesID.setItems(oblist);
     }
 
+    /**
+     * Método que desbloquea campos cuando se le da click a Reservacion -> Nueva
+     */
     public void nuevaReservacionOnAction() {
         esconderElementosEnPantalla();
         claveClienteReservar.setVisible(true);
@@ -342,6 +348,10 @@ public class MainMenuEmployeeController implements Initializable {
         reservarBoton.setVisible(true);
     }
 
+    /**
+     * Método que se encarga de guardar los datos de la reservación
+     * @throws SQLException exception
+     */
     public void reservarOnAction() throws SQLException {
         if(claveClienteReservar.getText().isEmpty() || fechaLlegadaReservacion.getValue() == null || fechaSalidaReservacion.getValue() == null || numPersonasReservar.getText().isEmpty() || tipoReservar.getValue() == null){
             wn.popUpMessage("Llenar campos","Todos los campos deben estar llenos.");
@@ -372,6 +382,12 @@ public class MainMenuEmployeeController implements Initializable {
         }
     }
 
+    /**
+     * Método que checa en la base de datos si existe el cliente
+     * @param clave clave de cliente
+     * @return true si existe cliente en base de datos, else false
+     * @throws SQLException exception
+     */
     public boolean checarSiClienteExiste(String clave) throws SQLException {
         c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
         c.setStmt(c.getConn().createStatement());
@@ -386,6 +402,12 @@ public class MainMenuEmployeeController implements Initializable {
         return false;
     }
 
+    /**
+     * Método que checa en la base de datos si existe el cliente
+     * @param clave clave de la reservación
+     * @return true si existe reservación, else false
+     * @throws SQLException exception
+     */
     public boolean checarSiReservacionExiste(String clave) throws SQLException {
         c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
         c.setStmt(c.getConn().createStatement());
@@ -400,6 +422,11 @@ public class MainMenuEmployeeController implements Initializable {
         return false;
     }
 
+    /**
+     * Método que genera el numero de una nueva reservacion
+     * @return numero de reservacion
+     * @throws SQLException exception
+     */
     public int generarNumeroReservacion() throws SQLException {
         int nc = 0;
         c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
@@ -413,11 +440,14 @@ public class MainMenuEmployeeController implements Initializable {
         return nc+1;
     }
 
-    public void verHuespedOnAction(ActionEvent actionEvent) {
+    public void verHuespedOnAction() {
         // MOSTRAR HUESPED
     }
 
-    public void verReservacionOnAction(ActionEvent actionEvent) {
+    /**
+     * Método que muestra la tabla llena de las reservaciones
+     */
+    public void verReservacionOnAction() {
         oblist2.clear();
         esconderElementosEnPantalla();
         tablaRes.getItems().clear();
@@ -447,26 +477,40 @@ public class MainMenuEmployeeController implements Initializable {
         tablaRes.setItems(oblist2);
     }
 
+    /**
+     * Método que desbloquea campos para cancelar reservación
+     */
     public void cancelarResOnAction() {
         esconderElementosEnPantalla();
         cancelarReservacionBoton.setVisible(true);
         codigoCancelarReservacionID.setVisible(true);
+        passwordCancelarReservacionID.setVisible(true);
     }
 
-    public void cancelarReservacionOnAction(ActionEvent actionEvent) throws SQLException {
+    /**
+     * Método que se encarga de borrar la reservación de la base de datos
+     * @throws SQLException exception
+     */
+    public void cancelarReservacionOnAction() throws SQLException {
         if(!codigoCancelarReservacionID.getText().isEmpty()){
             if(checarSiReservacionExiste(codigoCancelarReservacionID.getText())){
-                try{
-                    c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
-                    c.setStmt(c.getConn().createStatement());
-                    String SQL = "DELETE FROM cliente_reservacion where codigoReservacion='"+codigoCancelarReservacionID.getText()+"'";
-                    c.getStmt().executeUpdate(SQL);
-                    String sql = "DELETE FROM reservacion where codigoReservacion='"+codigoCancelarReservacionID.getText()+"'";
-                    c.getStmt().executeUpdate(sql);
-                    c.getConn().close();
+                if(passwordCancelarReservacionID.getText().equals(user.getPassword())){
+                    try{
+                        c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
+                        c.setStmt(c.getConn().createStatement());
+                        String SQL = "DELETE FROM cliente_reservacion where codigoReservacion='"+codigoCancelarReservacionID.getText()+"'";
+                        c.getStmt().executeUpdate(SQL);
+                        String sql = "DELETE FROM reservacion where codigoReservacion='"+codigoCancelarReservacionID.getText()+"'";
+                        c.getStmt().executeUpdate(sql);
+                        c.getConn().close();
+                        wn.popUpMessage("Cancelado con éxito","La reservación fue cancelada con éxito");
+                    }
+                    catch (Exception e){
+                        System.out.println(e);
+                    }
                 }
-                catch (Exception e){
-                    System.out.println(e);
+                else{
+                    wn.popUpMessage("Contraseña equivocada","Ingresar la contraseña del usuairo\nque inició sesión.");
                 }
             }
             else{
@@ -477,7 +521,5 @@ public class MainMenuEmployeeController implements Initializable {
         else{
             wn.popUpMessage("Llenar el campo","El campo debe estar lleno");
         }
-
-        wn.popUpMessage("Cancelado con éxito","La reservación fue cancelada con éxito");
     }
 }
