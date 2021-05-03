@@ -9,6 +9,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.layout.AnchorPane;
 import java.io.IOException;
 import java.sql.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 public class LogInScreenController {
 
@@ -90,6 +92,8 @@ public class LogInScreenController {
             try{
                 user.setUsername(usernameTextArea.getText());
                 user.setPassword(passwordTextArea.getText());
+                String currentDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+                user.setDate(currentDate);
                 wn.changeStage(logInPane, "/GUI/MainMenuManager.fxml");
             }
             catch (Exception e){
@@ -100,6 +104,8 @@ public class LogInScreenController {
             try {
                 user.setUsername(usernameTextArea.getText());
                 user.setPassword(passwordTextArea.getText());
+                String currentDate = new SimpleDateFormat("yyyy-MM-dd").format(new Date());
+                user.setDate(currentDate);
                 wn.changeStage(logInPane,"/GUI/MainMenuEmployee.fxml");
             }
             catch (Exception e) {

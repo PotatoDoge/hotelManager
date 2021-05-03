@@ -1,7 +1,6 @@
 package Controllers;
 
 import Tools.*;
-import com.sun.scenario.effect.impl.sw.sse.SSEBlend_SRC_OUTPeer;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -10,6 +9,7 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
+import jdk.nashorn.internal.objects.NativeUint8Array;
 
 import java.io.IOException;
 import java.net.URL;
@@ -24,6 +24,31 @@ public class MainMenuEmployeeController implements Initializable {
     private  final ConTool c = new ConTool();
     private final User user = new User();
 
+
+    @FXML
+    private TableView <TableCuarto> habitacionesTableID;
+    @FXML
+    private TableColumn <TableCuarto, String> codigoHabTable;
+    @FXML
+    private TableColumn <TableCuarto, Integer>  capHabTable;
+    @FXML
+    private TableColumn <TableCuarto, String> tipoHabTable;
+    @FXML
+    private TableColumn <TableCuarto, Integer> numHabTable;
+    @FXML
+    private TableColumn <TableCuarto, Integer> pisoHabTable;
+    @FXML
+    private TableColumn <TableCuarto, Character> dispHabTable;
+    @FXML
+    private ComboBox  <String>  filtroStatusComboBoxID;
+    @FXML
+    private ComboBox <String> filtroPisoComboBoxID;
+    @FXML
+    private ComboBox <String> filtroCapacidadComboBoxID;
+    @FXML
+    private ComboBox <String> filtroTipoComboBoxID;
+    @FXML
+    private Button filtrarID;
     @FXML
     private PasswordField passwordCancelarReservacionID;
     @FXML
@@ -95,7 +120,15 @@ public class MainMenuEmployeeController implements Initializable {
 
     private final ObservableList<TableReservacion> oblist2 = FXCollections.observableArrayList();
 
-    private final ObservableList<String> tipoHab = FXCollections.observableArrayList("Sencilla","Doble","Premium");
+    private final ObservableList<TableCuarto> oblist3 = FXCollections.observableArrayList();
+
+    private final ObservableList<String> tipoHab = FXCollections.observableArrayList("Sencilla","Doble","Premium","Todo");
+
+    private final ObservableList<String> capHab = FXCollections.observableArrayList("1","2","3","4","Todo");
+
+    private final ObservableList<String> pisoHab = FXCollections.observableArrayList("PB","1","2","3","4","Todo");
+
+    private final ObservableList<String> statusHab = FXCollections.observableArrayList("Disponible","Ocupada","Todo");
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -174,26 +207,48 @@ public class MainMenuEmployeeController implements Initializable {
      */
     public void esconderElementosEnPantalla(){
         nombreHuespedID.setVisible(false);
+        nombreHuespedID.clear();
         aPHuespedID.setVisible(false);
+        aPHuespedID.clear();
         aMHuespedId.setVisible(false);
+        aMHuespedId.clear();
         telHuespedID.setVisible(false);
+        telHuespedID.clear();
         nacionalidadID.setVisible(false);
+        nacionalidadID.clear();
         buscarHuespedID.setVisible(false);
         codigoClienteID.setVisible(false);
+        codigoClienteID.clear();
         actualizarID.setVisible(false);
         guardarHuesped.setVisible(false);
         tablaClientesID.setVisible(false);
         claveClienteReservar.setVisible(false);
+        claveClienteReservar.clear();
         numPersonasReservar.setVisible(false);
+        numPersonasReservar.clear();
         tipoReservar.setVisible(false);
-        tipoReservar.setItems(null);
+        tipoReservar.setValue(null);
         reservarBoton.setVisible(false);
         fechaLlegadaReservacion.setVisible(false);
+        fechaLlegadaReservacion.setValue(null);
         fechaSalidaReservacion.setVisible(false);
+        fechaSalidaReservacion.setValue(null);
         tablaRes.setVisible(false);
         codigoCancelarReservacionID.setVisible(false);
+        codigoCancelarReservacionID.clear();
         cancelarReservacionBoton.setVisible(false);
         passwordCancelarReservacionID.setVisible(false);
+        passwordCancelarReservacionID.clear();
+        filtroStatusComboBoxID.setVisible(false);
+        filtroStatusComboBoxID.setValue(null);
+        filtroCapacidadComboBoxID.setVisible(false);
+        filtroCapacidadComboBoxID.setValue(null);
+        filtroPisoComboBoxID.setVisible(false);
+        filtroPisoComboBoxID.setValue(null);
+        filtroTipoComboBoxID.setVisible(false);
+        filtroTipoComboBoxID.setValue(null);
+        habitacionesTableID.setVisible(false);
+        filtrarID.setVisible(false);
     }
 
     /**
@@ -281,23 +336,23 @@ public class MainMenuEmployeeController implements Initializable {
                                 +"',primerApellido='"+aPHuespedID.getText()+"',segundoApellido='"+aMHuespedId.getText()+"' WHERE codigoCliente='"+codigoClienteID.getText()+"'";
                     c.getStmt().executeUpdate(sql);
                     c.getConn().close();
+                    wn.popUpMessage("Guardado con éxito","El huésped se actualizó con éxito.");
+                    nombreHuespedID.clear();
+                    aPHuespedID.clear();
+                    aMHuespedId.clear();
+                    telHuespedID.clear();
+                    nacionalidadID.clear();
+                    codigoClienteID.clear();
+                    nombreHuespedID.setFocusTraversable(false);
+                    aPHuespedID.setFocusTraversable(false);
+                    aMHuespedId.setFocusTraversable(false);
+                    telHuespedID.setFocusTraversable(false);
+                    nacionalidadID.setFocusTraversable(false);
+                    codigoClienteID.setFocusTraversable(false);
                 }
                 catch (Exception e){
                     System.out.println(e);
                 }
-                wn.popUpMessage("Guardado con éxito","El huésped se actualizó con éxito.");
-                nombreHuespedID.clear();
-                aPHuespedID.clear();
-                aMHuespedId.clear();
-                telHuespedID.clear();
-                nacionalidadID.clear();
-                codigoClienteID.clear();
-                nombreHuespedID.setFocusTraversable(false);
-                aPHuespedID.setFocusTraversable(false);
-                aMHuespedId.setFocusTraversable(false);
-                telHuespedID.setFocusTraversable(false);
-                nacionalidadID.setFocusTraversable(false);
-                codigoClienteID.setFocusTraversable(false);
             }
         }
     }
@@ -339,6 +394,11 @@ public class MainMenuEmployeeController implements Initializable {
      */
     public void nuevaReservacionOnAction() {
         esconderElementosEnPantalla();
+        claveClienteReservar.clear();
+        fechaLlegadaReservacion.setValue(null);
+        fechaSalidaReservacion.setValue(null);
+        numPersonasReservar.clear();
+        tipoReservar.setValue(null);
         claveClienteReservar.setVisible(true);
         fechaSalidaReservacion.setVisible(true);
         fechaLlegadaReservacion.setVisible(true);
@@ -368,13 +428,18 @@ public class MainMenuEmployeeController implements Initializable {
                 c.setStmt(c.getConn().createStatement());
                 int nR = generarNumeroReservacion();
                 String res = "RES_"+ nR;
-                String SQL = "INSERT INTO reservacion(codigoReservacion,numRes) values('"+res+"',"+nR+")";
+                String SQL = "INSERT INTO reservacion(codigoReservacion,numRes,fecha) values('"+res+"',"+nR+",'"+user.getDate()+"')";
                 c.getStmt().executeUpdate(SQL);
                 String SQL_2 = "INSERT INTO cliente_reservacion(codigoCliente,codigoReservacion,numPersonas,tipo,checkIn,checkOut) values((SELECT codigoCliente FROM cliente where codigoCliente='"+claveClienteReservar.getText()+"')" +
                         ",(SELECT codigoReservacion FROM reservacion where codigoReservacion='"+res+"'),"+numPersonasReservar.getText()+",'"+tipoReservar.getValue()+"','"+fechaLlegadaReservacion.getValue()+"','"+fechaSalidaReservacion.getValue()+"')";
                 c.getStmt().executeUpdate(SQL_2);
                 c.getConn().close();
                 wn.popUpMessage("Reservación hecha","La reservación fue realizada de manera\nexitosa");
+                claveClienteReservar.clear();
+                fechaLlegadaReservacion.setValue(null);
+                fechaSalidaReservacion.setValue(null);
+                numPersonasReservar.clear();
+                tipoReservar.setValue(null);
             }
             catch (Exception e){
                 System.out.println(e);
@@ -461,7 +526,6 @@ public class MainMenuEmployeeController implements Initializable {
             while(rst.next()){
                 oblist2.add(new TableReservacion(rst.getString("codigoCliente"),rst.getString("codigoReservacion"),rst.getString("tipo"),
                                              rst.getString("checkIn"),rst.getString("checkOut"),rst.getString("numPersonas")));
-                System.out.println(rst.getString("codigoReservacion"));
             }
             c.getConn().close();
         }
@@ -520,6 +584,52 @@ public class MainMenuEmployeeController implements Initializable {
         }
         else{
             wn.popUpMessage("Llenar el campo","El campo debe estar lleno");
+        }
+    }
+
+    /**
+     * Método que desbloquea campos cuando se le da clic a Habitaciones -> Ver
+     */
+    public void verHabitacionOnAction() {
+        esconderElementosEnPantalla();
+        filtroStatusComboBoxID.setVisible(true);
+        filtroStatusComboBoxID.setItems(statusHab);
+        filtroCapacidadComboBoxID.setVisible(true);
+        filtroCapacidadComboBoxID.setItems(capHab);
+        filtroPisoComboBoxID.setVisible(true);
+        filtroPisoComboBoxID.setItems(pisoHab);
+        filtroTipoComboBoxID.setVisible(true);
+        filtroTipoComboBoxID.setItems(tipoHab);
+        habitacionesTableID.setVisible(true);
+        filtrarID.setVisible(true);
+    }
+
+    /**
+     * Método que filtra las habitaciones para mostrarlas en tabla
+     */
+    public void filtrarHabitacionesOnAction() {
+        if(filtroPisoComboBoxID.getValue() !=null && filtroCapacidadComboBoxID.getValue() !=null && filtroTipoComboBoxID.getValue() !=null && filtroStatusComboBoxID.getValue() !=null){
+            try{
+                c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
+                c.setStmt(c.getConn().createStatement());
+                String sql = "SELECT * FROM habitacion";
+                c.setPst(c.getConn().prepareStatement(sql));
+                ResultSet rst = c.getPst().executeQuery();
+                while(rst.next()){
+                    // VER LA FORMA DE FILTRAR ESTO (VER QP CON EL TODO)
+                    /*
+                    oblist3.add(new TableClientes(rst.getString("codigoCliente"), rst.getString("nombre"), rst.getString("primerApellido"),
+                            rst.getString("segundoApellido"), rst.getString("telefono"),rst.getString("nacionalidad")));
+                     */
+                }
+                c.getConn().close();
+            }
+            catch (Exception e){
+                System.out.println(e);
+            }
+        }
+        else{
+            wn.popUpMessage("Filtros debe seleccionarse","Todos los filtros deben de estar\nseleccionados para poder hacer la búsqueda");
         }
     }
 }
