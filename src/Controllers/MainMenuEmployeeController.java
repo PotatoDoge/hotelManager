@@ -3,13 +3,11 @@ package Controllers;
 import Tools.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
-import jdk.nashorn.internal.objects.NativeUint8Array;
 
 import java.io.IOException;
 import java.net.URL;
@@ -38,11 +36,9 @@ public class MainMenuEmployeeController implements Initializable {
     @FXML
     private TableColumn <TableCuarto, Integer> pisoHabTable;
     @FXML
-    private TableColumn <TableCuarto, Character> dispHabTable;
+    private TableColumn <TableCuarto, String> dispHabTable;
     @FXML
     private ComboBox  <String>  filtroStatusComboBoxID;
-    @FXML
-    private ComboBox <String> filtroPisoComboBoxID;
     @FXML
     private ComboBox <String> filtroCapacidadComboBoxID;
     @FXML
@@ -125,8 +121,6 @@ public class MainMenuEmployeeController implements Initializable {
     private final ObservableList<String> tipoHab = FXCollections.observableArrayList("Sencilla","Doble","Premium","Todo");
 
     private final ObservableList<String> capHab = FXCollections.observableArrayList("1","2","3","4","Todo");
-
-    private final ObservableList<String> pisoHab = FXCollections.observableArrayList("PB","1","2","3","4","Todo");
 
     private final ObservableList<String> statusHab = FXCollections.observableArrayList("Disponible","Ocupada","Todo");
 
@@ -243,8 +237,6 @@ public class MainMenuEmployeeController implements Initializable {
         filtroStatusComboBoxID.setValue(null);
         filtroCapacidadComboBoxID.setVisible(false);
         filtroCapacidadComboBoxID.setValue(null);
-        filtroPisoComboBoxID.setVisible(false);
-        filtroPisoComboBoxID.setValue(null);
         filtroTipoComboBoxID.setVisible(false);
         filtroTipoComboBoxID.setValue(null);
         habitacionesTableID.setVisible(false);
@@ -596,40 +588,88 @@ public class MainMenuEmployeeController implements Initializable {
         filtroStatusComboBoxID.setItems(statusHab);
         filtroCapacidadComboBoxID.setVisible(true);
         filtroCapacidadComboBoxID.setItems(capHab);
-        filtroPisoComboBoxID.setVisible(true);
-        filtroPisoComboBoxID.setItems(pisoHab);
         filtroTipoComboBoxID.setVisible(true);
         filtroTipoComboBoxID.setItems(tipoHab);
         habitacionesTableID.setVisible(true);
         filtrarID.setVisible(true);
+        habitacionesTableID.getItems().clear();
     }
 
     /**
      * Método que filtra las habitaciones para mostrarlas en tabla
      */
     public void filtrarHabitacionesOnAction() {
-        if(filtroPisoComboBoxID.getValue() !=null && filtroCapacidadComboBoxID.getValue() !=null && filtroTipoComboBoxID.getValue() !=null && filtroStatusComboBoxID.getValue() !=null){
+        habitacionesTableID.getItems().clear(); // limpia la tabla por si se realizan distintos filtros sin cambiar de vista
+        if(filtroCapacidadComboBoxID.getValue() !=null && filtroTipoComboBoxID.getValue() !=null && filtroStatusComboBoxID.getValue() !=null){
             try{
                 c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
                 c.setStmt(c.getConn().createStatement());
-                String sql = "SELECT * FROM habitacion";
+                String sql = obtenerFiltroHabitacion(filtroCapacidadComboBoxID.getValue(),filtroTipoComboBoxID.getValue(),filtroStatusComboBoxID.getValue());
                 c.setPst(c.getConn().prepareStatement(sql));
                 ResultSet rst = c.getPst().executeQuery();
                 while(rst.next()){
-                    // VER LA FORMA DE FILTRAR ESTO (VER QP CON EL TODO)
-                    /*
-                    oblist3.add(new TableClientes(rst.getString("codigoCliente"), rst.getString("nombre"), rst.getString("primerApellido"),
-                            rst.getString("segundoApellido"), rst.getString("telefono"),rst.getString("nacionalidad")));
-                     */
+                    oblist3.add(new TableCuarto(rst.getString("codigoHabitacion"),rst.getInt("capacidad"),rst.getString("tipo"),
+                                                rst.getInt("numero") ,rst.getInt("piso"),rst.getString("disponible")));
                 }
                 c.getConn().close();
+                codigoHabTable.setCellValueFactory(new PropertyValueFactory<>("codigo"));
+                capHabTable.setCellValueFactory(new PropertyValueFactory<>("capacidad"));
+                tipoHabTable.setCellValueFactory(new PropertyValueFactory<>("tipo"));
+                numHabTable.setCellValueFactory(new PropertyValueFactory<>("numero"));
+                pisoHabTable.setCellValueFactory(new PropertyValueFactory<>("piso"));
+                dispHabTable.setCellValueFactory(new PropertyValueFactory<>("disp"));
+                habitacionesTableID.setItems(oblist3);
             }
             catch (Exception e){
                 System.out.println(e);
             }
+
         }
         else{
-            wn.popUpMessage("Filtros debe seleccionarse","Todos los filtros deben de estar\nseleccionados para poder hacer la búsqueda");
+            wn.popUpMessage("Filtros deben seleccionarse","Todos los filtros deben de estar\nseleccionados para poder hacer la búsqueda");
+        }
+    }
+
+    /**
+     * Método que regresa los filtros con los que se hará el query en la base de datos
+     * @param f1 campo de filtro 1 capacidad
+     * @param f2 campo de filtro 2 tipo
+     * @param f3 campo de filtro 3 status
+     * @return filtro
+     */
+    public String obtenerFiltroHabitacion(String f1,String f2,String f3){
+        if(f3.equals("Disponible")){
+            f3 = "D";
+        }
+        else if(f3.equals("Ocupada")){
+            f3 = "O";
+        }
+
+        if(f1.equals("Todo") || f2.equals("Todo") || f3.equals("Todo")){
+            if(f1.equals("Todo") && f2.equals("Todo") && f3.equals("Todo")){
+                return "SELECT * FROM habitacion";
+            }
+            else if(f1.equals("Todo") && f2.equals("Todo")){
+                return "SELECT * FROM habitacion where disponible='"+f3+"'";
+            }
+            else if(f1.equals("Todo") && f3.equals("Todo")){
+                return "SELECT * FROM habitacion where tipo='"+f2+"'";
+            }
+            else if(f2.equals("Todo") && f3.equals("Todo")){
+                return "SELECT * FROM habitacion where capacidad='"+f1+"'";
+            }
+            else if(f1.equals("Todo")){
+                return "SELECT * from habitacion where tipo='"+f2+"' and disponible='"+f3+"'";
+            }
+            else if(f2.equals("Todo")){
+                return "SELECT * from habitacion where capacidad="+f1+"' and disponible='"+f3+"'";
+            }
+            else{
+                return "SELECT * from habitacion where capacidad="+f1+" and tipo='"+f2+"'";
+            }
+        }
+        else {
+            return "SELECT * from habitacion where capacidad="+f1+" and tipo='"+f2+"' and disponible='"+f3+"'";
         }
     }
 }

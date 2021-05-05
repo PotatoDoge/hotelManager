@@ -94,9 +94,8 @@
             </columns>
         </TableView>
         <ComboBox fx:id="filtroStatusComboBoxID" focusTraversable="false" layoutX="44.0" layoutY="48.0" prefWidth="150.0" promptText="Status" visible="false" />
-        <Button fx:id="filtrarID" focusTraversable="false" layoutX="734.0" layoutY="48.0" mnemonicParsing="false" onAction="#filtrarHabitacionesOnAction" text="Filtrar" visible="false" />
-        <ComboBox fx:id="filtroCapacidadComboBoxID" focusTraversable="false" layoutX="553.0" layoutY="48.0" prefWidth="150.0" promptText="Capacidad" visible="false" />
-        <ComboBox fx:id="filtroPisoComboBoxID" focusTraversable="false" layoutX="380.0" layoutY="48.0" prefWidth="150.0" promptText="Piso" visible="false" />
-      <ComboBox fx:id="filtroTipoComboBoxID" focusTraversable="false" layoutX="214.0" layoutY="48.0" prefWidth="150.0" promptText="Tipo" visible="false" />
+        <Button fx:id="filtrarID" focusTraversable="false" layoutX="578.0" layoutY="48.0" mnemonicParsing="false" onAction="#filtrarHabitacionesOnAction" text="Filtrar" visible="false" />
+        <ComboBox fx:id="filtroCapacidadComboBoxID" focusTraversable="false" layoutX="393.0" layoutY="48.0" prefWidth="150.0" promptText="Capacidad" visible="false" />
+      <ComboBox fx:id="filtroTipoComboBoxID" focusTraversable="false" layoutX="219.0" layoutY="48.0" prefWidth="150.0" promptText="Tipo" visible="false" />
     </children>
 </AnchorPane>

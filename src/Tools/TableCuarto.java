@@ -6,9 +6,9 @@ public class TableCuarto {
     private String tipo;
     private int numero;
     private int piso;
-    private char disp;
+    private String disp;
 
-    public TableCuarto(String codigo, int capacidad, String tipo, int numero, int piso, char disp) {
+    public TableCuarto(String codigo, int capacidad, String tipo, int numero, int piso, String disp) {
         this.codigo = codigo;
         this.capacidad = capacidad;
         this.tipo = tipo;
@@ -57,11 +57,11 @@ public class TableCuarto {
         this.piso = piso;
     }
 
-    public char getDisp() {
+    public String getDisp() {
         return disp;
     }
 
-    public void setDisp(char disp) {
+    public void setDisp(String disp) {
         this.disp = disp;
     }
 }
