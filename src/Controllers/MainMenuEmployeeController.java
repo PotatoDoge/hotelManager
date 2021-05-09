@@ -672,4 +672,30 @@ public class MainMenuEmployeeController implements Initializable {
             return "SELECT * from habitacion where capacidad="+f1+" and tipo='"+f2+"' and disponible='"+f3+"'";
         }
     }
+
+    /**
+     * Método que desbloquea los campos necesarios para el check in
+     */
+    public void checkInOnAction() {
+    }
+
+    /**
+     * Método que desbloquea los campos necesarios para el check out
+     */
+    public void checkOutOnAction() {
+    }
+
+    /**
+     * Método que se encarga de la lógica del check-out
+     */
+    public void hacerCheckIn(){
+
+    }
+
+    /**
+     * Método que se encarga de la lógica del check-in
+     */
+    public void hacerCheckOut(){
+
+    }
 }
