@@ -97,8 +97,8 @@
         <Button fx:id="filtrarID" focusTraversable="false" layoutX="578.0" layoutY="48.0" mnemonicParsing="false" onAction="#filtrarHabitacionesOnAction" text="Filtrar" visible="false" />
         <ComboBox fx:id="filtroCapacidadComboBoxID" focusTraversable="false" layoutX="393.0" layoutY="48.0" prefWidth="150.0" promptText="Capacidad" visible="false" />
       <ComboBox fx:id="filtroTipoComboBoxID" focusTraversable="false" layoutX="219.0" layoutY="48.0" prefWidth="150.0" promptText="Tipo" visible="false" />
-      <TextField fx:id="codigoCheckInID" layoutX="101.0" layoutY="81.0" prefHeight="27.0" prefWidth="183.0" promptText="Código de Reservación" focusTraversable="false" visible="false" />
-      <DatePicker fx:id="fechaCheckInID" layoutX="100.0" layoutY="136.0" promptText="Fecha de llegada" focusTraversable="false" visible="false"/>
-      <Button fx:id="registrarCheckInID" layoutX="146.0" layoutY="199.0" mnemonicParsing="false" onAction="#registrarCheckIn" prefHeight="25.0" prefWidth="81.0" text="Registrar" focusTraversable="false" visible="false"/>
+      <TextField fx:id="codigoCheckInID" focusTraversable="false" layoutX="101.0" layoutY="81.0" prefHeight="27.0" prefWidth="183.0" promptText="Código de Reservación" visible="false" />
+      <DatePicker fx:id="fechaCheckInID" focusTraversable="false" layoutX="100.0" layoutY="136.0" promptText="Fecha de llegada" visible="false" />
+      <Button fx:id="registrarCheckInID" focusTraversable="false" layoutX="146.0" layoutY="199.0" mnemonicParsing="false" onAction="#registrarCheckIn" prefHeight="25.0" prefWidth="81.0" text="Registrar" visible="false" />
     </children>
 </AnchorPane>

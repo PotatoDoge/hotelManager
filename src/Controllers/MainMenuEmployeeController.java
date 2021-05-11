@@ -3,7 +3,6 @@ package Controllers;
 import Tools.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -124,7 +123,10 @@ public class MainMenuEmployeeController implements Initializable {
 
     private final ObservableList<TableCuarto> oblist3 = FXCollections.observableArrayList();
 
-    private final ObservableList<String> tipoHab = FXCollections.observableArrayList("Sencilla", "Doble", "Premium", "Todo");
+    private final ObservableList<String> tipoHab = FXCollections.observableArrayList("Sencilla", "Doble", "Premium"); // corregir esto
+
+    private final ObservableList<String> filtroHab = FXCollections.observableArrayList("Sencilla", "Doble", "Premium", "Todo");
+
 
     private final ObservableList<String> capHab = FXCollections.observableArrayList("1", "2", "3", "4", "Todo");
 
@@ -587,7 +589,7 @@ public class MainMenuEmployeeController implements Initializable {
         filtroCapacidadComboBoxID.setVisible(true);
         filtroCapacidadComboBoxID.setItems(capHab);
         filtroTipoComboBoxID.setVisible(true);
-        filtroTipoComboBoxID.setItems(tipoHab);
+        filtroTipoComboBoxID.setItems(filtroHab);
         habitacionesTableID.setVisible(true);
         filtrarID.setVisible(true);
         habitacionesTableID.getItems().clear();
@@ -679,7 +681,7 @@ public class MainMenuEmployeeController implements Initializable {
     }
 
     /**
-     * Método que se encarga de la lógica del check-out
+     * Método que se encarga de la lógica del check-in
      */
     public void hacerCheckIn() throws SQLException {
         if (codigoCheckInID.getText().isEmpty() || fechaCheckInID.getValue() == null) {
@@ -690,28 +692,46 @@ public class MainMenuEmployeeController implements Initializable {
             } else {
                 try {
                     c.setConn(DriverManager.getConnection(c.getDB_URL(), c.getUSER(), c.getPASS()));
-                    // buscar habitacion, asignar reservaion y habitacion
+                    c.setStmt(c.getConn().createStatement());
+                    String [] numPer = buscarNumeroPersonasYTipoReservacion(codigoCheckInID.getText());
+                    String codHab = asignarHabitacion(numPer);
+                    if(codHab.equals("notFound")){
+                        wn.popUpMessage("Habitación no encontrada","No hay habitaciones disponibles\nde ese tipo para ese número de personas");
+                    }
+                    else{
+                        String SQL = "INSERT into reservacion_habitacion (codigoReservacion,codigoHabitacion,fecha,numPersonas) values ('"+codigoCheckInID.getText()+"','"+
+                                      codHab+"','"+fechaCheckInID.getValue()+"',"+Integer.valueOf(numPer[0])+")";
+                        c.getStmt().executeUpdate(SQL);
+                        String sql = "UPDATE habitacion SET disponible='O' where codigoHabitacion='"+codHab+"'";
+                        c.getStmt().executeUpdate(sql);
+                        c.getConn().close();
+                        wn.popUpMessage("Habitación asignada","Se le asignó la habitación:\n"+codHab);
+                        codigoCheckInID.clear();
+                        fechaCheckInID.setValue(null);
+                    }
                 } catch (Exception e) {
                     System.out.println(e);
                 }
             }
         }
     }
-
     /**
-     * Método que se encarga de la lógica del check-in
+     * Método que se encarga de la lógica del check-out
      */
     public void hacerCheckOut() {
 
     }
 
+    /**
+     * Botón de hacer check-in
+     * @throws SQLException exception
+     */
     public void registrarCheckIn() throws SQLException {
         hacerCheckIn();
     }
 
     /**
      * Método que checa si a la reservación ya se le hizo check in
-     *
      * @return false si no está asignada, else true
      */
     public boolean checarSiReservacionAsignada(String res) throws SQLException {
@@ -726,5 +746,44 @@ public class MainMenuEmployeeController implements Initializable {
             }
         }
         return false;
+    }
+
+    /**
+     * Método que regresa la habitación con la cantidad de personas deseada
+     * @return numero de habitación, o notFound si no hay disponibles
+     */
+    public String asignarHabitacion(String [] d) throws SQLException {
+        c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
+        c.setStmt(c.getConn().createStatement());
+        String SQL = "select codigoHabitacion,tipo,capacidad from habitacion where disponible = 'D' and tipo='"+d[1]+"' and capacidad = " + Integer.valueOf(d[0]);
+        ResultSet rs = c.getPst().executeQuery(SQL);
+        if(rs.next()){
+            return rs.getString("codigoHabitacion");
+        }
+        c.getConn().close();
+        return "notFound";
+    }
+
+    /**
+     * Método que regresa el número de personas de la reservación y el tipo
+     * @param res numero de reservacion
+     * @return [0] --> numero de personas, [1] --> tipo
+     * @throws SQLException exception
+     */
+    public String [] buscarNumeroPersonasYTipoReservacion(String res) throws SQLException {
+        String[] datos = new String [2];
+        c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
+        c.setStmt(c.getConn().createStatement());
+        String SQL = "SELECT codigoReservacion,numPersonas,tipo from cliente_reservacion";
+        ResultSet rs = c.getPst().executeQuery(SQL);
+        while(rs.next()){
+            if(res.equals(rs.getString("codigoReservacion"))){
+                datos[0] = String.valueOf(rs.getInt("numPersonas"));
+                datos[1] = rs.getString("tipo");
+                return datos;
+            }
+        }
+        c.getConn().close();
+        return null; // nunca llegará a esto porque ya se validó que la reservación exista
     }
 }
