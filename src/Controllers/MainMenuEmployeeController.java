@@ -247,7 +247,9 @@ public class MainMenuEmployeeController implements Initializable {
         filtrarID.setVisible(false);
         registrarCheckInID.setVisible(false);
         fechaCheckInID.setVisible(false);
+        fechaCheckInID.setValue(null);
         codigoCheckInID.setVisible(false);
+        codigoCheckInID.clear();
     }
 
     /**
@@ -427,6 +429,19 @@ public class MainMenuEmployeeController implements Initializable {
                 String SQL_2 = "INSERT INTO cliente_reservacion(codigoCliente,codigoReservacion,numPersonas,tipo,checkIn,checkOut) values((SELECT codigoCliente FROM cliente where codigoCliente='" + claveClienteReservar.getText() + "')" +
                         ",(SELECT codigoReservacion FROM reservacion where codigoReservacion='" + res + "')," + numPersonasReservar.getText() + ",'" + tipoReservar.getValue() + "','" + fechaLlegadaReservacion.getValue() + "','" + fechaSalidaReservacion.getValue() + "')";
                 c.getStmt().executeUpdate(SQL_2);
+                String [] datos = buscarNumeroPersonasYTipoReservacion(res);
+                double precio;
+                if(datos[1].equals("Sencilla")){
+                    precio = Integer.parseInt(datos[0])*400;
+                }
+                else if(datos[1].equals("Doble")){
+                    precio = Integer.parseInt(datos[0])*700;
+                }
+                else{
+                   precio = Integer.parseInt(datos[0])*1200;
+                }
+                String SQL_3 = "INSERT INTO empleado_reservacion(codigoReservacion,codigoEmpleado,precio) values('"+res+"','"+user.getUsername()+"',"+precio+")";
+                c.getStmt().executeUpdate(SQL_3);
                 c.getConn().close();
                 wn.popUpMessage("Reservación hecha", "La reservación fue realizada de manera\nexitosa");
                 claveClienteReservar.clear();
@@ -562,6 +577,8 @@ public class MainMenuEmployeeController implements Initializable {
                         c.getStmt().executeUpdate(SQL);
                         String sql = "DELETE FROM reservacion where codigoReservacion='" + codigoCancelarReservacionID.getText() + "'";
                         c.getStmt().executeUpdate(sql);
+                        String sql_2 = "DELETE FROM empleado_reservacion where codigoReservacion='"+codigoCancelarReservacionID.getText()+"'";
+                        c.getStmt().executeUpdate(sql_2);
                         c.getConn().close();
                         wn.popUpMessage("Cancelado con éxito", "La reservación fue cancelada con éxito");
                     } catch (Exception e) {
@@ -719,7 +736,7 @@ public class MainMenuEmployeeController implements Initializable {
      * Método que se encarga de la lógica del check-out
      */
     public void hacerCheckOut() {
-
+        // Borrar de cliente_reservacion;
     }
 
     /**
