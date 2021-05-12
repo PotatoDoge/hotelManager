@@ -581,11 +581,13 @@ public class MainMenuEmployeeController implements Initializable {
                         c.getStmt().executeUpdate(sql);
                         c.getConn().close();
                         wn.popUpMessage("Cancelado con éxito", "La reservación fue cancelada con éxito");
+                        codigoCancelarReservacionID.clear();
+                        passwordCancelarReservacionID.clear();
                     } catch (Exception e) {
                         System.out.println(e);
                     }
                 } else {
-                    wn.popUpMessage("Contraseña equivocada", "Ingresar la contraseña del usuairo\nque inició sesión.");
+                    wn.popUpMessage("Contraseña equivocada", "Ingresar la contraseña del usuario\nque inició sesión.");
                 }
             } else {
                 wn.popUpMessage("No existe la reservación", "La reservación no existe");
