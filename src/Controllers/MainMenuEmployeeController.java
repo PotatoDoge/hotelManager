@@ -575,10 +575,10 @@ public class MainMenuEmployeeController implements Initializable {
                         c.setStmt(c.getConn().createStatement());
                         String SQL = "DELETE FROM cliente_reservacion where codigoReservacion='" + codigoCancelarReservacionID.getText() + "'";
                         c.getStmt().executeUpdate(SQL);
-                        String sql = "DELETE FROM reservacion where codigoReservacion='" + codigoCancelarReservacionID.getText() + "'";
-                        c.getStmt().executeUpdate(sql);
                         String sql_2 = "DELETE FROM empleado_reservacion where codigoReservacion='"+codigoCancelarReservacionID.getText()+"'";
                         c.getStmt().executeUpdate(sql_2);
+                        String sql = "DELETE FROM reservacion where codigoReservacion='" + codigoCancelarReservacionID.getText() + "'";
+                        c.getStmt().executeUpdate(sql);
                         c.getConn().close();
                         wn.popUpMessage("Cancelado con éxito", "La reservación fue cancelada con éxito");
                     } catch (Exception e) {
