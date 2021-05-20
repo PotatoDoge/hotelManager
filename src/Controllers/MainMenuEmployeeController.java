@@ -3,6 +3,7 @@ package Controllers;
 import Tools.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -22,6 +23,14 @@ public class MainMenuEmployeeController implements Initializable {
     private final ConTool c = new ConTool();
     private final User user = new User();
 
+    @FXML
+    private DatePicker fechaSalidaCheckOut;
+    @FXML
+    private TextField codigoResCheckOut;
+    @FXML
+    private PasswordField passwCheckOut;
+    @FXML
+    private Button checkOutButton;
     @FXML
     private TextField codigoCheckInID;
     @FXML
@@ -127,7 +136,6 @@ public class MainMenuEmployeeController implements Initializable {
 
     private final ObservableList<String> filtroHab = FXCollections.observableArrayList("Sencilla", "Doble", "Premium", "Todo");
 
-
     private final ObservableList<String> capHab = FXCollections.observableArrayList("1", "2", "3", "4", "Todo");
 
     private final ObservableList<String> statusHab = FXCollections.observableArrayList("Disponible", "Ocupada", "Todo");
@@ -137,6 +145,10 @@ public class MainMenuEmployeeController implements Initializable {
         esconderElementosEnPantalla();
     }
 
+
+    // ******************************************************************************//
+    // <!--------------------------FUNCIONES DE BOTONES--------------------------!> //
+    // ******************************************************************************//
     /**
      * Método que regresa a la pantalla de log in
      */
@@ -198,77 +210,6 @@ public class MainMenuEmployeeController implements Initializable {
         } else {
             wn.popUpMessage("Llenar campos", "Todos los campos deben de estar llenos ");
         }
-    }
-
-    /**
-     * Método que esconde todos los campos
-     */
-    public void esconderElementosEnPantalla() {
-        nombreHuespedID.setVisible(false);
-        nombreHuespedID.clear();
-        aPHuespedID.setVisible(false);
-        aPHuespedID.clear();
-        aMHuespedId.setVisible(false);
-        aMHuespedId.clear();
-        telHuespedID.setVisible(false);
-        telHuespedID.clear();
-        nacionalidadID.setVisible(false);
-        nacionalidadID.clear();
-        buscarHuespedID.setVisible(false);
-        codigoClienteID.setVisible(false);
-        codigoClienteID.clear();
-        actualizarID.setVisible(false);
-        guardarHuesped.setVisible(false);
-        tablaClientesID.setVisible(false);
-        claveClienteReservar.setVisible(false);
-        claveClienteReservar.clear();
-        numPersonasReservar.setVisible(false);
-        numPersonasReservar.clear();
-        tipoReservar.setVisible(false);
-        tipoReservar.setValue(null);
-        reservarBoton.setVisible(false);
-        fechaLlegadaReservacion.setVisible(false);
-        fechaLlegadaReservacion.setValue(null);
-        fechaSalidaReservacion.setVisible(false);
-        fechaSalidaReservacion.setValue(null);
-        tablaRes.setVisible(false);
-        codigoCancelarReservacionID.setVisible(false);
-        codigoCancelarReservacionID.clear();
-        cancelarReservacionBoton.setVisible(false);
-        passwordCancelarReservacionID.setVisible(false);
-        passwordCancelarReservacionID.clear();
-        filtroStatusComboBoxID.setVisible(false);
-        filtroStatusComboBoxID.setValue(null);
-        filtroCapacidadComboBoxID.setVisible(false);
-        filtroCapacidadComboBoxID.setValue(null);
-        filtroTipoComboBoxID.setVisible(false);
-        filtroTipoComboBoxID.setValue(null);
-        habitacionesTableID.setVisible(false);
-        filtrarID.setVisible(false);
-        registrarCheckInID.setVisible(false);
-        fechaCheckInID.setVisible(false);
-        fechaCheckInID.setValue(null);
-        codigoCheckInID.setVisible(false);
-        codigoCheckInID.clear();
-    }
-
-    /**
-     * Método que checa el último número de cliente registrado
-     *
-     * @return número del último cliente +1
-     * @throws SQLException exception
-     */
-    public int generarNumeroCliente() throws SQLException {
-        int nc = 0;
-        c.setConn(DriverManager.getConnection(c.getDB_URL(), c.getUSER(), c.getPASS()));
-        c.setStmt(c.getConn().createStatement());
-        String sql = "SELECT * FROM cliente";
-        c.setPst(c.getConn().prepareStatement(sql));
-        ResultSet rst = c.getPst().executeQuery();
-        while (rst.next()) {
-            nc = rst.getInt("numCliente");
-        }
-        return nc + 1;
     }
 
     /**
@@ -438,7 +379,7 @@ public class MainMenuEmployeeController implements Initializable {
                     precio = Integer.parseInt(datos[0])*700;
                 }
                 else{
-                   precio = Integer.parseInt(datos[0])*1200;
+                    precio = Integer.parseInt(datos[0])*1200;
                 }
                 String SQL_3 = "INSERT INTO empleado_reservacion(codigoReservacion,codigoEmpleado,precio) values('"+res+"','"+user.getUsername()+"',"+precio+")";
                 c.getStmt().executeUpdate(SQL_3);
@@ -453,71 +394,6 @@ public class MainMenuEmployeeController implements Initializable {
                 System.out.println(e);
             }
         }
-    }
-
-    /**
-     * Método que checa en la base de datos si existe el cliente
-     *
-     * @param clave clave de cliente
-     * @return true si existe cliente en base de datos, else false
-     * @throws SQLException exception
-     */
-    public boolean checarSiClienteExiste(String clave) throws SQLException {
-        c.setConn(DriverManager.getConnection(c.getDB_URL(), c.getUSER(), c.getPASS()));
-        c.setStmt(c.getConn().createStatement());
-        String SQL = "SELECT * FROM cliente";
-        c.setPst(c.getConn().prepareStatement(SQL));
-        ResultSet rs = c.getPst().executeQuery();
-        while (rs.next()) {
-            if (clave.equals(rs.getString("codigoCliente"))) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Método que checa en la base de datos si existe el cliente
-     *
-     * @param clave clave de la reservación
-     * @return true si existe reservación, else false
-     * @throws SQLException exception
-     */
-    public boolean checarSiReservacionExiste(String clave) throws SQLException {
-        c.setConn(DriverManager.getConnection(c.getDB_URL(), c.getUSER(), c.getPASS()));
-        c.setStmt(c.getConn().createStatement());
-        String SQL = "SELECT * FROM reservacion";
-        c.setPst(c.getConn().prepareStatement(SQL));
-        ResultSet rs = c.getPst().executeQuery();
-        while (rs.next()) {
-            if (clave.equals(rs.getString("codigoReservacion"))) {
-                return true;
-            }
-        }
-        return false;
-    }
-
-    /**
-     * Método que genera el numero de una nueva reservacion
-     *
-     * @return numero de reservacion
-     * @throws SQLException exception
-     */
-    public int generarNumeroReservacion() throws SQLException {
-        int nc = 0;
-        c.setConn(DriverManager.getConnection(c.getDB_URL(), c.getUSER(), c.getPASS()));
-        c.setStmt(c.getConn().createStatement());
-        String sql = "SELECT * FROM reservacion";
-        c.setPst(c.getConn().prepareStatement(sql));
-        ResultSet rst = c.getPst().executeQuery();
-        while (rst.next()) {
-            nc = rst.getInt("numRes");
-        }
-        return nc + 1;
-    }
-
-    public void verHuespedOnAction() {
-        // MOSTRAR HUESPED
     }
 
     /**
@@ -648,42 +524,6 @@ public class MainMenuEmployeeController implements Initializable {
     }
 
     /**
-     * Método que regresa los filtros con los que se hará el query en la base de datos
-     *
-     * @param f1 campo de filtro 1 capacidad
-     * @param f2 campo de filtro 2 tipo
-     * @param f3 campo de filtro 3 status
-     * @return filtro
-     */
-    public String obtenerFiltroHabitacion(String f1, String f2, String f3) {
-        if (f3.equals("Disponible")) {
-            f3 = "D";
-        } else if (f3.equals("Ocupada")) {
-            f3 = "O";
-        }
-
-        if (f1.equals("Todo") || f2.equals("Todo") || f3.equals("Todo")) {
-            if (f1.equals("Todo") && f2.equals("Todo") && f3.equals("Todo")) {
-                return "SELECT * FROM habitacion";
-            } else if (f1.equals("Todo") && f2.equals("Todo")) {
-                return "SELECT * FROM habitacion where disponible='" + f3 + "'";
-            } else if (f1.equals("Todo") && f3.equals("Todo")) {
-                return "SELECT * FROM habitacion where tipo='" + f2 + "'";
-            } else if (f2.equals("Todo") && f3.equals("Todo")) {
-                return "SELECT * FROM habitacion where capacidad='" + f1 + "'";
-            } else if (f1.equals("Todo")) {
-                return "SELECT * from habitacion where tipo='" + f2 + "' and disponible='" + f3 + "'";
-            } else if (f2.equals("Todo")) {
-                return "SELECT * from habitacion where capacidad=" + f1 + "' and disponible='" + f3 + "'";
-            } else {
-                return "SELECT * from habitacion where capacidad=" + f1 + " and tipo='" + f2 + "'";
-            }
-        } else {
-            return "SELECT * from habitacion where capacidad=" + f1 + " and tipo='" + f2 + "' and disponible='" + f3 + "'";
-        }
-    }
-
-    /**
      * Método que desbloquea los campos necesarios para el check in
      */
     public void checkInOnAction() {
@@ -697,6 +537,11 @@ public class MainMenuEmployeeController implements Initializable {
      * Método que desbloquea los campos necesarios para el check out
      */
     public void checkOutOnAction() {
+        esconderElementosEnPantalla();
+        checkOutButton.setVisible(true);
+        passwCheckOut.setVisible(true);
+        codigoResCheckOut.setVisible(true);
+        fechaSalidaCheckOut.setVisible(true);
     }
 
     /**
@@ -719,7 +564,7 @@ public class MainMenuEmployeeController implements Initializable {
                     }
                     else{
                         String SQL = "INSERT into reservacion_habitacion (codigoReservacion,codigoHabitacion,fecha,numPersonas) values ('"+codigoCheckInID.getText()+"','"+
-                                      codHab+"','"+fechaCheckInID.getValue()+"',"+Integer.valueOf(numPer[0])+")";
+                                codHab+"','"+fechaCheckInID.getValue()+"',"+Integer.valueOf(numPer[0])+")";
                         c.getStmt().executeUpdate(SQL);
                         String sql = "UPDATE habitacion SET disponible='O' where codigoHabitacion='"+codHab+"'";
                         c.getStmt().executeUpdate(sql);
@@ -737,16 +582,123 @@ public class MainMenuEmployeeController implements Initializable {
     /**
      * Método que se encarga de la lógica del check-out
      */
-    public void hacerCheckOut() {
-        // Borrar de cliente_reservacion;
+    public void hacerCheckOut() throws SQLException {
+        // Borrar de cliente_reservacion;  <----- ver que funcione y borrar este comentario
+        if(codigoResCheckOut.getText().isEmpty() || fechaSalidaCheckOut.getValue() == null || passwCheckOut.getText().isEmpty()){
+            wn.popUpMessage("Llenar campos","Todos los campos deben estar llenados\npara proeceder con el check-out");
+        }
+        else{
+            if(passwCheckOut.getText().equals(user.getPassword())){
+                if (checarSiReservacionExiste(codigoResCheckOut.getText()) && !checarSiReservacionAsignada(codigoResCheckOut.getText())) {
+                    wn.popUpMessage("Problemas con la reservación", "La reservación no existe o ya se hizo check-out");
+                }
+                else{
+                    try{
+                        c.setConn(DriverManager.getConnection(c.getDB_URL(), c.getUSER(), c.getPASS()));
+                        c.setStmt(c.getConn().createStatement());
+                        String SQL = "DELETE FROM cliente_reservacion where codigoReservacion='"+ codigoResCheckOut.getText()+"'";
+                        c.getStmt().executeUpdate(SQL);
+                        String sql = "UPDATE habitacion SET disponible='D' where codigoHabitacion='"+obtenerHabitacionAsignada(codigoResCheckOut.getText())+"'";
+                        c.getStmt().executeUpdate(sql);
+                        c.getConn().close();
+                    }
+                    catch (Exception e){
+                        System.out.println(e);
+                    }
+                }
+            }
+            else{
+                wn.popUpMessage("Contraseña incorrecta","Ingrese la contraseña correcta");
+            }
+        }
+    }
+
+    public void verHuespedOnAction() {
+        // MOSTRAR HUESPED
+    }
+
+    // ************************************************************************************//
+    // <!--------------------------FUNCIONES QUE HACEN QUERIES--------------------------!> //
+    // ************************************************************************************//
+
+    /**
+     * Método que checa el último número de cliente registrado
+     *
+     * @return número del último cliente +1
+     * @throws SQLException exception
+     */
+    public int generarNumeroCliente() throws SQLException {
+        int nc = 0;
+        c.setConn(DriverManager.getConnection(c.getDB_URL(), c.getUSER(), c.getPASS()));
+        c.setStmt(c.getConn().createStatement());
+        String sql = "SELECT * FROM cliente";
+        c.setPst(c.getConn().prepareStatement(sql));
+        ResultSet rst = c.getPst().executeQuery();
+        while (rst.next()) {
+            nc = rst.getInt("numCliente");
+        }
+        return nc + 1;
     }
 
     /**
-     * Botón de hacer check-in
+     * Método que checa en la base de datos si existe el cliente
+     *
+     * @param clave clave de cliente
+     * @return true si existe cliente en base de datos, else false
      * @throws SQLException exception
      */
-    public void registrarCheckIn() throws SQLException {
-        hacerCheckIn();
+    public boolean checarSiClienteExiste(String clave) throws SQLException {
+        c.setConn(DriverManager.getConnection(c.getDB_URL(), c.getUSER(), c.getPASS()));
+        c.setStmt(c.getConn().createStatement());
+        String SQL = "SELECT * FROM cliente";
+        c.setPst(c.getConn().prepareStatement(SQL));
+        ResultSet rs = c.getPst().executeQuery();
+        while (rs.next()) {
+            if (clave.equals(rs.getString("codigoCliente"))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Método que checa en la base de datos si existe el cliente
+     *
+     * @param clave clave de la reservación
+     * @return true si existe reservación, else false
+     * @throws SQLException exception
+     */
+    public boolean checarSiReservacionExiste(String clave) throws SQLException {
+        c.setConn(DriverManager.getConnection(c.getDB_URL(), c.getUSER(), c.getPASS()));
+        c.setStmt(c.getConn().createStatement());
+        String SQL = "SELECT * FROM reservacion";
+        c.setPst(c.getConn().prepareStatement(SQL));
+        ResultSet rs = c.getPst().executeQuery();
+        while (rs.next()) {
+            if (clave.equals(rs.getString("codigoReservacion"))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Método que genera el numero de una nueva reservacion
+     *
+     * @return numero de reservacion
+     * @throws SQLException exception
+     */
+    public int generarNumeroReservacion() throws SQLException {
+        int nc = 0;
+        c.setConn(DriverManager.getConnection(c.getDB_URL(), c.getUSER(), c.getPASS()));
+        c.setStmt(c.getConn().createStatement());
+        String sql = "SELECT * FROM reservacion";
+        c.setPst(c.getConn().prepareStatement(sql));
+        ResultSet rst = c.getPst().executeQuery();
+        while (rst.next()) {
+            nc = rst.getInt("numRes");
+        }
+        return nc + 1;
     }
 
     /**
@@ -805,4 +757,139 @@ public class MainMenuEmployeeController implements Initializable {
         c.getConn().close();
         return null; // nunca llegará a esto porque ya se validó que la reservación exista
     }
+
+    /**
+     * Método que regresa la habitación asignada a la reservación
+     * @param clave codigo de la reservacion
+     * @return clave de la habitación
+     * @throws SQLException exception
+     */
+    public String obtenerHabitacionAsignada(String clave) throws SQLException{
+        String codHab="";
+        c.setConn(DriverManager.getConnection(c.getDB_URL(), c.getUSER(), c.getPASS()));
+        c.setStmt(c.getConn().createStatement());
+        String SQL = "SELECT codigoHabitacion FROM reservacionHabitacion where codigoReservacion='"+clave+"'";
+        c.setPst(c.getConn().prepareStatement(SQL));
+        ResultSet rs = c.getPst().executeQuery();
+        if(rs.next()){
+            codHab = rs.getString("codigoHabitacion");
+        }
+        return codHab;
+    }
+
+    // ****************************************************************************//
+    // <!--------------------------FUNCIONES DE AYUDA--------------------------!> //
+    // ***************************************************************************//
+
+    /**
+     * Método que regresa los filtros con los que se hará el query en la base de datos
+     *
+     * @param f1 campo de filtro 1 capacidad
+     * @param f2 campo de filtro 2 tipo
+     * @param f3 campo de filtro 3 status
+     * @return filtro
+     */
+    public String obtenerFiltroHabitacion(String f1, String f2, String f3) {
+        if (f3.equals("Disponible")) {
+            f3 = "D";
+        } else if (f3.equals("Ocupada")) {
+            f3 = "O";
+        }
+
+        if (f1.equals("Todo") || f2.equals("Todo") || f3.equals("Todo")) {
+            if (f1.equals("Todo") && f2.equals("Todo") && f3.equals("Todo")) {
+                return "SELECT * FROM habitacion";
+            } else if (f1.equals("Todo") && f2.equals("Todo")) {
+                return "SELECT * FROM habitacion where disponible='" + f3 + "'";
+            } else if (f1.equals("Todo") && f3.equals("Todo")) {
+                return "SELECT * FROM habitacion where tipo='" + f2 + "'";
+            } else if (f2.equals("Todo") && f3.equals("Todo")) {
+                return "SELECT * FROM habitacion where capacidad='" + f1 + "'";
+            } else if (f1.equals("Todo")) {
+                return "SELECT * from habitacion where tipo='" + f2 + "' and disponible='" + f3 + "'";
+            } else if (f2.equals("Todo")) {
+                return "SELECT * from habitacion where capacidad=" + f1 + "' and disponible='" + f3 + "'";
+            } else {
+                return "SELECT * from habitacion where capacidad=" + f1 + " and tipo='" + f2 + "'";
+            }
+        } else {
+            return "SELECT * from habitacion where capacidad=" + f1 + " and tipo='" + f2 + "' and disponible='" + f3 + "'";
+        }
+    }
+
+    /**
+     * Botón de hacer check-in
+     * @throws SQLException exception
+     */
+    public void registrarCheckIn() throws SQLException {
+        hacerCheckIn();
+    }
+
+    public void registrarCheckOut() throws SQLException{
+        hacerCheckOut();
+    }
+
+    /**
+     * Método que esconde todos los campos
+     */
+    public void esconderElementosEnPantalla() {
+        nombreHuespedID.setVisible(false);
+        nombreHuespedID.clear();
+        aPHuespedID.setVisible(false);
+        aPHuespedID.clear();
+        aMHuespedId.setVisible(false);
+        aMHuespedId.clear();
+        telHuespedID.setVisible(false);
+        telHuespedID.clear();
+        nacionalidadID.setVisible(false);
+        nacionalidadID.clear();
+        buscarHuespedID.setVisible(false);
+        codigoClienteID.setVisible(false);
+        codigoClienteID.clear();
+        actualizarID.setVisible(false);
+        guardarHuesped.setVisible(false);
+        tablaClientesID.setVisible(false);
+        claveClienteReservar.setVisible(false);
+        claveClienteReservar.clear();
+        numPersonasReservar.setVisible(false);
+        numPersonasReservar.clear();
+        tipoReservar.setVisible(false);
+        tipoReservar.setValue(null);
+        reservarBoton.setVisible(false);
+        fechaLlegadaReservacion.setVisible(false);
+        fechaLlegadaReservacion.setValue(null);
+        fechaSalidaReservacion.setVisible(false);
+        fechaSalidaReservacion.setValue(null);
+        tablaRes.setVisible(false);
+        codigoCancelarReservacionID.setVisible(false);
+        codigoCancelarReservacionID.clear();
+        cancelarReservacionBoton.setVisible(false);
+        passwordCancelarReservacionID.setVisible(false);
+        passwordCancelarReservacionID.clear();
+        filtroStatusComboBoxID.setVisible(false);
+        filtroStatusComboBoxID.setValue(null);
+        filtroCapacidadComboBoxID.setVisible(false);
+        filtroCapacidadComboBoxID.setValue(null);
+        filtroTipoComboBoxID.setVisible(false);
+        filtroTipoComboBoxID.setValue(null);
+        habitacionesTableID.setVisible(false);
+        filtrarID.setVisible(false);
+        registrarCheckInID.setVisible(false);
+        fechaCheckInID.setVisible(false);
+        fechaCheckInID.setValue(null);
+        codigoCheckInID.setVisible(false);
+        codigoCheckInID.clear();
+        checkOutButton.setVisible(false);
+        passwCheckOut.setVisible(false);
+        passwCheckOut.clear();
+        codigoResCheckOut.setVisible(false);
+        codigoResCheckOut.clear();
+        fechaSalidaCheckOut.setVisible(false);
+        fechaSalidaCheckOut.setValue(null);
+    }
+
+
+
+
+
 }
