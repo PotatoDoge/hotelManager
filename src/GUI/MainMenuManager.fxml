@@ -1,67 +1,145 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.DatePicker?>
 <?import javafx.scene.control.Menu?>
 <?import javafx.scene.control.MenuBar?>
 <?import javafx.scene.control.MenuItem?>
+<?import javafx.scene.control.PasswordField?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
 <AnchorPane fx:id="mainMenuPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="503.0" prefWidth="895.0" styleClass="mainMenubg" stylesheets="style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.MainMenuManagerController">
-   <children>
-      <MenuBar prefHeight="29.0" prefWidth="506.0">
-        <menus>
-          <Menu mnemonicParsing="false" text="Huesped">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Nuevo" />
-                  <MenuItem mnemonicParsing="false" text="Borrar" />
-                  <MenuItem mnemonicParsing="false" text="Editar" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Reservaciones">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Nueva" />
-                  <MenuItem mnemonicParsing="false" text="Borrar" />
-                  <MenuItem mnemonicParsing="false" text="Editar" />
-                  <MenuItem mnemonicParsing="false" text="Check-in" />
-                  <MenuItem mnemonicParsing="false" text="Check-out" />
-            </items>
-          </Menu>
-          <Menu mnemonicParsing="false" text="Departamentos">
-            <items>
-              <MenuItem mnemonicParsing="false" text="Nuevo Departamento" />
-                  <MenuItem mnemonicParsing="false" text="Borrar Departamento" />
-                  <MenuItem mnemonicParsing="false" text="Editar Departamento" />
-                  <MenuItem mnemonicParsing="false" text="Nuevo Empleado" />
-                  <MenuItem mnemonicParsing="false" text="Borrar Empleado" />
-                  <MenuItem mnemonicParsing="false" text="Editar Empleado" />
-                  <MenuItem mnemonicParsing="false" text="Nuevo Gerente" />
-                  <MenuItem mnemonicParsing="false" text="Borrar Gerente" />
-                  <MenuItem mnemonicParsing="false" text="Editar Gerente" />
-            </items>
-          </Menu>
-            <Menu mnemonicParsing="false" text="Areas">
-              <items>
-                <MenuItem mnemonicParsing="false" text="Nuevo" />
-                  <MenuItem mnemonicParsing="false" text="Borrar" />
-                  <MenuItem mnemonicParsing="false" text="Editar" />
-              </items>
-            </Menu>
-            <Menu mnemonicParsing="false" text="Mostrar">
-              <items>
-                <MenuItem mnemonicParsing="false" text="Empleados" />
-                  <MenuItem mnemonicParsing="false" text="Gerentes" />
-                  <MenuItem mnemonicParsing="false" text="Habitaciones" />
-                  <MenuItem mnemonicParsing="false" text="Zonas" />
-                  <MenuItem mnemonicParsing="false" text="Areas" />
-                  <MenuItem mnemonicParsing="false" text="Reservaciones" />
-                  <MenuItem mnemonicParsing="false" text="Clientes" />
-              </items>
-            </Menu>
-            <Menu mnemonicParsing="false" text="Salir">
-              <items>
-                <MenuItem mnemonicParsing="false" onAction="#salirOnAction" text="Salir" />
-              </items>
-            </Menu>
-        </menus>
-      </MenuBar>
-   </children>
+    <children>
+        <MenuBar prefHeight="29.0" prefWidth="784.0">
+            <menus>
+                <Menu mnemonicParsing="false" text="Huesped">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#nuevoHuespedOnAction" text="Nuevo" />
+                        <MenuItem mnemonicParsing="false" onAction="#editarHuespedOnAction" text="Editar" />
+                        <MenuItem mnemonicParsing="false" onAction="#verClientesOnAction" text="Ver" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Reservaciones">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#nuevaReservacionOnAction" text="Nueva" />
+                        <MenuItem mnemonicParsing="false" onAction="#cancelarResOnAction" text="Cancelar" />
+                        <MenuItem mnemonicParsing="false" onAction="#checkInOnAction" text="Check-in" />
+                        <MenuItem mnemonicParsing="false" onAction="#checkOutOnAction" text="Check-out" />
+                        <MenuItem mnemonicParsing="false" onAction="#verReservacionOnAction" text="Ver Reservaciones" />
+                        <MenuItem mnemonicParsing="false" onAction="#verHuespedOnAction" text="Ver Huespedes Activos" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Habitaciones">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#verHabitacionOnAction" text="Ver" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Departamentos">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#nuevoDepartamento" text="Nuevo" />
+                        <MenuItem mnemonicParsing="false" text="Borrar" />
+                        <MenuItem mnemonicParsing="false" text="Editar" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Empleado">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Action 1" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Gerente">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Action 1" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Areas">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Action 1" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Mostrar">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Action 1" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Salir">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#salirOnAction" text="Salir" />
+                    </items>
+                </Menu>
+            </menus>
+        </MenuBar>
+        <TextField fx:id="nombreHuespedID" focusTraversable="false" layoutX="70.0" layoutY="82.0" promptText="Nombre(s)" visible="false" />
+        <TextField fx:id="aPHuespedID" focusTraversable="false" layoutX="70.0" layoutY="122.0" promptText="Apellido Paterno" visible="false" />
+        <TextField fx:id="aMHuespedId" focusTraversable="false" layoutX="70.0" layoutY="163.0" promptText="Apellido Materno" visible="false" />
+        <TextField fx:id="telHuespedID" focusTraversable="false" layoutX="70.0" layoutY="203.0" promptText="Teléfono" visible="false" />
+        <TextField fx:id="nacionalidadID" focusTraversable="false" layoutX="69.0" layoutY="245.0" promptText="Nacionalidad" visible="false" />
+        <Button fx:id="guardarHuesped" focusTraversable="false" layoutX="119.0" layoutY="303.0" mnemonicParsing="false" onAction="#guardarHuespedOnAction" text="Guardar" visible="false" />
+        <TextField fx:id="codigoClienteID" focusTraversable="false" layoutX="277.0" layoutY="82.0" promptText="Código de cliente" visible="false" />
+        <Button fx:id="buscarHuespedID" focusTraversable="false" layoutX="331.0" layoutY="122.0" mnemonicParsing="false" onAction="#buscarHuespedOnAction" text="Buscar" visible="false" />
+        <Button fx:id="actualizarID" focusTraversable="false" layoutX="321.0" layoutY="176.0" mnemonicParsing="false" onAction="#actualizarOnAction" text="Actualizar" visible="false" />
+        <TableView fx:id="tablaClientesID" layoutX="25.0" layoutY="41.0" prefHeight="440.0" prefWidth="846.0" visible="false">
+            <columns>
+                <TableColumn fx:id="claveTabla" prefWidth="126.0" text="Clave" />
+                <TableColumn fx:id="nombreTabla" prefWidth="124.0" text="Nombre" />
+                <TableColumn fx:id="primerApTabla" prefWidth="137.0" text="Primer Apellido" />
+                <TableColumn fx:id="segundoApTabla" prefWidth="161.0" text="Segundo Apellido" />
+                <TableColumn fx:id="telefonoTabla" prefWidth="194.0" text="Teléfono" />
+                <TableColumn fx:id="nacionalidadTabla" prefWidth="103.0" text="Nacionalidad" />
+            </columns>
+        </TableView>
+        <TextField fx:id="claveClienteReservar" focusTraversable="false" layoutX="69.0" layoutY="82.0" promptText="Clave del cliente" visible="false" />
+        <TextField fx:id="numPersonasReservar" focusTraversable="false" layoutX="69.0" layoutY="200.0" promptText="Numero de Personas" visible="false" />
+        <ComboBox fx:id="tipoReservar" focusTraversable="false" layoutX="69.0" layoutY="245.0" prefHeight="26.0" prefWidth="171.0" promptText="Tipo" visible="false" />
+        <Button fx:id="reservarBoton" focusTraversable="false" layoutX="116.0" layoutY="303.0" mnemonicParsing="false" onAction="#reservarOnAction" text="Reservar" visible="false" />
+        <DatePicker fx:id="fechaLlegadaReservacion" focusTraversable="false" layoutX="69.0" layoutY="122.0" promptText="Fecha de Llegada" visible="false" />
+        <DatePicker fx:id="fechaSalidaReservacion" focusTraversable="false" layoutX="69.0" layoutY="161.0" promptText="Fecha de Salida" visible="false" />
+        <TableView fx:id="tablaRes" layoutX="33.0" layoutY="61.0" prefHeight="416.0" prefWidth="814.0" visible="false">
+            <columns>
+                <TableColumn fx:id="clienteTablaRes" prefWidth="100.0" text="Cliente" />
+                <TableColumn fx:id="resTablaRes" prefWidth="104.0" text="Reservacion" />
+                <TableColumn fx:id="cuartoTablaRes" prefWidth="136.0" text="TIpo de cuarto" />
+                <TableColumn fx:id="inTablaRes" prefWidth="146.0" text="Fecha de llegada" />
+                <TableColumn fx:id="outTablaRes" prefWidth="164.0" text="Fecha de salida" />
+                <TableColumn fx:id="personasTablaRes" prefWidth="163.0" text="Personas" />
+            </columns>
+        </TableView>
+        <TextField fx:id="codigoCancelarReservacionID" focusTraversable="false" layoutX="90.0" layoutY="82.0" promptText="Código Reservación" visible="false" />
+        <PasswordField fx:id="passwordCancelarReservacionID" focusTraversable="false" layoutX="90.0" layoutY="122.0" promptText="Contraseña" visible="false" />
+        <Button fx:id="cancelarReservacionBoton" focusTraversable="false" layoutX="138.0" layoutY="165.0" mnemonicParsing="false" onAction="#cancelarReservacionOnAction" text="Cancelar" visible="false" />
+        <TableView fx:id="habitacionesTableID" focusTraversable="false" layoutX="38.0" layoutY="91.0" prefHeight="382.0" prefWidth="814.0" visible="false">
+            <columns>
+                <TableColumn fx:id="codigoHabTable" prefWidth="132.0" text="Codigo" />
+                <TableColumn fx:id="capHabTable" prefWidth="104.0" text="Capacidad" />
+                <TableColumn fx:id="tipoHabTable" prefWidth="136.0" text="Tipo" />
+                <TableColumn fx:id="numHabTable" prefWidth="104.0" text="Numero" />
+                <TableColumn fx:id="pisoHabTable" prefWidth="151.0" text="Piso" />
+                <TableColumn fx:id="dispHabTable" minWidth="0.0" prefWidth="186.0" text="Disponible" />
+            </columns>
+        </TableView>
+        <ComboBox fx:id="filtroStatusComboBoxID" focusTraversable="false" layoutX="44.0" layoutY="48.0" prefWidth="150.0" promptText="Status" visible="false" />
+        <Button fx:id="filtrarID" focusTraversable="false" layoutX="578.0" layoutY="48.0" mnemonicParsing="false" onAction="#filtrarHabitacionesOnAction" text="Filtrar" visible="false" />
+        <ComboBox fx:id="filtroCapacidadComboBoxID" focusTraversable="false" layoutX="393.0" layoutY="48.0" prefWidth="150.0" promptText="Capacidad" visible="false" />
+        <ComboBox fx:id="filtroTipoComboBoxID" focusTraversable="false" layoutX="219.0" layoutY="48.0" prefWidth="150.0" promptText="Tipo" visible="false" />
+        <TextField fx:id="codigoCheckInID" focusTraversable="false" layoutX="101.0" layoutY="81.0" prefHeight="27.0" prefWidth="183.0" promptText="Código de Reservación" visible="false" />
+        <DatePicker fx:id="fechaCheckInID" focusTraversable="false" layoutX="100.0" layoutY="136.0" promptText="Fecha de llegada" visible="false" />
+        <Button fx:id="registrarCheckInID" focusTraversable="false" layoutX="146.0" layoutY="199.0" mnemonicParsing="false" onAction="#registrarCheckIn" prefHeight="25.0" prefWidth="81.0" text="Registrar" visible="false" />
+        <Button fx:id="checkOutButton" focusTraversable="false" layoutX="143.0" layoutY="218.0" mnemonicParsing="false" onAction="#registrarCheckOut" text="Registrar" visible="false" />
+        <TextField fx:id="codigoResCheckOut" focusTraversable="false" layoutX="91.0" layoutY="68.0" prefHeight="26.0" prefWidth="171.0" promptText="Código de reservación" visible="false" />
+        <PasswordField fx:id="passwCheckOut" focusTraversable="false" layoutX="91.0" layoutY="168.0" promptText="Contraseña" visible="false" />
+        <DatePicker fx:id="fechaSalidaCheckOut" focusTraversable="false" layoutX="90.0" layoutY="116.0" prefHeight="26.0" prefWidth="171.0" promptText="Fecha de salida" visible="false" />
+        <TableView fx:id="tablaHuespedActivo" focusTraversable="false" layoutX="67.0" layoutY="74.0" prefHeight="374.0" prefWidth="747.0" visible="false">
+            <columns>
+                <TableColumn fx:id="cuartoActivo" prefWidth="228.0" text="Cuarto" />
+                <TableColumn fx:id="reservacionActivo" prefWidth="240.0" text="Reservacion" />
+                <TableColumn fx:id="checkInActivo" prefWidth="278.0" text="Fecha de check in" />
+            </columns>
+        </TableView>
+        <TextField fx:id="nombreDepID" layoutX="107.0" layoutY="69.0" prefHeight="26.0" prefWidth="191.0" promptText="Nombre del departamento" focusTraversable="false" visible="false"/>
+        <PasswordField fx:id="passDepID" layoutX="106.0" layoutY="116.0" prefHeight="26.0" prefWidth="191.0" promptText="Contraseña" focusTraversable="false" visible="false"/>
+        <Button fx:id="registrarDepID" layoutX="164.0" layoutY="168.0" mnemonicParsing="false" onAction="#registrarDepOnAction" text="Registrar" focusTraversable="false" visible="false"/>
+    </children>
 </AnchorPane>

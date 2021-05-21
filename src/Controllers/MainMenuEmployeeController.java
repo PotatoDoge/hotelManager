@@ -3,7 +3,6 @@ package Controllers;
 import Tools.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -577,7 +576,7 @@ public class MainMenuEmployeeController implements Initializable {
                         String SQL = "INSERT into reservacion_habitacion (codigoReservacion,codigoHabitacion,fecha,numPersonas) values ('"+codigoCheckInID.getText()+"','"+
                                 codHab+"','"+fechaCheckInID.getValue()+"',"+Integer.valueOf(numPer[0])+")";
                         c.getStmt().executeUpdate(SQL);
-                        String sql = "UPDATE habitacion SET disponible='O' where codigoHabitacion='"+codHab+"'";
+                        String sql = "UPDATE habitacion SET disponible='D' where codigoHabitacion='"+codHab+"'";
                         c.getStmt().executeUpdate(sql);
                         c.getConn().close();
                         wn.popUpMessage("Habitación asignada","Se le asignó la habitación:\n"+codHab);
@@ -826,7 +825,6 @@ public class MainMenuEmployeeController implements Initializable {
      * @param f2 campo de filtro 2 tipo
      * @param f3 campo de filtro 3 status
      * @return filtro
-     * problema pasa cuando f3!=todo , f2=todo, f1!=todo // CHECAR ESTE PROBLEMA <------------------
      */
     public String obtenerFiltroHabitacion(String f1, String f2, String f3) {
         if (f3.equals("Disponible")) {
@@ -927,9 +925,5 @@ public class MainMenuEmployeeController implements Initializable {
         fechaSalidaCheckOut.setValue(null);
         tablaHuespedActivo.setVisible(false);
     }
-
-
-
-
 
 }
