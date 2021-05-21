@@ -24,6 +24,14 @@ public class MainMenuEmployeeController implements Initializable {
     private final User user = new User();
 
     @FXML
+    private TableColumn <TableHuespedActivo,String> cuartoActivo;
+    @FXML
+    private TableColumn <TableHuespedActivo,String>reservacionActivo;
+    @FXML
+    private TableColumn <TableHuespedActivo,String>checkInActivo;
+    @FXML
+    private TableView<TableHuespedActivo> tablaHuespedActivo;
+    @FXML
     private DatePicker fechaSalidaCheckOut;
     @FXML
     private TextField codigoResCheckOut;
@@ -131,6 +139,8 @@ public class MainMenuEmployeeController implements Initializable {
     private final ObservableList<TableReservacion> oblist2 = FXCollections.observableArrayList();
 
     private final ObservableList<TableCuarto> oblist3 = FXCollections.observableArrayList();
+
+    private final ObservableList<TableHuespedActivo> oblist4 = FXCollections.observableArrayList();
 
     private final ObservableList<String> tipoHab = FXCollections.observableArrayList("Sencilla", "Doble", "Premium"); // corregir esto
 
@@ -550,7 +560,8 @@ public class MainMenuEmployeeController implements Initializable {
     public void hacerCheckIn() throws SQLException {
         if (codigoCheckInID.getText().isEmpty() || fechaCheckInID.getValue() == null) {
             wn.popUpMessage("Llenar campos", "Se tiene que ingresar un código\ny seleccionar una fecha.");
-        } else {
+        }
+        else {
             if (checarSiReservacionExiste(codigoCheckInID.getText()) && checarSiReservacionAsignada(codigoCheckInID.getText())) {
                 wn.popUpMessage("Problemas con la reservación", "La reservación no existe o ya fue asignada");
             } else {
@@ -574,6 +585,7 @@ public class MainMenuEmployeeController implements Initializable {
                         fechaCheckInID.setValue(null);
                     }
                 } catch (Exception e) {
+                    wn.popUpMessage("Error","Verifique que los datos ingresados\nsean correctos.");
                     System.out.println(e);
                 }
             }
@@ -583,7 +595,6 @@ public class MainMenuEmployeeController implements Initializable {
      * Método que se encarga de la lógica del check-out
      */
     public void hacerCheckOut() throws SQLException {
-        // Borrar de cliente_reservacion;  <----- ver que funcione y borrar este comentario
         if(codigoResCheckOut.getText().isEmpty() || fechaSalidaCheckOut.getValue() == null || passwCheckOut.getText().isEmpty()){
             wn.popUpMessage("Llenar campos","Todos los campos deben estar llenados\npara proeceder con el check-out");
         }
@@ -598,9 +609,15 @@ public class MainMenuEmployeeController implements Initializable {
                         c.setStmt(c.getConn().createStatement());
                         String SQL = "DELETE FROM cliente_reservacion where codigoReservacion='"+ codigoResCheckOut.getText()+"'";
                         c.getStmt().executeUpdate(SQL);
+                        String sql2 = "DELETE FROM reservacion_habitacion where codigoReservacion='"+ codigoResCheckOut.getText()+"'";
+                        c.getStmt().executeUpdate(sql2);
                         String sql = "UPDATE habitacion SET disponible='D' where codigoHabitacion='"+obtenerHabitacionAsignada(codigoResCheckOut.getText())+"'";
                         c.getStmt().executeUpdate(sql);
                         c.getConn().close();
+                        wn.popUpMessage("Éxito","El check out fue realizado con éxito.");
+                        passwCheckOut.clear();
+                        codigoResCheckOut.clear();
+                        fechaSalidaCheckOut.setValue(null);
                     }
                     catch (Exception e){
                         System.out.println(e);
@@ -614,7 +631,28 @@ public class MainMenuEmployeeController implements Initializable {
     }
 
     public void verHuespedOnAction() {
-        // MOSTRAR HUESPED
+        esconderElementosEnPantalla();
+        oblist4.clear();
+        tablaHuespedActivo.getItems().clear();
+        tablaHuespedActivo.setVisible(true);
+        try{
+            c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
+            c.setStmt(c.getConn().createStatement());
+            String SQL = "SELECT * FROM reservacion_habitacion";
+            c.setPst(c.getConn().prepareStatement(SQL));
+            ResultSet rst = c.getPst().executeQuery();
+            while(rst.next()){
+                oblist4.add(new TableHuespedActivo(obtenerHabitacionAsignada(rst.getString("codigoReservacion")),rst.getString("codigoReservacion"),rst.getString("fecha")));
+            }
+            c.getConn().close();
+            cuartoActivo.setCellValueFactory(new PropertyValueFactory<>("cuarto"));
+            reservacionActivo.setCellValueFactory(new PropertyValueFactory<>("reservacion"));
+            checkInActivo.setCellValueFactory(new PropertyValueFactory<>("checkIn"));
+            tablaHuespedActivo.setItems(oblist4);
+        }
+        catch (Exception e){
+            System.out.println(e);
+        }
     }
 
     // ************************************************************************************//
@@ -768,7 +806,7 @@ public class MainMenuEmployeeController implements Initializable {
         String codHab="";
         c.setConn(DriverManager.getConnection(c.getDB_URL(), c.getUSER(), c.getPASS()));
         c.setStmt(c.getConn().createStatement());
-        String SQL = "SELECT codigoHabitacion FROM reservacionHabitacion where codigoReservacion='"+clave+"'";
+        String SQL = "SELECT codigoHabitacion FROM reservacion_habitacion where codigoReservacion='"+clave+"'";
         c.setPst(c.getConn().prepareStatement(SQL));
         ResultSet rs = c.getPst().executeQuery();
         if(rs.next()){
@@ -788,6 +826,7 @@ public class MainMenuEmployeeController implements Initializable {
      * @param f2 campo de filtro 2 tipo
      * @param f3 campo de filtro 3 status
      * @return filtro
+     * problema pasa cuando f3!=todo , f2=todo, f3!=todo // CHECAR ESTE PROBLEMA <------------------
      */
     public String obtenerFiltroHabitacion(String f1, String f2, String f3) {
         if (f3.equals("Disponible")) {
@@ -886,6 +925,7 @@ public class MainMenuEmployeeController implements Initializable {
         codigoResCheckOut.clear();
         fechaSalidaCheckOut.setVisible(false);
         fechaSalidaCheckOut.setValue(null);
+        tablaHuespedActivo.setVisible(false);
     }
 
 
