@@ -826,7 +826,7 @@ public class MainMenuEmployeeController implements Initializable {
      * @param f2 campo de filtro 2 tipo
      * @param f3 campo de filtro 3 status
      * @return filtro
-     * problema pasa cuando f3!=todo , f2=todo, f3!=todo // CHECAR ESTE PROBLEMA <------------------
+     * problema pasa cuando f3!=todo , f2=todo, f1!=todo // CHECAR ESTE PROBLEMA <------------------
      */
     public String obtenerFiltroHabitacion(String f1, String f2, String f3) {
         if (f3.equals("Disponible")) {
@@ -847,7 +847,7 @@ public class MainMenuEmployeeController implements Initializable {
             } else if (f1.equals("Todo")) {
                 return "SELECT * from habitacion where tipo='" + f2 + "' and disponible='" + f3 + "'";
             } else if (f2.equals("Todo")) {
-                return "SELECT * from habitacion where capacidad=" + f1 + "' and disponible='" + f3 + "'";
+                return "SELECT * from habitacion where capacidad=" + f1 + " and disponible='" + f3 + "'";
             } else {
                 return "SELECT * from habitacion where capacidad=" + f1 + " and tipo='" + f2 + "'";
             }
