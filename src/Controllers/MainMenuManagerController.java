@@ -674,6 +674,31 @@ public class MainMenuManagerController implements Initializable {
      * Método que registra el nuevo departamento
      */
     public void registrarDepOnAction() {
+        if(nombreDepID.getText().isEmpty() || passDepID.getText().isEmpty()){
+            wn.popUpMessage("Campos vacíos","Asegúrese que todos los campos estén llenos");
+        }
+        else{
+            if(passDepID.getText().equals(user.getPassword())){
+                try{
+                    c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
+                    c.setStmt(c.getConn().createStatement());
+                    int n = generarNumeroDepartamento();
+                    String claveDep = "DEP_" + n;
+                    String sql = "INSERT INTO departamento (codigoDepartamento, nombre, numEmpleados, numeroDepartamento) values('"+claveDep+"','"+nombreDepID.getText()+"',0,"+n+")";
+                    c.getStmt().executeUpdate(sql);
+                    wn.popUpMessage("Departamento creado","El departamento fue creado de \nforma exitosa");
+                    c.getConn().close();
+                    nombreDepID.clear();
+                    passDepID.clear();
+                }
+                catch (Exception e){
+                    System.out.println(e);
+                }
+            }
+            else{
+                wn.popUpMessage("Contraseña incorrecta","Ingrese la contraseña correcta");
+            }
+        }
     }
 
     // ************************************************************************************//
@@ -836,6 +861,24 @@ public class MainMenuManagerController implements Initializable {
         return codHab;
     }
 
+    /**
+     * Método que regresa el numero a crear del nuevo departamento
+     * @return nuevo numeroDep
+     * @throws SQLException exception
+     */
+    public int generarNumeroDepartamento() throws  SQLException{
+        int nc = 0;
+        c.setConn(DriverManager.getConnection(c.getDB_URL(), c.getUSER(), c.getPASS()));
+        c.setStmt(c.getConn().createStatement());
+        String sql = "SELECT numeroDepartamento FROM departamento";
+        c.setPst(c.getConn().prepareStatement(sql));
+        ResultSet rst = c.getPst().executeQuery();
+        while (rst.next()) {
+            nc = rst.getInt("numeroDepartamento");
+        }
+        return nc + 1;
+    }
+
     // ****************************************************************************//
     // <!--------------------------FUNCIONES DE AYUDA--------------------------!> //
     // ***************************************************************************//
@@ -847,7 +890,6 @@ public class MainMenuManagerController implements Initializable {
      * @param f2 campo de filtro 2 tipo
      * @param f3 campo de filtro 3 status
      * @return filtro
-     * problema pasa cuando f3!=todo , f2=todo, f1!=todo // CHECAR ESTE PROBLEMA <------------------
      */
     public String obtenerFiltroHabitacion(String f1, String f2, String f3) {
         if (f3.equals("Disponible")) {

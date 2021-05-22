@@ -38,33 +38,33 @@
                         <MenuItem mnemonicParsing="false" onAction="#verHabitacionOnAction" text="Ver" />
                     </items>
                 </Menu>
-            <Menu mnemonicParsing="false" text="Departamentos">
-              <items>
-                <MenuItem mnemonicParsing="false" onAction="#nuevoDepartamento" text="Nuevo" />
-                  <MenuItem mnemonicParsing="false" text="Borrar" />
-                  <MenuItem mnemonicParsing="false" text="Editar" />
-              </items>
-            </Menu>
-            <Menu mnemonicParsing="false" text="Empleado">
-              <items>
-                <MenuItem mnemonicParsing="false" text="Action 1" />
-              </items>
-            </Menu>
-            <Menu mnemonicParsing="false" text="Gerente">
-              <items>
-                <MenuItem mnemonicParsing="false" text="Action 1" />
-              </items>
-            </Menu>
-            <Menu mnemonicParsing="false" text="Areas">
-              <items>
-                <MenuItem mnemonicParsing="false" text="Action 1" />
-              </items>
-            </Menu>
-            <Menu mnemonicParsing="false" text="Mostrar">
-              <items>
-                <MenuItem mnemonicParsing="false" text="Action 1" />
-              </items>
-            </Menu>
+                <Menu mnemonicParsing="false" text="Departamentos">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#nuevoDepartamento" text="Nuevo" />
+                        <MenuItem mnemonicParsing="false" text="Borrar" />
+                        <MenuItem mnemonicParsing="false" text="Editar" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Empleado">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Action 1" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Gerente">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Action 1" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Areas">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Action 1" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Mostrar">
+                    <items>
+                        <MenuItem mnemonicParsing="false" text="Action 1" />
+                    </items>
+                </Menu>
                 <Menu mnemonicParsing="false" text="Salir">
                     <items>
                         <MenuItem mnemonicParsing="false" onAction="#salirOnAction" text="Salir" />
@@ -138,8 +138,8 @@
                 <TableColumn fx:id="checkInActivo" prefWidth="278.0" text="Fecha de check in" />
             </columns>
         </TableView>
-      <TextField fx:id="nombreDepID" layoutX="107.0" layoutY="69.0" prefHeight="26.0" prefWidth="191.0" promptText="Nombre del departamento" />
-      <PasswordField fx:id="passDepID" layoutX="106.0" layoutY="116.0" prefHeight="26.0" prefWidth="191.0" promptText="Contraseña" />
-      <Button fx:id="registrarDepID" layoutX="164.0" layoutY="168.0" mnemonicParsing="false" onAction="#registrarDepOnAction" text="Registrar" />
+        <TextField fx:id="nombreDepID" layoutX="107.0" layoutY="69.0" prefHeight="26.0" prefWidth="191.0" promptText="Nombre del departamento" focusTraversable="false" visible="false"/>
+        <PasswordField fx:id="passDepID" layoutX="106.0" layoutY="116.0" prefHeight="26.0" prefWidth="191.0" promptText="Contraseña" focusTraversable="false" visible="false"/>
+        <Button fx:id="registrarDepID" layoutX="164.0" layoutY="168.0" mnemonicParsing="false" onAction="#registrarDepOnAction" text="Registrar" focusTraversable="false" visible="false"/>
     </children>
 </AnchorPane>
