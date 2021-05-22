@@ -41,8 +41,8 @@
                 <Menu mnemonicParsing="false" text="Departamentos">
                     <items>
                         <MenuItem mnemonicParsing="false" onAction="#nuevoDepartamento" text="Nuevo" />
-                        <MenuItem mnemonicParsing="false" text="Borrar" />
-                        <MenuItem mnemonicParsing="false" text="Editar" />
+                        <MenuItem mnemonicParsing="false" onAction="#borrarDepartamento" text="Borrar" />
+                        <MenuItem mnemonicParsing="false" onAction="#editarDepartamento" text="Editar" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Empleado">
@@ -138,8 +138,15 @@
                 <TableColumn fx:id="checkInActivo" prefWidth="278.0" text="Fecha de check in" />
             </columns>
         </TableView>
-        <TextField fx:id="nombreDepID" layoutX="107.0" layoutY="69.0" prefHeight="26.0" prefWidth="191.0" promptText="Nombre del departamento" focusTraversable="false" visible="false"/>
-        <PasswordField fx:id="passDepID" layoutX="106.0" layoutY="116.0" prefHeight="26.0" prefWidth="191.0" promptText="Contraseña" focusTraversable="false" visible="false"/>
-        <Button fx:id="registrarDepID" layoutX="164.0" layoutY="168.0" mnemonicParsing="false" onAction="#registrarDepOnAction" text="Registrar" focusTraversable="false" visible="false"/>
+        <TextField fx:id="nombreDepID" focusTraversable="false" layoutX="107.0" layoutY="69.0" prefHeight="26.0" prefWidth="191.0" promptText="Nombre del departamento" visible="false" />
+        <PasswordField fx:id="passDepID" focusTraversable="false" layoutX="106.0" layoutY="116.0" prefHeight="26.0" prefWidth="191.0" promptText="Contraseña" visible="false" />
+        <Button fx:id="registrarDepID" focusTraversable="false" layoutX="164.0" layoutY="168.0" mnemonicParsing="false" onAction="#registrarDepOnAction" text="Registrar" visible="false" />
+      <TextField fx:id="claveDepID" focusTraversable="false" layoutX="308.0" layoutY="69.0" prefHeight="26.0" prefWidth="124.0" promptText="Clave" visible="false" />
+      <Button fx:id="buscarClaveDep" focusTraversable="false" layoutX="338.0" layoutY="123.0" mnemonicParsing="false" onAction="#buscarDepOnAction" text="Buscar" visible="false" />
+      <TextField fx:id="actNombreDep" focusTraversable="false" layoutX="69.0" layoutY="70.0" promptText="Nombre" visible="false" />
+      <Button fx:id="actDep" focusTraversable="false" layoutX="115.0" layoutY="123.0" mnemonicParsing="false" onAction="#actDepOnAction" text="Actualizar" visible="false" />
+      <TextField fx:id="borrarClaveDepID" layoutX="91.0" layoutY="71.0" promptText="Clave de departamento" focusTraversable="false" visible="false"/>
+      <PasswordField fx:id="passBorrarDepID" layoutX="91.0" layoutY="119.0" prefHeight="26.0" prefWidth="171.0" promptText="Contraseña" focusTraversable="false" visible="false" />
+      <Button fx:id="borrarDepID" layoutX="147.0" layoutY="174.0" mnemonicParsing="false" onAction="#borrarDep" text="Borrar" focusTraversable="false" visible="false"/>
     </children>
 </AnchorPane>

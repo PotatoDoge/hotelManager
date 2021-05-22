@@ -3,6 +3,7 @@ package Controllers;
 import Tools.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -21,10 +22,27 @@ public class MainMenuManagerController implements Initializable {
     private final Window wn = new Window();
     private final ConTool c = new ConTool();
     private final User user = new User();
-    public TextField nombreDepID;
-    public PasswordField passDepID;
-    public Button registrarDepID;
 
+    @FXML
+    private TextField borrarClaveDepID;
+    @FXML
+    private PasswordField passBorrarDepID;
+    @FXML
+    private Button borrarDepID;
+    @FXML
+    private TextField nombreDepID;
+    @FXML
+    private PasswordField passDepID;
+    @FXML
+    private Button registrarDepID;
+    @FXML
+    private TextField claveDepID;
+    @FXML
+    private Button buscarClaveDep;
+    @FXML
+    private TextField actNombreDep;
+    @FXML
+    private Button actDep;
     @FXML
     private TableColumn <TableHuespedActivo,String> cuartoActivo;
     @FXML
@@ -701,6 +719,100 @@ public class MainMenuManagerController implements Initializable {
         }
     }
 
+    /**
+     * Método que desbloquea los filtros para editar el departamento
+     */
+    public void editarDepartamento() {
+        esconderElementosEnPantalla();
+        claveDepID.setVisible(true);
+        buscarClaveDep.setVisible(true);
+        nombreDepID.setVisible(true);
+        actDep.setVisible(true);
+    }
+
+    /**
+     * Método que busca (al presionar el botón buscar) el departamento a editar
+     * @throws SQLException exception
+     */
+    public void buscarDepOnAction()  throws  SQLException{
+        if(!claveDepID.getText().isEmpty()){
+            if(checarClaveDepartamento(claveDepID.getText())){
+                c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
+                c.setStmt(c.getConn().createStatement());
+                String SQL = "SELECT * from departamento where codigoDepartamento='"+claveDepID.getText()+"'";
+                c.setPst(c.getConn().prepareStatement(SQL));
+                ResultSet rst = c.getPst().executeQuery();
+                while(rst.next()){
+                    nombreDepID.setText(rst.getString("nombre"));
+                }
+                c.getConn().close();
+            }
+            else{
+                wn.popUpMessage("No existe departamento","Ingrese una clave valida.");
+            }
+        }
+        else{
+            wn.popUpMessage("Ingresar clave","Por favor ingrese una clave para\npoder seguir con la búsqueda.");
+        }
+    }
+
+    /**
+     * Método que actualiza los datos del departamento encontrado
+     * @throws SQLException exception
+     */
+    public void actDepOnAction() throws SQLException {
+        if(nombreDepID.getText().isEmpty() || !checarClaveDepartamento(claveDepID.getText())){
+            wn.popUpMessage("Error","Asegúrese que el nombre no esté vacío,\ny que la clave sea correcta y no esté vacía.");
+        }
+        else{
+            c.setStmt(c.getConn().createStatement());
+            String SQL = "UPDATE departamento set nombre='"+nombreDepID.getText()+"' where codigoDepartamento='"+claveDepID.getText()+"'";
+            c.getStmt().executeUpdate(SQL);
+            c.getConn().close();
+            claveDepID.clear();
+            nombreDepID.clear();
+        }
+    }
+
+    /**
+     * Método que desbloquea los campos para borrar un departamento
+     */
+    public void borrarDepartamento() {
+        esconderElementosEnPantalla();
+        borrarClaveDepID.setVisible(true);
+        passBorrarDepID.setVisible(true);
+        borrarDepID.setVisible(true);
+    }
+
+    /**
+     * Método que borra un departamento de la base de datos
+     */
+    public void borrarDep() throws SQLException {
+        if(!borrarClaveDepID.getText().isEmpty() || !passBorrarDepID.getText().isEmpty()){
+            if(checarClaveDepartamento(borrarClaveDepID.getText()) && passBorrarDepID.getText().equals(user.getPassword())){
+                try{
+                    c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
+                    String SQL = "DELETE FROM departamento where codigoDepartamento='"+borrarClaveDepID.getText()+"'";
+                    c.getStmt().executeUpdate(SQL);
+                    c.getConn().close();
+                    borrarClaveDepID.clear();
+                    passBorrarDepID.clear();
+                    wn.popUpMessage("Éxito","El departamento fue borrado con éxito");
+
+                }
+                catch (Exception e){
+                    System.out.println(e);
+                }
+            }
+            else{
+                wn.popUpMessage("Clave no válida","La clave ingresada no existe en\nla base de datos o la contraseña\nno es válida.");
+            }
+        }
+        else{
+            wn.popUpMessage("Llenar campos","Llenar todos los campos para poder\ncontinuar con el proceso");
+        }
+    }
+
     // ************************************************************************************//
     // <!--------------------------FUNCIONES QUE HACEN QUERIES--------------------------!> //
     // ************************************************************************************//
@@ -879,6 +991,26 @@ public class MainMenuManagerController implements Initializable {
         return nc + 1;
     }
 
+    /**
+     * Checar si la clave ingresada existe
+     * @param clave clave de departamento
+     * @return true if exists, else false
+     */
+    public boolean checarClaveDepartamento(String clave) throws SQLException{
+        c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
+        c.setStmt(c.getConn().createStatement());
+        String SQL = "SELECT codigoDepartamento from departamento";
+        c.setPst(c.getConn().prepareStatement(SQL));
+        ResultSet rs = c.getPst().executeQuery();
+        while (rs.next()) {
+            if (clave.equals(rs.getString("codigoDepartamento"))) {
+                return true;
+            }
+        }
+        return false;
+
+    }
+
     // ****************************************************************************//
     // <!--------------------------FUNCIONES DE AYUDA--------------------------!> //
     // ***************************************************************************//
@@ -994,6 +1126,17 @@ public class MainMenuManagerController implements Initializable {
         passDepID.setVisible(false);
         passDepID.clear();
         registrarDepID.setVisible(false);
+        claveDepID.setVisible(false);
+        claveDepID.clear();
+        buscarClaveDep.setVisible(false);
+        actNombreDep.setVisible(false);
+        actNombreDep.clear();
+        actDep.setVisible(false);
+        borrarClaveDepID.setVisible(false);
+        borrarClaveDepID.clear();
+        passBorrarDepID.setVisible(false);
+        passBorrarDepID.clear();
+        borrarDepID.setVisible(false);
     }
 
 }
