@@ -3,6 +3,7 @@ package Controllers;
 import Tools.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -22,6 +23,28 @@ public class MainMenuManagerController implements Initializable {
     private final ConTool c = new ConTool();
     private final User user = new User();
 
+    @FXML
+    private ComboBox <String>filtroTableAreas;
+    @FXML
+    private Button buscarTableAreas;
+    @FXML
+    private TableView <TableAreas> tableAreas;
+    @FXML
+    private TableColumn <TableAreas,String> claveTableAreas;
+    @FXML
+    private TableColumn <TableAreas,String> tipoTableAreas;
+    @FXML
+    private TableColumn <TableAreas,Integer> personalTableAreas;
+    @FXML
+    private TableColumn <TableAreas,String> nombreTableAreas;
+    @FXML
+    private Button nuevaAreaButton;
+    @FXML
+    private ComboBox <String> tipoNuevaArea;
+    @FXML
+    private TextField nombreNuevaArea;
+    @FXML
+    private TextField numPersonalArea;
     @FXML
     private Button buscarTableVenta;
     @FXML
@@ -235,6 +258,8 @@ public class MainMenuManagerController implements Initializable {
 
     private final ObservableList<TableVentas> oblist7 = FXCollections.observableArrayList();
 
+    private final ObservableList<TableAreas> oblist8 = FXCollections.observableArrayList();
+
     private final ObservableList<String> filtroHab = FXCollections.observableArrayList("Sencilla", "Doble", "Premium", "Todo");
 
     private final ObservableList<String> capHab = FXCollections.observableArrayList("1", "2", "3", "4", "Todo");
@@ -242,6 +267,10 @@ public class MainMenuManagerController implements Initializable {
     private final ObservableList<String> statusHab = FXCollections.observableArrayList("Disponible", "Ocupada", "Todo");
 
     private final ObservableList<String> filtroVenta = FXCollections.observableArrayList("Empleado","Todo");
+
+    private final ObservableList<String> tipoArea = FXCollections.observableArrayList("Recepción","Limpieza","Recreativa","Almacén","Servicio","Restaurante");
+
+    private final ObservableList<String> tipoTableArea = FXCollections.observableArrayList("Recepción","Limpieza","Recreativa","Almacén","Servicio","Restaurante","Todo");
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -1157,6 +1186,102 @@ public class MainMenuManagerController implements Initializable {
         }
     }
 
+    /**
+     * Método que desbloquea campos para crear una nueva area
+     */
+    public void nuevaArea() {
+        esconderElementosEnPantalla();
+        nombreNuevaArea.setVisible(true);
+        tipoNuevaArea.setVisible(true);
+        tipoNuevaArea.setItems(tipoArea);
+        numPersonalArea.setVisible(true);
+        nuevaAreaButton.setVisible(true);
+    }
+
+    public void editarArea() {
+    }
+
+    public void borrarArea() {
+    }
+
+    /**
+     * Método que regitra el area nueva en la base de datos
+     */
+    public void nuevaAreaOnAction() {
+        if(!nombreNuevaArea.getText().isEmpty() || tipoNuevaArea.getValue() != null || !numPersonalArea.getText().isEmpty()){
+            try{
+                c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
+                c.setStmt(c.getConn().createStatement());
+                int nA = generarNumeroArea();
+                String claveArea = "AR_"+nA;
+                String SQL = "INSERT INTO area (codigoArea,tipo,capacidad,nombre,numArea) values('"+claveArea+"','"+tipoNuevaArea.getValue()+"',"+ Integer.valueOf(numPersonalArea.getText())+
+                              ",'"+nombreNuevaArea.getText()+"',"+nA+")";
+                c.getStmt().executeUpdate(SQL);
+                wn.popUpMessage("Exito","El area fue creada de manera correcta");
+                nombreNuevaArea.clear();
+                tipoNuevaArea.setValue(null);
+                numPersonalArea.clear();
+            }
+            catch (Exception e){
+                System.out.println(e);
+            }
+        }
+        else{
+            wn.popUpMessage("Llenar campos","Todos los campos deben de estar llenos para\ncontinuar con el registro.");
+        }
+    }
+
+    /**
+     * Método que desbloquea campos para ver tabla de areas
+     */
+    public void mostrarAreas() {
+        esconderElementosEnPantalla();
+        oblist8.clear();
+        tableAreas.setVisible(true);
+        tableAreas.getItems().clear();
+        filtroTableAreas.setVisible(true);
+        buscarTableAreas.setVisible(true);
+        filtroTableAreas.setItems(tipoTableArea);
+    }
+
+    /**
+     * Método que llena la tabla de areas
+     */
+    public void buscarTableAreasOnAction() {
+        tableAreas.getItems().clear();
+        String sql = "";
+        if(filtroTableAreas.getValue() != null){
+            if(filtroTableAreas.getValue().equals("Todo")){
+                sql = "SELECT * FROM area";
+            }
+            else{
+                sql = "SELECT * FROM area where tipo='"+filtroTableAreas.getValue()+"'";
+            }
+            try {
+                c.setConn(DriverManager.getConnection(c.getDB_URL(), c.getUSER(), c.getPASS()));
+                c.setStmt(c.getConn().createStatement());
+
+                c.setPst(c.getConn().prepareStatement(sql));
+                ResultSet rst = c.getPst().executeQuery();
+                while (rst.next()) {
+                    oblist8.add(new TableAreas(rst.getString("codigoArea"),rst.getString("tipo"),rst.getInt("capacidad"),rst.getString("nombre")));
+                }
+                c.getConn().close();
+            } catch (Exception e) {
+                System.out.println(e);
+            }
+            claveTableAreas.setCellValueFactory(new PropertyValueFactory<>("clave"));
+            nombreTableAreas.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+            personalTableAreas.setCellValueFactory(new PropertyValueFactory<>("personal"));
+            tipoTableAreas.setCellValueFactory(new PropertyValueFactory<>("tipo"));
+            tableAreas.setItems(oblist8);
+            filtroTableAreas.setValue(null);
+        }
+        else{
+            wn.popUpMessage("Error","Seleccione un filtro para poder seguir\ncon la búsqueda");
+        }
+    }
+
     // ************************************************************************************//
     // <!--------------------------FUNCIONES QUE HACEN QUERIES--------------------------!> //
     // ************************************************************************************//
@@ -1393,6 +1518,24 @@ public class MainMenuManagerController implements Initializable {
         return false;
     }
 
+    /**
+     * Método que busca el último numero de area registrado y regresa el siguiente número
+     * @return n = numero de area nueva
+     * @throws SQLException exception
+     */
+    public int generarNumeroArea() throws SQLException{
+        int nc = 0;
+        c.setConn(DriverManager.getConnection(c.getDB_URL(), c.getUSER(), c.getPASS()));
+        c.setStmt(c.getConn().createStatement());
+        String sql = "SELECT numArea FROM area";
+        c.setPst(c.getConn().prepareStatement(sql));
+        ResultSet rst = c.getPst().executeQuery();
+        while (rst.next()) {
+            nc = rst.getInt("numArea");
+        }
+        return nc + 1;
+    }
+
     // ****************************************************************************//
     // <!--------------------------FUNCIONES DE AYUDA--------------------------!> //
     // ***************************************************************************//
@@ -1557,6 +1700,17 @@ public class MainMenuManagerController implements Initializable {
         claveEmpleadoTableVenta.clear();
         filtroVentaComboBox.setVisible(false);
         filtroVentaComboBox.setValue(null);
+        nombreNuevaArea.setVisible(false);
+        nombreNuevaArea.clear();
+        tipoNuevaArea.setVisible(false);
+        tipoNuevaArea.setValue(null);
+        numPersonalArea.setVisible(false);
+        numPersonalArea.clear();
+        nuevaAreaButton.setVisible(false);
+        tableAreas.setVisible(false);
+        filtroTableAreas.setVisible(false);
+        filtroTableAreas.setValue(null);
+        buscarTableAreas.setVisible(false);
     }
 }
 
