@@ -66,7 +66,7 @@
                 <Menu mnemonicParsing="false" text="Mostrar">
                     <items>
                         <MenuItem mnemonicParsing="false" onAction="#mostrarTablaDep" text="Departamentos" />
-                  <MenuItem mnemonicParsing="false" text="Empleados" />
+                        <MenuItem mnemonicParsing="false" onAction="#mostrarTablaEmp" text="Empleados" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Salir">
@@ -169,11 +169,20 @@
         <Button fx:id="buscarEmpleadoButton" focusTraversable="false" layoutX="535.0" layoutY="140.0" mnemonicParsing="false" onAction="#buscarEmpleadoOnAction" text="Buscar" visible="false" />
         <Button fx:id="actualizarEmpleadoButtonID" focusTraversable="false" layoutX="526.0" layoutY="268.0" mnemonicParsing="false" onAction="#actualizarEmpleadoOnAction" text="Actualizar" visible="false" />
         <PasswordField fx:id="passUserEditarID" focusTraversable="false" layoutX="483.0" layoutY="218.0" promptText="Contraseña" visible="false" />
-      <TableView fx:id="tablaDep" layoutX="153.0" layoutY="61.0" prefHeight="382.0" prefWidth="558.0" visible="false" focusTraversable="false">
+        <TableView fx:id="tablaDep" focusTraversable="false" layoutX="153.0" layoutY="61.0" prefHeight="382.0" prefWidth="558.0" visible="false">
+            <columns>
+                <TableColumn fx:id="codigoTablaDep" prefWidth="162.0" text="Codigo" />
+                <TableColumn fx:id="nombreTablaDep" prefWidth="219.0" text="Nombre" />
+                <TableColumn fx:id="empleadosTablaDep" prefWidth="176.0" text="Empleados" />
+            </columns>
+        </TableView>
+      <TableView fx:id="tablaEmp" layoutX="109.0" layoutY="65.0" prefHeight="374.0" prefWidth="646.0">
         <columns>
-          <TableColumn fx:id="codigoTablaDep" prefWidth="162.0" text="Codigo" />
-          <TableColumn fx:id="nombreTablaDep" prefWidth="219.0" text="Nombre" />
-            <TableColumn fx:id="empleadosTablaDep" prefWidth="176.0" text="Empleados" />
+          <TableColumn fx:id="codigoTablaEmp" prefWidth="102.0" text="Codigo" />
+          <TableColumn fx:id="nombreTablaEmp" prefWidth="119.0" text="Nombre" />
+            <TableColumn fx:id="telefonoTablaEmp" prefWidth="109.0" text="Telefono" />
+            <TableColumn fx:id="direccionTablaEmp" prefWidth="160.0" text="Direccion" />
+            <TableColumn fx:id="passwordTablaEmp" prefWidth="155.0" text="Password" />
         </columns>
       </TableView>
     </children>

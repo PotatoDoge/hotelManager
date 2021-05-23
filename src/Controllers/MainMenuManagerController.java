@@ -25,6 +25,18 @@ public class MainMenuManagerController implements Initializable {
     private final User user = new User();
 
     @FXML
+    private TableColumn <TableEmpleado,String>codigoTablaEmp;
+    @FXML
+    private TableColumn <TableEmpleado,String>nombreTablaEmp;
+    @FXML
+    private TableColumn <TableEmpleado,String>telefonoTablaEmp;
+    @FXML
+    private TableColumn <TableEmpleado,String>direccionTablaEmp;
+    @FXML
+    private TableColumn <TableEmpleado,String>passwordTablaEmp;
+    @FXML
+    private TableView <TableEmpleado> tablaEmp;
+    @FXML
     private TableView <TablaDepartamento> tablaDep;
     @FXML
     private TableColumn <TablaDepartamento,String> codigoTablaDep;
@@ -207,6 +219,8 @@ public class MainMenuManagerController implements Initializable {
     private final ObservableList<TableHuespedActivo> oblist4 = FXCollections.observableArrayList();
 
     private final ObservableList<TablaDepartamento> oblist5 = FXCollections.observableArrayList();
+
+    private final ObservableList<TableEmpleado> oblist6 = FXCollections.observableArrayList();
 
     private final ObservableList<String> tipoHab = FXCollections.observableArrayList("Sencilla", "Doble", "Premium"); // corregir esto
 
@@ -1058,6 +1072,36 @@ public class MainMenuManagerController implements Initializable {
         tablaDep.setItems(oblist5);
     }
 
+    /**
+     * Método que muestra la tabla de empleados
+     */
+    public void mostrarTablaEmp() {
+        oblist6.clear();
+        esconderElementosEnPantalla();
+        tablaEmp.getItems().clear();
+        tablaEmp.setVisible(true);
+        try {
+            c.setConn(DriverManager.getConnection(c.getDB_URL(), c.getUSER(), c.getPASS()));
+            c.setStmt(c.getConn().createStatement());
+            String sql = "SELECT * FROM empleado ";
+            c.setPst(c.getConn().prepareStatement(sql));
+            ResultSet rst = c.getPst().executeQuery();
+            while (rst.next()) {
+                oblist6.add(new TableEmpleado(rst.getString("codigoEmpleado"),rst.getString("nombre"),rst.getString("telefono"),rst.getString("direccion"),
+                            rst.getString("password")));
+            }
+            c.getConn().close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        codigoTablaEmp.setCellValueFactory(new PropertyValueFactory<>("codigo"));
+        nombreTablaEmp.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+        telefonoTablaEmp.setCellValueFactory(new PropertyValueFactory<>("telefono"));
+        direccionTablaEmp.setCellValueFactory(new PropertyValueFactory<>("direccion"));
+        passwordTablaEmp.setCellValueFactory(new PropertyValueFactory<>("password"));
+        tablaEmp.setItems(oblist6);
+    }
+
     // ************************************************************************************//
     // <!--------------------------FUNCIONES QUE HACEN QUERIES--------------------------!> //
     // ************************************************************************************//
@@ -1451,8 +1495,8 @@ public class MainMenuManagerController implements Initializable {
         passUserEditarID.clear();
         actualizarEmpleadoButtonID.setVisible(false);
         tablaDep.setVisible(false);
+        tablaEmp.setVisible(false);
     }
-
 }
 
 
