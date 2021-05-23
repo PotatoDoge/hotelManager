@@ -211,8 +211,14 @@
       </TableView>
       <ComboBox fx:id="filtroTableAreas" focusTraversable="false" layoutX="709.0" layoutY="160.0" prefWidth="150.0" visible="false" />
       <Button fx:id="buscarTableAreas" focusTraversable="false" layoutX="756.0" layoutY="217.0" mnemonicParsing="false" onAction="#buscarTableAreasOnAction" text="Buscar" visible="false" />
-      <TextField fx:id="claveBorrarArea" layoutX="101.0" layoutY="69.0" promptText="Clave de Area" />
-      <PasswordField fx:id="passBorrarArea" layoutX="101.0" layoutY="119.0" promptText="Contraseña" />
-      <Button fx:id="borrarAreaButton" layoutX="160.0" layoutY="176.0" mnemonicParsing="false" onAction="#borrarAreaOnAction" text="Borrar" />
+      <TextField fx:id="claveBorrarArea" focusTraversable="false" layoutX="101.0" layoutY="69.0" promptText="Clave de Area" visible="false" />
+      <PasswordField fx:id="passBorrarArea" focusTraversable="false" layoutX="101.0" layoutY="119.0" promptText="Contraseña" visible="false" />
+      <Button fx:id="borrarAreaButton" focusTraversable="false" layoutX="160.0" layoutY="176.0" mnemonicParsing="false" onAction="#borrarAreaOnAction" text="Borrar" visible="false" />
+        <ComboBox fx:id="tipoEditarArea" focusTraversable="false" layoutX="101.0" layoutY="123.0" prefWidth="150.0" promptText="TIpo" visible="false" />
+        <TextField fx:id="nombreEditarArea" focusTraversable="false" layoutX="101.0" layoutY="68.0" prefHeight="26.0" prefWidth="150.0" promptText="Nombre" visible="false" />
+        <TextField fx:id="numPersonalEditarArea" focusTraversable="false" layoutX="101.0" layoutY="181.0" prefHeight="26.0" prefWidth="150.0" promptText="Número de Personal" visible="false" />
+      <Button fx:id="buscarEditarAreaButton" layoutX="417.0" layoutY="115.0" mnemonicParsing="false" onAction="#buscarEditarAreaOnAction" text="Buscar" visible="false" focusTraversable="false"/>
+      <TextField fx:id="buscarClaveEditarArea" layoutX="363.0" layoutY="67.0" promptText="Clave del area" visible="false" focusTraversable="false"/>
+      <Button fx:id="actualizarAreaButton" layoutX="133.0" layoutY="236.0" mnemonicParsing="false" onAction="#actualizarAreaOnAction" text="Actualizar" visible="false" focusTraversable="false"/>
     </children>
 </AnchorPane>

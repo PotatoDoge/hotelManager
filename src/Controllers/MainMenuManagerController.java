@@ -23,6 +23,18 @@ public class MainMenuManagerController implements Initializable {
     private final User user = new User();
 
     @FXML
+    private ComboBox <String>tipoEditarArea;
+    @FXML
+    private TextField nombreEditarArea;
+    @FXML
+    private TextField numPersonalEditarArea;
+    @FXML
+    private Button buscarEditarAreaButton;
+    @FXML
+    private TextField buscarClaveEditarArea;
+    @FXML
+    private Button actualizarAreaButton;
+    @FXML
     private TextField claveBorrarArea;
     @FXML
     private PasswordField passBorrarArea;
@@ -1208,7 +1220,18 @@ public class MainMenuManagerController implements Initializable {
         nuevaAreaButton.setVisible(true);
     }
 
+    /**
+     * Método que se encarga de desbloquear campos para editar un area
+     */
     public void editarArea() {
+        esconderElementosEnPantalla();
+        buscarEditarAreaButton.setVisible(true);
+        buscarClaveEditarArea.setVisible(true);
+        nombreEditarArea.setVisible(true);
+        tipoEditarArea.setVisible(true);
+        tipoEditarArea.setItems(tipoArea);
+        numPersonalEditarArea.setVisible(true);
+        actualizarAreaButton.setVisible(true);
     }
 
     /**
@@ -1249,7 +1272,61 @@ public class MainMenuManagerController implements Initializable {
     }
 
     /**
+     * Método que busca si existe el area, y si sí, llena los campos a editar
+     */
+    public void buscarEditarAreaOnAction() throws SQLException {
+        if(buscarClaveEditarArea.getText().isEmpty()){
+            wn.popUpMessage("Error","Ingrese una clave para realizar la búsqueda");
+        }
+        else{
+            if(checarClaveArea(buscarClaveEditarArea.getText())){
+                try{
+                    c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
+                    c.setStmt(c.getConn().createStatement());
+                    String SQL = "SELECT * FROM area where codigoArea='"+buscarClaveEditarArea.getText()+"'";
+                    ResultSet rst = c.getStmt().executeQuery(SQL);
+                    while(rst.next()){
+                        nombreEditarArea.setText(rst.getString("nombre"));
+                        tipoEditarArea.setValue(rst.getString("tipo"));
+                        numPersonalEditarArea.setText(String.valueOf(rst.getInt("capacidad")));
+                    }
+                    c.getConn().close();
+                }
+                catch (Exception e){
+                    System.out.println(e);
+                }
+            }
+            else{
+                wn.popUpMessage("No existe","No existe area con esa clave.");
+            }
+        }
+    }
+
+    /**
+     * Método que actualiza los valores del area
+     */
+    public void actualizarAreaOnAction() throws  SQLException {
+        if(checarClaveArea(buscarClaveEditarArea.getText())){
+            c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
+            c.setStmt(c.getConn().createStatement());
+            String SQL = "UPDATE area set nombre='"+nombreEditarArea.getText()+"', tipo='"+tipoEditarArea.getValue()
+                    +"', capacidad="+numPersonalEditarArea.getText() + " where " +
+                    "codigoArea='"+ buscarClaveEditarArea.getText()+"'";
+            c.getStmt().executeUpdate(SQL);
+            wn.popUpMessage("Éxito","Los datos fueron actualizados con éxito");
+            nombreEditarArea.clear();
+            buscarClaveEditarArea.clear();
+            numPersonalEditarArea.clear();
+            tipoEditarArea.setValue(null);
+        }
+        else{
+            wn.popUpMessage("Clave no válida","La clave de area ingresada no es válida");
+        }
+    }
+
+    /**
      * Método que borra el area deseada de la base de datos
+     *
      */
     public void borrarAreaOnAction() {
         if(passBorrarArea.getText().isEmpty() || claveBorrarArea.getText().isEmpty()){
@@ -1329,6 +1406,8 @@ public class MainMenuManagerController implements Initializable {
             wn.popUpMessage("Error","Seleccione un filtro para poder seguir\ncon la búsqueda");
         }
     }
+
+
 
     // ************************************************************************************//
     // <!--------------------------FUNCIONES QUE HACEN QUERIES--------------------------!> //
@@ -1584,6 +1663,26 @@ public class MainMenuManagerController implements Initializable {
         return nc + 1;
     }
 
+    /**
+     * Método que checa si existe la clave area ingresada
+     * @param clave clave del area
+     * @return true si existe, else false
+     * @throws SQLException exception
+     */
+    public boolean checarClaveArea(String clave) throws  SQLException{
+        c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
+        c.setStmt(c.getConn().createStatement());
+        String SQL = "SELECT codigoArea from area";
+        c.setPst(c.getConn().prepareStatement(SQL));
+        ResultSet rs = c.getPst().executeQuery();
+        while (rs.next()) {
+            if (clave.equals(rs.getString("codigoArea"))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     // ****************************************************************************//
     // <!--------------------------FUNCIONES DE AYUDA--------------------------!> //
     // ***************************************************************************//
@@ -1764,6 +1863,16 @@ public class MainMenuManagerController implements Initializable {
         passBorrarArea.clear();
         claveBorrarArea.setVisible(false);
         claveBorrarArea.clear();
+        buscarEditarAreaButton.setVisible(false);
+        buscarClaveEditarArea.setVisible(false);
+        buscarClaveEditarArea.clear();
+        nombreEditarArea.setVisible(false);
+        nombreEditarArea.clear();
+        tipoEditarArea.setVisible(false);
+        tipoEditarArea.setValue(null);
+        numPersonalEditarArea.setVisible(false);
+        numPersonalEditarArea.clear();
+        actualizarAreaButton.setVisible(false);
     }
 }
 
