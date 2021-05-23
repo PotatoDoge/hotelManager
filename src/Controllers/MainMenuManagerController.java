@@ -10,6 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 
+import javax.xml.soap.Text;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.DriverManager;
@@ -22,6 +23,41 @@ public class MainMenuManagerController implements Initializable {
     private final Window wn = new Window();
     private final ConTool c = new ConTool();
     private final User user = new User();
+
+    @FXML
+    private Button actualizarEmpleadoButtonID;
+    @FXML
+    private PasswordField passUserEditarID;
+    @FXML
+    private TextField nombreEmpleadoEditarID;
+    @FXML
+    private TextField telefonoEmpleadoEditarID;
+    @FXML
+    private TextArea direccionEmpleadoEditarID;
+    @FXML
+    private PasswordField passEmpleadoEditarID;
+    @FXML
+    private TextField claveEditarEmpleadoID;
+    @FXML
+    private Button buscarEmpleadoButton;
+    @FXML
+    private TextField borrarEmpleadoID;
+    @FXML
+    private PasswordField passUserBorrarEmpleadoID;
+    @FXML
+    private Button borrarEmpleadoButtonID;
+    @FXML
+    private TextField nombreEmpleadoCrearID;
+    @FXML
+    private TextArea direccionEmpleadoCrearID;
+    @FXML
+    private TextField telefonoEmpleadoCrearID;
+    @FXML
+    private PasswordField passEmpleadoCrearID;
+    @FXML
+    private PasswordField passUserCrearEmpleadoID;
+    @FXML
+    private Button crearEmpleadoButton;
 
     @FXML
     private TextField borrarClaveDepID;
@@ -792,6 +828,7 @@ public class MainMenuManagerController implements Initializable {
             if(checarClaveDepartamento(borrarClaveDepID.getText()) && passBorrarDepID.getText().equals(user.getPassword())){
                 try{
                     c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
+                    c.setStmt(c.getConn().createStatement());
                     String SQL = "DELETE FROM departamento where codigoDepartamento='"+borrarClaveDepID.getText()+"'";
                     c.getStmt().executeUpdate(SQL);
                     c.getConn().close();
@@ -810,6 +847,176 @@ public class MainMenuManagerController implements Initializable {
         }
         else{
             wn.popUpMessage("Llenar campos","Llenar todos los campos para poder\ncontinuar con el proceso");
+        }
+    }
+
+    /**
+     * Método que desbloquea los campos para poder dar de alta un empleado
+     */
+    public void nuevoEmpleado() {
+        esconderElementosEnPantalla();
+        nombreEmpleadoCrearID.setVisible(true);
+        telefonoEmpleadoCrearID.setVisible(true);
+        direccionEmpleadoCrearID.setVisible(true);
+        passEmpleadoCrearID.setVisible(true);
+        passUserCrearEmpleadoID.setVisible(true);
+        crearEmpleadoButton.setVisible(true);
+    }
+
+    /**
+     * Método que desbloquea campos para poder borrar un empleado
+     */
+    public void borrarEmpleado() {
+        esconderElementosEnPantalla();
+        borrarEmpleadoID.setVisible(true);
+        passUserBorrarEmpleadoID.setVisible(true);
+        borrarEmpleadoButtonID.setVisible(true);
+    }
+
+    /**
+     * Método que desbloquea los campos para poder editar los campos de un empleado
+     */
+    public void editarEmpleado() {
+        esconderElementosEnPantalla();
+        nombreEmpleadoEditarID.setVisible(true);
+        telefonoEmpleadoEditarID.setVisible(true);
+        direccionEmpleadoEditarID.setVisible(true);
+        passEmpleadoEditarID.setVisible(true);
+        claveEditarEmpleadoID.setVisible(true);
+        buscarEmpleadoButton.setVisible(true);
+        passUserEditarID.setVisible(true);
+        actualizarEmpleadoButtonID.setVisible(true);
+    }
+
+    /**
+     * Método que se encarga de registrar al empleado en la base de datos
+     */
+    public void crearEmpleadoOnAction() {
+        if(nombreEmpleadoCrearID.getText().isEmpty() || telefonoEmpleadoCrearID.getText().isEmpty() || direccionEmpleadoCrearID.getText().isEmpty() ||
+           passEmpleadoCrearID.getText().isEmpty() || passUserCrearEmpleadoID.getText().isEmpty()){
+            wn.popUpMessage("Llenar campos","Checar que todos los campos estén llenos");
+        }
+        else{
+            if(passUserCrearEmpleadoID.getText().equals(user.getPassword())){
+                try{
+                    c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
+                    c.setStmt(c.getConn().createStatement());
+                    int numEmp = generarNumeroEmpleado();
+                    String codEmp = "EMP_" + numEmp;
+                    String SQL = "INSERT INTO empleado (codigoEmpleado,nombre,telefono, direccion,password,numEmpleado) values('"+codEmp+"','"+nombreEmpleadoCrearID.getText()+"','"+telefonoEmpleadoCrearID.getText()
+                                  +"','"+direccionEmpleadoCrearID.getText()+"','"+passEmpleadoCrearID.getText()+"',"+numEmp+")";
+                    c.getStmt().execute(SQL);
+                    c.getConn().close();
+                    wn.popUpMessage("Registro exitoso","Se creo el empleado: " + codEmp + "\nCon la contraseña: " + passEmpleadoCrearID.getText());
+                    nombreEmpleadoCrearID.clear();
+                    telefonoEmpleadoCrearID.clear();
+                    direccionEmpleadoCrearID.clear();
+                    passEmpleadoCrearID.clear();
+                    passUserCrearEmpleadoID.clear();
+                }
+                catch (Exception e){
+                    System.out.println(e);
+                }
+            }
+            else{
+                wn.popUpMessage("Contraseña incorrecta","La contraseña del gerente\nno es correcta.");
+            }
+        }
+    }
+
+    /**
+     * Método que se encarga de borrar al empleado de la base de datos
+     */
+    public void borrarEmpleadoOnAction() throws SQLException {
+        if(borrarEmpleadoID.getText().isEmpty() || passUserBorrarEmpleadoID.getText().isEmpty()){
+            wn.popUpMessage("Llenar campos","Checar que todos los campos estén llenos");
+        }
+        else{
+            if(passUserBorrarEmpleadoID.getText().equals(user.getPassword()) && checarClaveEmpleado(borrarEmpleadoID.getText())){
+                try{
+                    c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
+                    c.setStmt(c.getConn().createStatement());
+                    String SQL = "DELETE FROM empleado where codigoEmpleado='"+borrarEmpleadoID.getText()+"'";
+                    c.getStmt().executeUpdate(SQL);
+                    c.getConn().close();
+                    wn.popUpMessage("Listo","El empleado fue dado de baja con éxito");
+                    borrarEmpleadoID.clear();
+                    passUserBorrarEmpleadoID.clear();
+                }
+                catch (Exception e){
+                    System.out.println(e);
+                }
+            }
+            else{
+                wn.popUpMessage("Clave no válida","La clave ingresada no existe en\nla base de datos o la contraseña\nno es válida.");
+            }
+        }
+    }
+
+    /**
+     * Método que busca al empleado para llenar campos a editar
+     */
+    public void buscarEmpleadoOnAction() throws SQLException {
+        if(claveEditarEmpleadoID.getText().isEmpty()){
+            wn.popUpMessage("Ingresar clave","Por favor ingresar una clave\na editar.");
+        }
+        else{
+            if(checarClaveEmpleado(claveEditarEmpleadoID.getText())){
+                try{
+                    c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
+                    c.setStmt(c.getConn().createStatement());
+                    String SQL = "SELECT * FROM empleado where codigoEmpleado='"+claveEditarEmpleadoID.getText()+"'";
+                    ResultSet rst = c.getStmt().executeQuery(SQL);
+                    while(rst.next()){
+                        nombreEmpleadoEditarID.setText(rst.getString("nombre"));
+                        telefonoEmpleadoEditarID.setText(rst.getString("telefono"));
+                        direccionEmpleadoEditarID.setText(rst.getString("direccion"));
+                        passEmpleadoEditarID.setText(rst.getString("password"));
+                    }
+                    c.getConn().close();
+                }
+                catch (Exception e){
+                    System.out.println(e);
+                }
+            }
+            else{
+                wn.popUpMessage("Clave no válida","No existe empleado con esa clave");
+            }
+        }
+    }
+
+    /**
+     * Método que actualiza los datos del empleado en la BD
+     */
+    public void actualizarEmpleadoOnAction() {
+        if(nombreEmpleadoEditarID.getText().isEmpty() || telefonoEmpleadoEditarID.getText().isEmpty() ||
+           direccionEmpleadoEditarID.getText().isEmpty() || passEmpleadoEditarID.getText().isEmpty()){
+            wn.popUpMessage("Llenar campos","Todos los campos deben de estar llenos para poder\ncontinuar");
+        }
+        else{
+            if(passUserEditarID.getText().equals(user.getPassword())){
+                try{
+                    c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
+                    c.setStmt(c.getConn().createStatement());
+                    String SQL = "UPDATE empleado set nombre='"+nombreEmpleadoEditarID.getText()+"', telefono='"+telefonoEmpleadoEditarID.getText()
+                                 +"', direccion='"+direccionEmpleadoEditarID.getText() + "', password='"+passEmpleadoEditarID.getText()+"' where " +
+                                 "codigoEmpleado='"+ claveEditarEmpleadoID.getText()+"'";
+                    c.getStmt().executeUpdate(SQL);
+                    wn.popUpMessage("Éxito","Los datos fueron actualizados con éxito");
+                    nombreEmpleadoEditarID.clear();
+                    telefonoEmpleadoEditarID.clear();
+                    direccionEmpleadoEditarID.clear();
+                    claveClienteReservar.clear();
+                    passEmpleadoEditarID.clear();
+                    passUserEditarID.clear();
+                }
+                catch (Exception e){
+                    System.out.println(e);
+                }
+            }
+            else{
+                wn.popUpMessage("Error","Contraseña no válida. Ingrese una\nque si lo sea.");
+            }
         }
     }
 
@@ -1011,6 +1218,44 @@ public class MainMenuManagerController implements Initializable {
 
     }
 
+    /**
+     * Método que busca el último numero de empleado registrado y regresa el siguiente número
+     * @return n = numero de empleado nuevo
+     * @throws SQLException exception
+     */
+    public int generarNumeroEmpleado() throws SQLException{
+        int nc = 0;
+        c.setConn(DriverManager.getConnection(c.getDB_URL(), c.getUSER(), c.getPASS()));
+        c.setStmt(c.getConn().createStatement());
+        String sql = "SELECT numEmpleado FROM empleado";
+        c.setPst(c.getConn().prepareStatement(sql));
+        ResultSet rst = c.getPst().executeQuery();
+        while (rst.next()) {
+            nc = rst.getInt("numEmpleado");
+        }
+        return nc + 1;
+    }
+
+    /**
+     * Método que checa si existe la clave del empleado
+     * @param clave clave del empleado
+     * @return true si existe, else false
+     * @throws SQLException exception
+     */
+    public boolean checarClaveEmpleado(String clave) throws  SQLException{
+        c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
+        c.setStmt(c.getConn().createStatement());
+        String SQL = "SELECT codigoEmpleado from empleado";
+        c.setPst(c.getConn().prepareStatement(SQL));
+        ResultSet rs = c.getPst().executeQuery();
+        while (rs.next()) {
+            if (clave.equals(rs.getString("codigoEmpleado"))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     // ****************************************************************************//
     // <!--------------------------FUNCIONES DE AYUDA--------------------------!> //
     // ***************************************************************************//
@@ -1137,7 +1382,38 @@ public class MainMenuManagerController implements Initializable {
         passBorrarDepID.setVisible(false);
         passBorrarDepID.clear();
         borrarDepID.setVisible(false);
+        nombreEmpleadoCrearID.setVisible(false);
+        nombreEmpleadoCrearID.clear();
+        telefonoEmpleadoCrearID.setVisible(false);
+        telefonoEmpleadoCrearID.clear();
+        direccionEmpleadoCrearID.setVisible(false);
+        direccionEmpleadoCrearID.clear();
+        passEmpleadoCrearID.setVisible(false);
+        passEmpleadoCrearID.clear();
+        passUserCrearEmpleadoID.setVisible(false);
+        passUserCrearEmpleadoID.clear();
+        crearEmpleadoButton.setVisible(false);
+        borrarEmpleadoID.setVisible(false);
+        borrarEmpleadoID.clear();
+        passUserBorrarEmpleadoID.setVisible(false);
+        passUserBorrarEmpleadoID.clear();
+        borrarEmpleadoButtonID.setVisible(false);
+        nombreEmpleadoEditarID.setVisible(false);
+        nombreEmpleadoEditarID.clear();
+        telefonoEmpleadoEditarID.setVisible(false);
+        telefonoEmpleadoEditarID.clear();
+        direccionEmpleadoEditarID.setVisible(false);
+        direccionEmpleadoEditarID.clear();
+        passEmpleadoEditarID.setVisible(false);
+        passEmpleadoEditarID.clear();
+        claveEditarEmpleadoID.setVisible(false);
+        claveEditarEmpleadoID.clear();
+        buscarEmpleadoButton.setVisible(false);
+        passUserEditarID.setVisible(true);
+        passUserEditarID.clear();
+        actualizarEmpleadoButtonID.setVisible(true);
     }
+
 
 }
 
