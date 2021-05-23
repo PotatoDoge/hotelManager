@@ -9,7 +9,6 @@ import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
-
 import java.io.IOException;
 import java.net.URL;
 import java.sql.DriverManager;
@@ -23,6 +22,12 @@ public class MainMenuManagerController implements Initializable {
     private final ConTool c = new ConTool();
     private final User user = new User();
 
+    @FXML
+    private TextField claveBorrarArea;
+    @FXML
+    private PasswordField passBorrarArea;
+    @FXML
+    private Button borrarAreaButton;
     @FXML
     private ComboBox <String>filtroTableAreas;
     @FXML
@@ -974,8 +979,13 @@ public class MainMenuManagerController implements Initializable {
                 try{
                     c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
                     c.setStmt(c.getConn().createStatement());
+                    String sql = "DELETE FROM empleado_departamento where codigoEmpleado='"+borrarEmpleadoID.getText()+"'";
+                    c.getStmt().executeUpdate(sql);
+                    String sql2 = "DELETE FROM empleado_area where codigoEmpleado='"+borrarEmpleadoID.getText()+"'";
+                    c.getStmt().executeUpdate(sql2);
                     String SQL = "DELETE FROM empleado where codigoEmpleado='"+borrarEmpleadoID.getText()+"'";
                     c.getStmt().executeUpdate(SQL);
+                    // FALTA VER COMO BORRAR DE EMPLEADO RESERVACION SIN QUE BORRE LAS RESERVACIONES HECHAS
                     c.getConn().close();
                     wn.popUpMessage("Listo","El empleado fue dado de baja con éxito");
                     borrarEmpleadoID.clear();
@@ -1201,7 +1211,14 @@ public class MainMenuManagerController implements Initializable {
     public void editarArea() {
     }
 
+    /**
+     * Método que desbloquea campos para borrar un area
+     */
     public void borrarArea() {
+        esconderElementosEnPantalla();
+        borrarAreaButton.setVisible(true);
+        passBorrarArea.setVisible(true);
+        claveBorrarArea.setVisible(true);
     }
 
     /**
@@ -1232,6 +1249,37 @@ public class MainMenuManagerController implements Initializable {
     }
 
     /**
+     * Método que borra el area deseada de la base de datos
+     */
+    public void borrarAreaOnAction() {
+        if(passBorrarArea.getText().isEmpty() || claveBorrarArea.getText().isEmpty()){
+            wn.popUpMessage("Error","Todos los campos deben de estar llenos\npara poder seguir con el proceso.");
+        }
+        else{
+            if(passBorrarArea.getText().equals(user.getPassword())){
+                try{
+                    c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
+                    c.setStmt(c.getConn().createStatement());
+                    String SQL = "DELETE FROM empleado_area where codigoArea='"+claveBorrarArea.getText()+"'";
+                    c.getStmt().executeUpdate(SQL);
+                    String sql = "DELETE FROM area where codigoArea='"+claveBorrarArea.getText()+"'";
+                    c.getStmt().executeUpdate(sql);
+                    c.getConn().close();
+                    wn.popUpMessage("Listo","El area fue dada de baja con éxito");
+                    passBorrarArea.clear();
+                    claveBorrarArea.clear();
+                }
+                catch (Exception e){
+                    System.out.println(e);
+                }
+            }
+            else{
+                wn.popUpMessage("Contrase{a incorrecta","La contraseña ingresada es inválida.\nNo corresponde con el usuario");
+            }
+        }
+    }
+
+    /**
      * Método que desbloquea campos para ver tabla de areas
      */
     public void mostrarAreas() {
@@ -1249,7 +1297,7 @@ public class MainMenuManagerController implements Initializable {
      */
     public void buscarTableAreasOnAction() {
         tableAreas.getItems().clear();
-        String sql = "";
+        String sql;
         if(filtroTableAreas.getValue() != null){
             if(filtroTableAreas.getValue().equals("Todo")){
                 sql = "SELECT * FROM area";
@@ -1711,6 +1759,11 @@ public class MainMenuManagerController implements Initializable {
         filtroTableAreas.setVisible(false);
         filtroTableAreas.setValue(null);
         buscarTableAreas.setVisible(false);
+        borrarAreaButton.setVisible(false);
+        passBorrarArea.setVisible(false);
+        passBorrarArea.clear();
+        claveBorrarArea.setVisible(false);
+        claveBorrarArea.clear();
     }
 }
 
