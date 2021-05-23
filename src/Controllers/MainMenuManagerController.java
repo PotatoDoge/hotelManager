@@ -3,14 +3,12 @@ package Controllers;
 import Tools.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.AnchorPane;
 
-import javax.xml.soap.Text;
 import java.io.IOException;
 import java.net.URL;
 import java.sql.DriverManager;
@@ -24,6 +22,20 @@ public class MainMenuManagerController implements Initializable {
     private final ConTool c = new ConTool();
     private final User user = new User();
 
+    @FXML
+    private Button buscarTableVenta;
+    @FXML
+    private TextField claveEmpleadoTableVenta;
+    @FXML
+    private ComboBox <String> filtroVentaComboBox;
+    @FXML
+    private TableColumn <TableVentas,String> empleadoTableVentas;
+    @FXML
+    private TableColumn <TableVentas,String> reservacionTableVentas;
+    @FXML
+    private TableColumn <TableVentas,Double>precioTableVentas;
+    @FXML
+    private TableView <TableVentas> tableVentas;
     @FXML
     private TableColumn <TableEmpleado,String>codigoTablaEmp;
     @FXML
@@ -78,7 +90,6 @@ public class MainMenuManagerController implements Initializable {
     private PasswordField passUserCrearEmpleadoID;
     @FXML
     private Button crearEmpleadoButton;
-
     @FXML
     private TextField borrarClaveDepID;
     @FXML
@@ -222,13 +233,15 @@ public class MainMenuManagerController implements Initializable {
 
     private final ObservableList<TableEmpleado> oblist6 = FXCollections.observableArrayList();
 
-    private final ObservableList<String> tipoHab = FXCollections.observableArrayList("Sencilla", "Doble", "Premium"); // corregir esto
+    private final ObservableList<TableVentas> oblist7 = FXCollections.observableArrayList();
 
     private final ObservableList<String> filtroHab = FXCollections.observableArrayList("Sencilla", "Doble", "Premium", "Todo");
 
     private final ObservableList<String> capHab = FXCollections.observableArrayList("1", "2", "3", "4", "Todo");
 
     private final ObservableList<String> statusHab = FXCollections.observableArrayList("Disponible", "Ocupada", "Todo");
+
+    private final ObservableList<String> filtroVenta = FXCollections.observableArrayList("Empleado","Todo");
 
     @Override
     public void initialize(URL location, ResourceBundle resources) {
@@ -419,25 +432,6 @@ public class MainMenuManagerController implements Initializable {
     }
 
     /**
-     * Método que desbloquea campos cuando se le da click a Reservacion -> Nueva
-     */
-    public void nuevaReservacionOnAction() {
-        esconderElementosEnPantalla();
-        claveClienteReservar.clear();
-        fechaLlegadaReservacion.setValue(null);
-        fechaSalidaReservacion.setValue(null);
-        numPersonasReservar.clear();
-        tipoReservar.setValue(null);
-        claveClienteReservar.setVisible(true);
-        fechaSalidaReservacion.setVisible(true);
-        fechaLlegadaReservacion.setVisible(true);
-        numPersonasReservar.setVisible(true);
-        tipoReservar.setVisible(true);
-        tipoReservar.setItems(tipoHab);
-        reservarBoton.setVisible(true);
-    }
-
-    /**
      * Método que se encarga de guardar los datos de la reservación
      *
      * @throws SQLException exception
@@ -515,16 +509,6 @@ public class MainMenuManagerController implements Initializable {
         outTablaRes.setCellValueFactory(new PropertyValueFactory<>("checkOut"));
         personasTablaRes.setCellValueFactory(new PropertyValueFactory<>("numPersonas"));
         tablaRes.setItems(oblist2);
-    }
-
-    /**
-     * Método que desbloquea campos para cancelar reservación
-     */
-    public void cancelarResOnAction() {
-        esconderElementosEnPantalla();
-        cancelarReservacionBoton.setVisible(true);
-        codigoCancelarReservacionID.setVisible(true);
-        passwordCancelarReservacionID.setVisible(true);
     }
 
     /**
@@ -1102,6 +1086,77 @@ public class MainMenuManagerController implements Initializable {
         tablaEmp.setItems(oblist6);
     }
 
+    public void mostrarVentas() {
+        esconderElementosEnPantalla();
+        oblist7.clear();
+        tableVentas.setVisible(true);
+        buscarTableVenta.setVisible(true);
+        claveEmpleadoTableVenta.setVisible(true);
+        filtroVentaComboBox.setVisible(true);
+        filtroVentaComboBox.setItems(filtroVenta);
+    }
+
+    /**
+     * Método que filtra las ventas
+     */
+    public void buscarTableVentaOnAction() throws SQLException {
+        tableVentas.getItems().clear();
+        if(filtroVentaComboBox.getValue() != null){
+            if(filtroVentaComboBox.getValue().equals("Todo")){
+                try {
+                    c.setConn(DriverManager.getConnection(c.getDB_URL(), c.getUSER(), c.getPASS()));
+                    c.setStmt(c.getConn().createStatement());
+                    String sql = "SELECT * FROM empleado_reservacion ";
+                    c.setPst(c.getConn().prepareStatement(sql));
+                    ResultSet rst = c.getPst().executeQuery();
+                    while (rst.next()) {
+                        oblist7.add(new TableVentas(rst.getString("codigoEmpleado"),rst.getString("codigoReservacion"), rst.getDouble("precio")));
+                    }
+                    c.getConn().close();
+                } catch (Exception e) {
+                    System.out.println(e);
+                }
+                empleadoTableVentas.setCellValueFactory(new PropertyValueFactory<>("empleado"));
+                reservacionTableVentas.setCellValueFactory(new PropertyValueFactory<>("claveRes"));
+                precioTableVentas.setCellValueFactory(new PropertyValueFactory<>("precio"));
+                tableVentas.setItems(oblist7);
+            }
+            else if(filtroVentaComboBox.getValue().equals("Empleado")){
+                if(claveEmpleadoTableVenta.getText().isEmpty()){
+                    wn.popUpMessage("Llenar campo","La clave del empleado debe estar llena\npara buscar con este filtro.");
+                }
+                else{
+                    if(checarClaveEmpleado(claveEmpleadoTableVenta.getText())){
+                        try {
+                            c.setConn(DriverManager.getConnection(c.getDB_URL(), c.getUSER(), c.getPASS()));
+                            c.setStmt(c.getConn().createStatement());
+                            String sql = "SELECT * FROM empleado_reservacion where codigoEmpleado='"+claveEmpleadoTableVenta.getText()+"'";
+                            c.setPst(c.getConn().prepareStatement(sql));
+                            ResultSet rst = c.getPst().executeQuery();
+                            while (rst.next()) {
+                                oblist7.add(new TableVentas(rst.getString("codigoEmpleado"),rst.getString("codigoReservacion"), rst.getDouble("precio")));
+                            }
+                            c.getConn().close();
+                        } catch (Exception e) {
+                            System.out.println(e);
+                        }
+                        empleadoTableVentas.setCellValueFactory(new PropertyValueFactory<>("empleado"));
+                        reservacionTableVentas.setCellValueFactory(new PropertyValueFactory<>("claveRes"));
+                        precioTableVentas.setCellValueFactory(new PropertyValueFactory<>("precio"));
+                        tableVentas.setItems(oblist7);
+                        claveEmpleadoTableVenta.clear();
+                    }
+                    else{
+                        wn.popUpMessage("Error","No existe empleado con esa clave.");
+                    }
+                }
+            }
+        }
+        else{
+            wn.popUpMessage("Error","Por favor seleccione un filtro\npara seguir con la búsqueda");
+        }
+    }
+
     // ************************************************************************************//
     // <!--------------------------FUNCIONES QUE HACEN QUERIES--------------------------!> //
     // ************************************************************************************//
@@ -1496,6 +1551,12 @@ public class MainMenuManagerController implements Initializable {
         actualizarEmpleadoButtonID.setVisible(false);
         tablaDep.setVisible(false);
         tablaEmp.setVisible(false);
+        tableVentas.setVisible(false);
+        buscarTableVenta.setVisible(false);
+        claveEmpleadoTableVenta.setVisible(false);
+        claveEmpleadoTableVenta.clear();
+        filtroVentaComboBox.setVisible(false);
+        filtroVentaComboBox.setValue(null);
     }
 }
 

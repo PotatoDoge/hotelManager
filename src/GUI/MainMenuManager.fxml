@@ -26,8 +26,6 @@
                 </Menu>
                 <Menu mnemonicParsing="false" text="Reservaciones">
                     <items>
-                        <MenuItem mnemonicParsing="false" onAction="#nuevaReservacionOnAction" text="Nueva" />
-                        <MenuItem mnemonicParsing="false" onAction="#cancelarResOnAction" text="Cancelar" />
                         <MenuItem mnemonicParsing="false" onAction="#checkInOnAction" text="Check-in" />
                         <MenuItem mnemonicParsing="false" onAction="#checkOutOnAction" text="Check-out" />
                         <MenuItem mnemonicParsing="false" onAction="#verReservacionOnAction" text="Ver Reservaciones" />
@@ -67,6 +65,7 @@
                     <items>
                         <MenuItem mnemonicParsing="false" onAction="#mostrarTablaDep" text="Departamentos" />
                         <MenuItem mnemonicParsing="false" onAction="#mostrarTablaEmp" text="Empleados" />
+                        <MenuItem mnemonicParsing="false" onAction="#mostrarVentas" text="Ventas" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Salir">
@@ -176,14 +175,24 @@
                 <TableColumn fx:id="empleadosTablaDep" prefWidth="176.0" text="Empleados" />
             </columns>
         </TableView>
-      <TableView fx:id="tablaEmp" layoutX="109.0" layoutY="65.0" prefHeight="374.0" prefWidth="646.0">
-        <columns>
-          <TableColumn fx:id="codigoTablaEmp" prefWidth="102.0" text="Codigo" />
-          <TableColumn fx:id="nombreTablaEmp" prefWidth="119.0" text="Nombre" />
-            <TableColumn fx:id="telefonoTablaEmp" prefWidth="109.0" text="Telefono" />
-            <TableColumn fx:id="direccionTablaEmp" prefWidth="160.0" text="Direccion" />
-            <TableColumn fx:id="passwordTablaEmp" prefWidth="155.0" text="Password" />
-        </columns>
-      </TableView>
+        <TableView fx:id="tablaEmp" focusTraversable="false" layoutX="109.0" layoutY="65.0" prefHeight="374.0" prefWidth="646.0" visible="false">
+            <columns>
+                <TableColumn fx:id="codigoTablaEmp" prefWidth="102.0" text="Codigo" />
+                <TableColumn fx:id="nombreTablaEmp" prefWidth="119.0" text="Nombre" />
+                <TableColumn fx:id="telefonoTablaEmp" prefWidth="109.0" text="Telefono" />
+                <TableColumn fx:id="direccionTablaEmp" prefWidth="160.0" text="Direccion" />
+                <TableColumn fx:id="passwordTablaEmp" prefWidth="155.0" text="Password" />
+            </columns>
+        </TableView>
+        <TableView fx:id="tableVentas" focusTraversable="false" layoutX="99.0" layoutY="84.0" prefHeight="339.0" prefWidth="476.0" visible="false">
+            <columns>
+                <TableColumn fx:id="empleadoTableVentas" prefWidth="154.0" text="Empleado" />
+                <TableColumn fx:id="reservacionTableVentas" prefWidth="151.0" text="Reservacion" />
+                <TableColumn fx:id="precioTableVentas" prefWidth="170.0" text="Precio" />
+            </columns>
+        </TableView>
+        <Button fx:id="buscarTableVenta" layoutX="693.0" layoutY="333.0" mnemonicParsing="false" onAction="#buscarTableVentaOnAction" text="Buscar" focusTraversable="false" visible="false" />
+        <TextField fx:id="claveEmpleadoTableVenta" layoutX="639.0" layoutY="268.0" promptText="Clave de Empleado" focusTraversable="false" visible="false"/>
+        <ComboBox fx:id="filtroVentaComboBox" layoutX="636.0" layoutY="205.0" prefHeight="26.0" prefWidth="168.0" focusTraversable="false" visible="false" promptText="Filtro"/>
     </children>
 </AnchorPane>
