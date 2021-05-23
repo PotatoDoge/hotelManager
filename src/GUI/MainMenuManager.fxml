@@ -165,8 +165,7 @@
         <TextArea fx:id="direccionEmpleadoEditarID" focusTraversable="false" layoutX="136.0" layoutY="173.0" prefHeight="152.0" prefWidth="168.0" promptText="Direccion" visible="false" />
         <PasswordField fx:id="passEmpleadoEditarID" focusTraversable="false" layoutX="138.0" layoutY="346.0" promptText="Contraseña para usuario" visible="false" />
         <TextField fx:id="claveEditarEmpleadoID" focusTraversable="false" layoutX="478.0" layoutY="90.0" promptText="Clave de empleado" visible="false" />
-        <Button fx:id="buscarEmpleadoButton" focusTraversable="false" layoutX="535.0" layoutY="140.0" mnemonicParsing="false" onAction="#buscarEmpleadoOnAction" text="Buscar" visible="false" />
-      <Button fx:id="actualizarEmpleadoButtonID" layoutX="526.0" layoutY="268.0" mnemonicParsing="false" onAction="#actualizarEmpleadoOnAction" text="Actualizar" visible="false" focusTraversable="false" />
-      <PasswordField fx:id="passUserEditarID" layoutX="483.0" layoutY="218.0" promptText="Contraseña" visible="false" focusTraversable="false"/>
+        <Button fx:id="buscarEmpleadoButton" focusTraversable="false" layoutX="535.0" layoutY="140.0" mnemonicParsing="false" onAction="#buscarEmpleadoOnAction" text="Buscar" visible="false" />N<Button fx:id="actualizarEmpleadoButtonID" focusTraversable="false" layoutX="526.0" layoutY="268.0" mnemonicParsing="false" onAction="#actualizarEmpleadoOnAction" text="Actualizar" visible="false" />
+      <PasswordField fx:id="passUserEditarID" focusTraversable="false" layoutX="483.0" layoutY="218.0" promptText="Contraseña" visible="false" />
     </children>
 </AnchorPane>
