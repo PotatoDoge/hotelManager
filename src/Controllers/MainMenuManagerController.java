@@ -25,6 +25,14 @@ public class MainMenuManagerController implements Initializable {
     private final User user = new User();
 
     @FXML
+    private TableView <TablaDepartamento> tablaDep;
+    @FXML
+    private TableColumn <TablaDepartamento,String> codigoTablaDep;
+    @FXML
+    private TableColumn <TablaDepartamento,String> nombreTablaDep;
+    @FXML
+    private TableColumn <TablaDepartamento,Integer> empleadosTablaDep;
+    @FXML
     private Button actualizarEmpleadoButtonID;
     @FXML
     private PasswordField passUserEditarID;
@@ -197,6 +205,8 @@ public class MainMenuManagerController implements Initializable {
     private final ObservableList<TableCuarto> oblist3 = FXCollections.observableArrayList();
 
     private final ObservableList<TableHuespedActivo> oblist4 = FXCollections.observableArrayList();
+
+    private final ObservableList<TablaDepartamento> oblist5 = FXCollections.observableArrayList();
 
     private final ObservableList<String> tipoHab = FXCollections.observableArrayList("Sencilla", "Doble", "Premium"); // corregir esto
 
@@ -807,6 +817,7 @@ public class MainMenuManagerController implements Initializable {
             c.getConn().close();
             claveDepID.clear();
             nombreDepID.clear();
+            wn.popUpMessage("Exito","El departamento fue actualizado con éxito");
         }
     }
 
@@ -1018,6 +1029,33 @@ public class MainMenuManagerController implements Initializable {
                 wn.popUpMessage("Error","Contraseña no válida. Ingrese una\nque si lo sea.");
             }
         }
+    }
+
+    /**
+     * Método que muestra la tabla de departamentos
+     */
+    public void mostrarTablaDep() {
+        oblist5.clear();
+        esconderElementosEnPantalla();
+        tablaDep.getItems().clear();
+        tablaDep.setVisible(true);
+        try {
+            c.setConn(DriverManager.getConnection(c.getDB_URL(), c.getUSER(), c.getPASS()));
+            c.setStmt(c.getConn().createStatement());
+            String sql = "SELECT * FROM departamento ";
+            c.setPst(c.getConn().prepareStatement(sql));
+            ResultSet rst = c.getPst().executeQuery();
+            while (rst.next()) {
+                oblist5.add(new TablaDepartamento(rst.getString("codigoDepartamento"),rst.getString("nombre"),rst.getInt("numEmpleados")));
+            }
+            c.getConn().close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        codigoTablaDep.setCellValueFactory(new PropertyValueFactory<>("codigo"));
+        nombreTablaDep.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+        empleadosTablaDep.setCellValueFactory(new PropertyValueFactory<>("empleados"));
+        tablaDep.setItems(oblist5);
     }
 
     // ************************************************************************************//
@@ -1409,11 +1447,11 @@ public class MainMenuManagerController implements Initializable {
         claveEditarEmpleadoID.setVisible(false);
         claveEditarEmpleadoID.clear();
         buscarEmpleadoButton.setVisible(false);
-        passUserEditarID.setVisible(true);
+        passUserEditarID.setVisible(false);
         passUserEditarID.clear();
-        actualizarEmpleadoButtonID.setVisible(true);
+        actualizarEmpleadoButtonID.setVisible(false);
+        tablaDep.setVisible(false);
     }
-
 
 }
 

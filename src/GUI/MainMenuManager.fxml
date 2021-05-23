@@ -13,7 +13,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="mainMenuPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="503.0" prefWidth="895.0" styleClass="mainMenubg" stylesheets="style.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.MainMenuManagerController">
+<AnchorPane fx:id="mainMenuPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="503.0" prefWidth="895.0" styleClass="mainMenubg" stylesheets="style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.MainMenuManagerController">
     <children>
         <MenuBar prefHeight="29.0" prefWidth="784.0">
             <menus>
@@ -65,7 +65,8 @@
                 </Menu>
                 <Menu mnemonicParsing="false" text="Mostrar">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="Action 1" />
+                        <MenuItem mnemonicParsing="false" onAction="#mostrarTablaDep" text="Departamentos" />
+                  <MenuItem mnemonicParsing="false" text="Empleados" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Salir">
@@ -167,6 +168,13 @@
         <TextField fx:id="claveEditarEmpleadoID" focusTraversable="false" layoutX="478.0" layoutY="90.0" promptText="Clave de empleado" visible="false" />
         <Button fx:id="buscarEmpleadoButton" focusTraversable="false" layoutX="535.0" layoutY="140.0" mnemonicParsing="false" onAction="#buscarEmpleadoOnAction" text="Buscar" visible="false" />
         <Button fx:id="actualizarEmpleadoButtonID" focusTraversable="false" layoutX="526.0" layoutY="268.0" mnemonicParsing="false" onAction="#actualizarEmpleadoOnAction" text="Actualizar" visible="false" />
-      <PasswordField fx:id="passUserEditarID" focusTraversable="false" layoutX="483.0" layoutY="218.0" promptText="Contraseña" visible="false" />
+        <PasswordField fx:id="passUserEditarID" focusTraversable="false" layoutX="483.0" layoutY="218.0" promptText="Contraseña" visible="false" />
+      <TableView fx:id="tablaDep" layoutX="153.0" layoutY="61.0" prefHeight="382.0" prefWidth="558.0" visible="false" focusTraversable="false">
+        <columns>
+          <TableColumn fx:id="codigoTablaDep" prefWidth="162.0" text="Codigo" />
+          <TableColumn fx:id="nombreTablaDep" prefWidth="219.0" text="Nombre" />
+            <TableColumn fx:id="empleadosTablaDep" prefWidth="176.0" text="Empleados" />
+        </columns>
+      </TableView>
     </children>
 </AnchorPane>
