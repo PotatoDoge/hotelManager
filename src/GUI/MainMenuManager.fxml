@@ -72,6 +72,9 @@
                         <MenuItem mnemonicParsing="false" onAction="#mostrarVentas" text="Ventas" />
                         <MenuItem mnemonicParsing="false" onAction="#mostrarAreas" text="Areas" />
                         <MenuItem mnemonicParsing="false" onAction="#mostrarGerentes" text="Gerentes" />
+                  <MenuItem mnemonicParsing="false" onAction="#verEmpleadoDepaOnAction" text="Empleados en departamentos" />
+                  <MenuItem mnemonicParsing="false" text="Empleados en areas" />
+                  <MenuItem mnemonicParsing="false" text="Gerentes en departamentos" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Asignar">
@@ -267,13 +270,21 @@
         <TextField fx:id="puestoEmpDepa" focusTraversable="false" layoutX="120.0" layoutY="195.0" promptText="Puesto" visible="false" />
         <TextField fx:id="sueldoEmpDepa" focusTraversable="false" layoutX="121.0" layoutY="244.0" promptText="Sueldo" visible="false" />
         <Button fx:id="addEmpleadoDepa" focusTraversable="false" layoutX="175.0" layoutY="294.0" mnemonicParsing="false" onAction="#addEmpleadoDepaOnAction" text="Añadir" visible="false" />
-      <TextField fx:id="codigoGerGerDepa" focusTraversable="false" layoutX="73.0" layoutY="67.0" promptText="Código de gerente" visible="false" />
-      <TextField fx:id="codigoDepaGerDepa" focusTraversable="false" layoutX="73.0" layoutY="118.0" promptText="Código de departamento" visible="false" />
-      <TextField fx:id="sueldoGerDepa" focusTraversable="false" layoutX="73.0" layoutY="172.0" promptText="Sueldo" visible="false" />
-      <Button fx:id="registrarGerDepaButton" focusTraversable="false" layoutX="119.0" layoutY="226.0" mnemonicParsing="false" onAction="#registrarGerDepaOnAction" text="Registrar" visible="false" />
+        <TextField fx:id="codigoGerGerDepa" focusTraversable="false" layoutX="73.0" layoutY="67.0" promptText="Código de gerente" visible="false" />
+        <TextField fx:id="codigoDepaGerDepa" focusTraversable="false" layoutX="73.0" layoutY="118.0" promptText="Código de departamento" visible="false" />
+        <TextField fx:id="sueldoGerDepa" focusTraversable="false" layoutX="73.0" layoutY="172.0" promptText="Sueldo" visible="false" />
+        <Button fx:id="registrarGerDepaButton" focusTraversable="false" layoutX="119.0" layoutY="226.0" mnemonicParsing="false" onAction="#registrarGerDepaOnAction" text="Registrar" visible="false" />
         <TextField fx:id="codigoEmpEmpArea" focusTraversable="false" layoutX="73.0" layoutY="67.0" promptText="Código de empleado" visible="false" />
         <TextField fx:id="codigoAreaEmpArea" focusTraversable="false" layoutX="73.0" layoutY="118.0" promptText="Código de area" visible="false" />
         <TextField fx:id="horarioEmpArea" focusTraversable="false" layoutX="73.0" layoutY="172.0" promptText="Horario (hh:mm - hh:mm)" visible="false" />
         <Button fx:id="registrarEmpAreaButton" focusTraversable="false" layoutX="119.0" layoutY="226.0" mnemonicParsing="false" onAction="#registrarEmpAreaOnAction" text="Registrar" visible="false" />
+      <TableView fx:id="tablaEmpleadoDepa" layoutX="140.0" layoutY="92.0" prefHeight="333.0" prefWidth="633.0" visible="false" focusTraversable="false">
+        <columns>
+          <TableColumn fx:id="claveEmpTableEmpDepa" prefWidth="111.75901794433594" text="Clave empleado" />
+          <TableColumn fx:id="claveDepaTableEmpDepa" prefWidth="125.75299072265625" text="Clave departamento" />
+            <TableColumn fx:id="puestoTableEmpDepa" minWidth="0.0" prefWidth="169.53610229492188" text="Puesto" />
+            <TableColumn fx:id="sueldoTableEmpDepa" prefWidth="225.4638671875" text="Sueldo" />
+        </columns>
+      </TableView>
     </children>
 </AnchorPane>

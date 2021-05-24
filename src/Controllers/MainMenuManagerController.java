@@ -24,6 +24,16 @@ public class MainMenuManagerController implements Initializable {
     private final User user = new User();
 
     @FXML
+    private TableColumn <TableEmpleadoDepa,String> claveEmpTableEmpDepa;
+    @FXML
+    private TableColumn <TableEmpleadoDepa,String>claveDepaTableEmpDepa;
+    @FXML
+    private TableColumn <TableEmpleadoDepa,String>puestoTableEmpDepa;
+    @FXML
+    private TableColumn <TableEmpleadoDepa,Double>sueldoTableEmpDepa;
+    @FXML
+    private TableView <TableEmpleadoDepa>tablaEmpleadoDepa;
+    @FXML
     private Button registrarEmpAreaButton;
     @FXML
     private TextField codigoEmpEmpArea;
@@ -360,6 +370,8 @@ public class MainMenuManagerController implements Initializable {
     private final ObservableList<TableAreas> oblist8 = FXCollections.observableArrayList();
 
     private final ObservableList<TableGerentes> oblist9 = FXCollections.observableArrayList();
+
+    private final ObservableList<TableEmpleadoDepa> oblist10 = FXCollections.observableArrayList();
 
     private final ObservableList<String> filtroHab = FXCollections.observableArrayList("Sencilla", "Doble", "Premium", "Todo");
 
@@ -1833,6 +1845,36 @@ public class MainMenuManagerController implements Initializable {
         }
     }
 
+    /**
+     * Método que muestra la tabla de empleado_departamento
+     */
+    public void verEmpleadoDepaOnAction() {
+        esconderElementosEnPantalla();
+        oblist10.clear();
+        tablaEmpleadoDepa.setVisible(true);
+        tablaEmpleadoDepa.getItems().clear();
+        try{
+            c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
+            c.setStmt(c.getConn().createStatement());
+            String SQL = "SELECT * FROM empleado_departamento";
+            c.setPst(c.getConn().prepareStatement(SQL));
+            ResultSet rst = c.getPst().executeQuery();
+            while(rst.next()){
+                oblist10.add(new TableEmpleadoDepa(rst.getString("codigoEmpleado"),rst.getString("codigoDepartamento"),
+                             rst.getString("puesto"),rst.getDouble("sueldo")));
+            }
+            c.getConn().close();
+            claveEmpTableEmpDepa.setCellValueFactory(new PropertyValueFactory<>("claveEmpleado"));
+            claveDepaTableEmpDepa.setCellValueFactory(new PropertyValueFactory<>("claveDepa"));
+            puestoTableEmpDepa.setCellValueFactory(new PropertyValueFactory<>("puesto"));
+            sueldoTableEmpDepa.setCellValueFactory(new PropertyValueFactory<>("sueldo"));
+            tablaEmpleadoDepa.setItems(oblist10);
+        }
+        catch (Exception e){
+            System.out.println(e);
+        }
+    }
+
     // ************************************************************************************//
     // <!--------------------------FUNCIONES QUE HACEN QUERIES--------------------------!> //
     // ************************************************************************************//
@@ -2472,9 +2514,8 @@ public class MainMenuManagerController implements Initializable {
         horarioEmpArea.setVisible(false);
         horarioEmpArea.clear();
         registrarEmpAreaButton.setVisible(false);
+        tablaEmpleadoDepa.setVisible(false);
     }
-
-
 }
 
 
