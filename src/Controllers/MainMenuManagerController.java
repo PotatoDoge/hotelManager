@@ -3,6 +3,7 @@ package Controllers;
 import Tools.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -20,6 +21,16 @@ public class MainMenuManagerController implements Initializable {
     private final Window wn = new Window();
     private final ConTool c = new ConTool();
     private final User user = new User();
+
+    @FXML
+    public TextField nombreGerenteEditar;
+    public TextField telefonoGerenteEditar;
+    public TextField direccionGerenteEditar;
+    public TextField horaEntGerenteEditar;
+    public TextField horaSalidaGerenteEditar;
+    public Button actualizarGerenteButton;
+    public Button buscarGerenteEditar;
+    public TextField claveGerenteEditar;
 
     @FXML
     private TextField borrarClaveGerente;
@@ -1174,6 +1185,9 @@ public class MainMenuManagerController implements Initializable {
         tablaEmp.setItems(oblist6);
     }
 
+    /**
+     * Método que desbloquea campos para ver las ventas
+     */
     public void mostrarVentas() {
         esconderElementosEnPantalla();
         oblist7.clear();
@@ -1350,6 +1364,7 @@ public class MainMenuManagerController implements Initializable {
                     +"', capacidad="+numPersonalEditarArea.getText() + " where " +
                     "codigoArea='"+ buscarClaveEditarArea.getText()+"'";
             c.getStmt().executeUpdate(SQL);
+            c.getConn().close();
             wn.popUpMessage("Éxito","Los datos fueron actualizados con éxito");
             nombreEditarArea.clear();
             buscarClaveEditarArea.clear();
@@ -1458,7 +1473,19 @@ public class MainMenuManagerController implements Initializable {
         passGerenteNuevo.setVisible(true);
     }
 
+    /**
+     * Método que desbloquea los campos para editar al gerente
+     */
     public void editarGerente() {
+        esconderElementosEnPantalla();
+        nombreGerenteEditar.setVisible(true);
+        telefonoGerenteEditar.setVisible(true);
+        direccionGerenteEditar.setVisible(true);
+        horaEntGerenteEditar.setVisible(true);
+        horaSalidaGerenteEditar.setVisible(true);
+        actualizarGerenteButton.setVisible(true);
+        buscarGerenteEditar.setVisible(true);
+        claveGerenteEditar.setVisible(true);
     }
 
     /**
@@ -1568,6 +1595,75 @@ public class MainMenuManagerController implements Initializable {
             }
         }
     }
+
+    /**
+     * Método que busca al gerente y llena los campos para editar
+     */
+    public void buscarGerenteOnAction() throws SQLException {
+        if(!claveGerenteEditar.getText().isEmpty()){
+            if(checarClaveGerente(claveGerenteEditar.getText())){
+                try{
+                    c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
+                    c.setStmt(c.getConn().createStatement());
+                    String SQL = "SELECT * FROM gerente where codigoGerente='"+claveGerenteEditar.getText()+"'";
+                    ResultSet rst = c.getStmt().executeQuery(SQL);
+                    while(rst.next()){
+                        nombreGerenteEditar.setText(rst.getString("nombre"));
+                        telefonoGerenteEditar.setText(rst.getString("telefono"));
+                        direccionGerenteEditar.setText(rst.getString("direccion"));
+                        horaEntGerenteEditar.setText(rst.getString("horaEntrada"));
+                        horaSalidaGerenteEditar.setText(rst.getString("horaSalida"));
+                    }
+                }
+                catch (Exception e){
+                    System.out.println(e);
+                }
+            }
+            else{
+                wn.popUpMessage("No existe clave","La clave ingresada no existe");
+            }
+        }
+        else{
+            wn.popUpMessage("Error","Debe de poner una clave para poder hacer la búsqueda.");
+        }
+    }
+
+    /**
+     * Método que actualiza los datos del gerente
+     */
+    public void actualizarGerenteOnAction() throws SQLException {
+        if(nombreGerenteEditar.getText().isEmpty() || telefonoGerenteEditar.getText().isEmpty() || direccionGerenteEditar.getText().isEmpty() ||
+           horaEntGerenteEditar.getText().isEmpty() || horaSalidaGerenteEditar.getText().isEmpty()){
+            wn.popUpMessage("Llenar campos","Todos los campos deben de estar llenos\npara continuar con el proceso");
+        }
+        else{
+            if(checarClaveGerente(claveGerenteEditar.getText())){
+                try{
+                    c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
+                    c.setStmt(c.getConn().createStatement());
+                    String SQL = "UPDATE gerente set nombre='"+nombreGerenteEditar.getText()+"', telefono='"+telefonoGerenteEditar.getText()+
+                                 "', direccion='"+direccionGerenteEditar.getText()+"', horaEntrada='"+horaEntGerenteEditar.getText()+
+                                 "', horaSalida='"+horaSalidaGerenteEditar.getText()+"' where codigoGerente='"+claveGerenteEditar.getText()+"'";
+                    c.getStmt().executeUpdate(SQL);
+                    c.getConn().close();
+                    wn.popUpMessage("Éxito","Los datos fueron actualizados con éxito");
+                    nombreGerenteEditar.clear();
+                    telefonoGerenteEditar.clear();
+                    direccionGerenteEditar.clear();
+                    horaSalidaGerenteEditar.clear();
+                    horaEntGerenteEditar.clear();
+                }
+                catch (Exception e){
+                    System.out.println(e);
+                }
+            }
+            else{
+                wn.popUpMessage("Error","La clave no existe");
+            }
+        }
+    }
+
+
 
 
     // ************************************************************************************//
@@ -2094,6 +2190,20 @@ public class MainMenuManagerController implements Initializable {
         passBorrarGerente.setVisible(false);
         passBorrarGerente.clear();
         borrarGerenteBoton.setVisible(false);
+        nombreGerenteEditar.setVisible(false);
+        nombreGerenteEditar.clear();
+        telefonoGerenteEditar.setVisible(false);
+        telefonoGerenteEditar.clear();
+        direccionGerenteEditar.setVisible(false);
+        direccionGerenteEditar.clear();
+        horaEntGerenteEditar.setVisible(false);
+        horaEntGerenteEditar.clear();
+        horaSalidaGerenteEditar.setVisible(false);
+        horaSalidaGerenteEditar.clear();
+        actualizarGerenteButton.setVisible(false);
+        buscarGerenteEditar.setVisible(false);
+        claveGerenteEditar.setVisible(false);
+        claveGerenteEditar.clear();
     }
 }
 

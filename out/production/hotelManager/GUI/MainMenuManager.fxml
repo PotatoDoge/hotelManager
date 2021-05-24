@@ -242,7 +242,15 @@
             </columns>
         </TableView>
       <TextField fx:id="borrarClaveGerente" focusTraversable="false" layoutX="118.0" layoutY="83.0" promptText="Clave Gerente" visible="false" />
-      <TextField fx:id="passBorrarGerente" focusTraversable="false" layoutX="119.0" layoutY="132.0" promptText="Contraseña" visible="false" />
+      <PasswordField fx:id="passBorrarGerente" focusTraversable="false" layoutX="119.0" layoutY="132.0" promptText="Contraseña" visible="false" />
       <Button fx:id="borrarGerenteBoton" focusTraversable="false" layoutX="171.0" layoutY="183.0" mnemonicParsing="false" onAction="#borrarGerenteOnAction" text="Borrar" visible="false" />
+        <TextField fx:id="nombreGerenteEditar" focusTraversable="false" layoutX="101.0" layoutY="77.0" promptText="Nombre" visible="false" />
+        <TextField fx:id="telefonoGerenteEditar" focusTraversable="false" layoutX="102.0" layoutY="117.0" promptText="Telefono" visible="false" />
+        <TextField fx:id="direccionGerenteEditar" focusTraversable="false" layoutX="102.0" layoutY="162.0" promptText="Direccion" visible="false" />
+        <TextField fx:id="horaEntGerenteEditar" focusTraversable="false" layoutX="101.0" layoutY="204.0" promptText="Hora de entrada (hh:mm)" visible="false" />
+        <TextField fx:id="horaSalidaGerenteEditar" focusTraversable="false" layoutX="101.0" layoutY="249.0" promptText="Hora de salida (hh:mm)" visible="false" />
+      <Button fx:id="actualizarGerenteButton" focusTraversable="false" layoutX="146.0" layoutY="303.0" mnemonicParsing="false" onAction="#actualizarGerenteOnAction" text="Actualizar" visible="false" />
+      <Button fx:id="buscarGerenteEditar" focusTraversable="false" layoutX="367.0" layoutY="136.0" mnemonicParsing="false" onAction="#buscarGerenteOnAction" text="Buscar" visible="false" />
+      <TextField fx:id="claveGerenteEditar" focusTraversable="false" layoutX="314.0" layoutY="85.0" promptText="Clave de gerente" visible="false" />
     </children>
 </AnchorPane>
