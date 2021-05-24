@@ -3,8 +3,6 @@ package Controllers;
 import Tools.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.embed.swt.SWTFXUtils;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -23,6 +21,14 @@ public class MainMenuManagerController implements Initializable {
     private final ConTool c = new ConTool();
     private final User user = new User();
 
+    @FXML
+    private TableColumn<TableEmpArea, String> claveEmpTableEmpArea;
+    @FXML
+    private TableColumn <TableEmpArea, String> claveAreaTableEmpArea;
+    @FXML
+    private TableColumn <TableEmpArea, String> horarioTableEmpArea;
+    @FXML
+    private TableView <TableEmpArea>tableEmpArea;
     @FXML
     private TableColumn <TableEmpleadoDepa,String> claveEmpTableEmpDepa;
     @FXML
@@ -76,8 +82,6 @@ public class MainMenuManagerController implements Initializable {
     private Button buscarGerenteEditar;
     @FXML
     private TextField claveGerenteEditar;
-
-
     @FXML
     private TextField borrarClaveGerente;
     @FXML
@@ -372,6 +376,8 @@ public class MainMenuManagerController implements Initializable {
     private final ObservableList<TableGerentes> oblist9 = FXCollections.observableArrayList();
 
     private final ObservableList<TableEmpleadoDepa> oblist10 = FXCollections.observableArrayList();
+
+    private final ObservableList<TableEmpArea> oblist11 = FXCollections.observableArrayList();
 
     private final ObservableList<String> filtroHab = FXCollections.observableArrayList("Sencilla", "Doble", "Premium", "Todo");
 
@@ -980,6 +986,10 @@ public class MainMenuManagerController implements Initializable {
                 try{
                     c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
                     c.setStmt(c.getConn().createStatement());
+                    String SQL2 = "DELETE FROM gerente_departamento where codigoDepartamento='"+borrarClaveDepID.getText()+"'";
+                    c.getStmt().executeUpdate(SQL2);
+                    String SQL3 = "DELETE FROM empleado_departamento where codigoDepartamento='"+borrarClaveDepID.getText()+"'";
+                    c.getStmt().executeUpdate(SQL3);
                     String SQL = "DELETE FROM departamento where codigoDepartamento='"+borrarClaveDepID.getText()+"'";
                     c.getStmt().executeUpdate(SQL);
                     c.getConn().close();
@@ -1875,6 +1885,36 @@ public class MainMenuManagerController implements Initializable {
         }
     }
 
+    /**
+     * Método que muestra la tabla empleado_area
+     */
+    public void verEmpleadoAreaOnAction() {
+        esconderElementosEnPantalla();
+        oblist10.clear();
+        tableEmpArea.getItems().clear();
+        tableEmpArea.setVisible(true);
+        try{
+            c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
+            c.setStmt(c.getConn().createStatement());
+            String SQL = "SELECT * FROM empleado_area";
+            c.setPst(c.getConn().prepareStatement(SQL));
+            ResultSet rst = c.getPst().executeQuery();
+            while(rst.next()){
+                oblist11.add(new TableEmpArea(rst.getString("codigoEmpleado"),rst.getString("codigoArea"),
+                             rst.getString("horario")));
+            }
+            c.getConn().close();
+            claveEmpTableEmpArea.setCellValueFactory(new PropertyValueFactory<>("claveEmp"));
+            claveAreaTableEmpArea.setCellValueFactory(new PropertyValueFactory<>("claveArea"));
+            horarioTableEmpArea.setCellValueFactory(new PropertyValueFactory<>("horario"));
+            tableEmpArea.setItems(oblist11);
+        }
+        catch (Exception e){
+            System.out.println(e);
+        }
+
+    }
+
     // ************************************************************************************//
     // <!--------------------------FUNCIONES QUE HACEN QUERIES--------------------------!> //
     // ************************************************************************************//
@@ -2515,6 +2555,7 @@ public class MainMenuManagerController implements Initializable {
         horarioEmpArea.clear();
         registrarEmpAreaButton.setVisible(false);
         tablaEmpleadoDepa.setVisible(false);
+        tableEmpArea.setVisible(false);
     }
 }
 
