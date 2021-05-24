@@ -3,7 +3,6 @@ package Controllers;
 import Tools.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -22,6 +21,12 @@ public class MainMenuManagerController implements Initializable {
     private final ConTool c = new ConTool();
     private final User user = new User();
 
+    @FXML
+    private TextField borrarClaveGerente;
+    @FXML
+    private PasswordField passBorrarGerente;
+    @FXML
+    private Button borrarGerenteBoton;
     @FXML
     private TableView <TableGerentes> tableGer;
     @FXML
@@ -1360,12 +1365,12 @@ public class MainMenuManagerController implements Initializable {
      * Método que borra el area deseada de la base de datos
      *
      */
-    public void borrarAreaOnAction() {
+    public void borrarAreaOnAction() throws SQLException {
         if(passBorrarArea.getText().isEmpty() || claveBorrarArea.getText().isEmpty()){
             wn.popUpMessage("Error","Todos los campos deben de estar llenos\npara poder seguir con el proceso.");
         }
         else{
-            if(passBorrarArea.getText().equals(user.getPassword())){
+            if(passBorrarArea.getText().equals(user.getPassword()) && checarClaveArea(claveBorrarArea.getText())){
                 try{
                     c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
                     c.setStmt(c.getConn().createStatement());
@@ -1383,7 +1388,7 @@ public class MainMenuManagerController implements Initializable {
                 }
             }
             else{
-                wn.popUpMessage("Contrase{a incorrecta","La contraseña ingresada es inválida.\nNo corresponde con el usuario");
+                wn.popUpMessage("Contraseña incorrecta","La contraseña ingresada es inválida.\nNo corresponde con el usuario,\no la clave de area no es válida. ");
             }
         }
     }
@@ -1456,7 +1461,14 @@ public class MainMenuManagerController implements Initializable {
     public void editarGerente() {
     }
 
+    /**
+     * Método que desbloquea campos para borrar gerentes
+     */
     public void borrarGerente() {
+        esconderElementosEnPantalla();
+        borrarClaveGerente.setVisible(true);
+        passBorrarGerente.setVisible(true);
+        borrarGerenteBoton.setVisible(true);
     }
 
     /**
@@ -1516,14 +1528,45 @@ public class MainMenuManagerController implements Initializable {
             System.out.println(e);
         }
         claveTableGer.setCellValueFactory(new PropertyValueFactory<>("codigoGerente"));
-        nombreTableGer.setCellValueFactory(new PropertyValueFactory<>("nombre"));;
-        telefTableGer.setCellValueFactory(new PropertyValueFactory<>("telefono"));;
-        direccionTableGer.setCellValueFactory(new PropertyValueFactory<>("direccion"));;
-        horaEntTableGer.setCellValueFactory(new PropertyValueFactory<>("horaEnt"));;
-        horaSalidaTableGer.setCellValueFactory(new PropertyValueFactory<>("horaSal"));;
-        passTableGer.setCellValueFactory(new PropertyValueFactory<>("pass"));;
+        nombreTableGer.setCellValueFactory(new PropertyValueFactory<>("nombre"));
+        telefTableGer.setCellValueFactory(new PropertyValueFactory<>("telefono"));
+        direccionTableGer.setCellValueFactory(new PropertyValueFactory<>("direccion"));
+        horaEntTableGer.setCellValueFactory(new PropertyValueFactory<>("horaEnt"));
+        horaSalidaTableGer.setCellValueFactory(new PropertyValueFactory<>("horaSal"));
+        passTableGer.setCellValueFactory(new PropertyValueFactory<>("pass"));
         tableGer.setItems(oblist9);
 
+    }
+
+    /**
+     * Método que borra gerentes
+     */
+    public void borrarGerenteOnAction() throws SQLException {
+        if(borrarClaveGerente.getText().isEmpty() || passBorrarGerente.getText().isEmpty()){
+            wn.popUpMessage("Llenar campos","Todos los campos deben de estar llenos\npara poder continuar con el proceso.");
+        }
+        else{
+            if(passBorrarGerente.getText().equals(user.getPassword()) && checarClaveGerente(borrarClaveGerente.getText())){
+                try{
+                    c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
+                    c.setStmt(c.getConn().createStatement());
+                    String SQL = "DELETE FROM gerente_departamento where codigoGerente='"+borrarClaveGerente.getText()+"'";
+                    c.getStmt().executeUpdate(SQL);
+                    String sql = "DELETE FROM gerente where codigoGerente='"+borrarClaveGerente.getText()+"'";
+                    c.getStmt().executeUpdate(sql);
+                    c.getConn().close();
+                    wn.popUpMessage("Listo","El gerente fue dado de baja con éxito");
+                    borrarClaveGerente.clear();
+                    passBorrarGerente.clear();
+                }
+                catch (Exception e){
+                    System.out.println(e);
+                }
+            }
+            else{
+                wn.popUpMessage("Contraseña equivocada","La contraseña ingresada no es válida, o\nla clave de gerente no es válida.");
+            }
+        }
     }
 
 
@@ -1819,6 +1862,26 @@ public class MainMenuManagerController implements Initializable {
         return nc + 1;
     }
 
+    /**
+     * Método que checa si existe gerente con la clave dada
+     * @param clave clave de gerente
+     * @return true si existe, else false
+     * @throws SQLException exception
+     */
+    public boolean checarClaveGerente(String clave) throws  SQLException{
+        c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
+        c.setStmt(c.getConn().createStatement());
+        String SQL = "SELECT codigoGerente from gerente";
+        c.setPst(c.getConn().prepareStatement(SQL));
+        ResultSet rs = c.getPst().executeQuery();
+        while (rs.next()) {
+            if (clave.equals(rs.getString("codigoGerente"))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     // ****************************************************************************//
     // <!--------------------------FUNCIONES DE AYUDA--------------------------!> //
     // ***************************************************************************//
@@ -2026,6 +2089,11 @@ public class MainMenuManagerController implements Initializable {
         passGerenteNuevo.setVisible(false);
         passGerenteNuevo.clear();
         tableGer.setVisible(false);
+        borrarClaveGerente.setVisible(false);
+        borrarClaveGerente.clear();
+        passBorrarGerente.setVisible(false);
+        passBorrarGerente.clear();
+        borrarGerenteBoton.setVisible(false);
     }
 }
 

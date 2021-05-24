@@ -241,5 +241,8 @@
                 <TableColumn fx:id="passTableGer" prefWidth="181.22149658203125" text="password" />
             </columns>
         </TableView>
+      <TextField fx:id="borrarClaveGerente" focusTraversable="false" layoutX="118.0" layoutY="83.0" promptText="Clave Gerente" visible="false" />
+      <PasswordField fx:id="passBorrarGerente" focusTraversable="false" layoutX="119.0" layoutY="132.0" promptText="Contraseña" visible="false" />
+      <Button fx:id="borrarGerenteBoton" focusTraversable="false" layoutX="171.0" layoutY="183.0" mnemonicParsing="false" onAction="#borrarGerenteOnAction" text="Borrar" visible="false" />
     </children>
 </AnchorPane>

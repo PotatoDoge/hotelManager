@@ -230,7 +230,7 @@
         <TextField fx:id="horaSalidaGerenteNuevo" focusTraversable="false" layoutX="101.0" layoutY="249.0" promptText="Hora de salida (hh:mm)" visible="false" />
         <Button fx:id="crearGerente" focusTraversable="false" layoutX="157.0" layoutY="335.0" mnemonicParsing="false" onAction="#crearGerenteOnAction" text="Crear" visible="false" />
         <PasswordField fx:id="passGerenteNuevo" focusTraversable="false" layoutX="102.0" layoutY="294.0" promptText="Contraseña" visible="false" />
-        <TableView fx:id="tableGer" focusTraversable="false" layoutX="14.0" layoutY="56.0" prefHeight="417.0" prefWidth="862.0" visible="true">
+        <TableView fx:id="tableGer" focusTraversable="false" layoutX="14.0" layoutY="56.0" prefHeight="417.0" prefWidth="862.0" visible="false">
             <columns>
                 <TableColumn fx:id="claveTableGer" prefWidth="79.09392929077148" text="Clave" />
                 <TableColumn fx:id="nombreTableGer" prefWidth="90.90606689453125" text="Nombre" />
@@ -241,5 +241,8 @@
                 <TableColumn fx:id="passTableGer" prefWidth="181.22149658203125" text="password" />
             </columns>
         </TableView>
+      <TextField fx:id="borrarClaveGerente" focusTraversable="false" layoutX="118.0" layoutY="83.0" promptText="Clave Gerente" visible="false" />
+      <TextField fx:id="passBorrarGerente" focusTraversable="false" layoutX="119.0" layoutY="132.0" promptText="Contraseña" visible="false" />
+      <Button fx:id="borrarGerenteBoton" focusTraversable="false" layoutX="171.0" layoutY="183.0" mnemonicParsing="false" onAction="#borrarGerenteOnAction" text="Borrar" visible="false" />
     </children>
 </AnchorPane>
