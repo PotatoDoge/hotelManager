@@ -23,6 +23,36 @@ public class MainMenuManagerController implements Initializable {
     private final User user = new User();
 
     @FXML
+    private TableView <TableGerentes> tableGer;
+    @FXML
+    private TableColumn <TableGerentes,String>claveTableGer;
+    @FXML
+    private TableColumn <TableGerentes,String>nombreTableGer;
+    @FXML
+    private TableColumn <TableGerentes,String>telefTableGer;
+    @FXML
+    private TableColumn <TableGerentes,String>direccionTableGer;
+    @FXML
+    private TableColumn <TableGerentes,String> horaEntTableGer;
+    @FXML
+    private TableColumn <TableGerentes,String> horaSalidaTableGer;
+    @FXML
+    private TableColumn <TableGerentes,String> passTableGer;
+    @FXML
+    private PasswordField passGerenteNuevo;
+    @FXML
+    private TextField nombreGerenteNuevo;
+    @FXML
+    private TextField telefonoGerenteNuevo;
+    @FXML
+    private TextField direccionGerenteNuevo;
+    @FXML
+    private TextField horaEntGerenteNuevo;
+    @FXML
+    private TextField horaSalidaGerenteNuevo;
+    @FXML
+    private Button crearGerente;
+    @FXML
     private ComboBox <String>tipoEditarArea;
     @FXML
     private TextField nombreEditarArea;
@@ -276,6 +306,8 @@ public class MainMenuManagerController implements Initializable {
     private final ObservableList<TableVentas> oblist7 = FXCollections.observableArrayList();
 
     private final ObservableList<TableAreas> oblist8 = FXCollections.observableArrayList();
+
+    private final ObservableList<TableGerentes> oblist9 = FXCollections.observableArrayList();
 
     private final ObservableList<String> filtroHab = FXCollections.observableArrayList("Sencilla", "Doble", "Premium", "Todo");
 
@@ -1407,6 +1439,92 @@ public class MainMenuManagerController implements Initializable {
         }
     }
 
+    /**
+     * Método que desbloquea campos para crear un nuevo gerente
+     */
+    public void nuevoGerente() {
+        esconderElementosEnPantalla();
+        nombreGerenteNuevo.setVisible(true);
+        telefonoGerenteNuevo.setVisible(true);
+        direccionGerenteNuevo.setVisible(true);
+        horaEntGerenteNuevo.setVisible(true);
+        horaSalidaGerenteNuevo.setVisible(true);
+        crearGerente.setVisible(true);
+        passGerenteNuevo.setVisible(true);
+    }
+
+    public void editarGerente() {
+    }
+
+    public void borrarGerente() {
+    }
+
+    /**
+     * Método que registra en la BD a un nuevo gerente
+     */
+    public void crearGerenteOnAction() {
+        if(nombreGerenteNuevo.getText().isEmpty() || telefonoGerenteNuevo.getText().isEmpty() || direccionGerenteNuevo.getText().isEmpty() ||
+           horaEntGerenteNuevo.getText().isEmpty() || horaSalidaGerenteNuevo.getText().isEmpty() || passGerenteNuevo.getText().isEmpty()){
+            wn.popUpMessage("Llenar campos","Todos los campos deben de estar llenos\npara poder seguir con el registro.");
+        }
+        else{
+            try{
+                c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
+                c.setStmt(c.getConn().createStatement());
+                int nG = generarNumeroGerente();
+                String claveGer = "GER_"+nG;
+                String sql = "INSERT INTO gerente(codigoGerente,nombre,telefono,direccion,horaEntrada,horaSalida,password,numGerente) "+
+                              "values('"+claveGer+"','"+nombreGerenteNuevo.getText()+"','"+telefonoGerenteNuevo.getText()+"','"+
+                              direccionGerenteNuevo.getText()+"','"+horaEntGerenteNuevo.getText()+"','"+horaSalidaGerenteNuevo.getText()+"','"+
+                              passGerenteNuevo.getText()+"',"+nG+")";
+                c.getStmt().executeUpdate(sql);
+                c.getConn().close();
+                wn.popUpMessage("Registro exitoso","Se creo el gerente: " + claveGer + "\nCon la contraseña: " + passGerenteNuevo.getText());
+                nombreGerenteNuevo.clear();
+                telefonoGerenteNuevo.clear();
+                direccionGerenteNuevo.clear();
+                horaSalidaGerenteNuevo.clear();
+                horaEntGerenteNuevo.clear();
+                passGerenteNuevo.clear();
+            }
+            catch (Exception e){
+                System.out.println(e);
+            }
+        }
+    }
+
+    /**
+     * Método que muestra la tabla de los gerentes
+     */
+    public void mostrarGerentes() {
+        oblist9.clear();
+        esconderElementosEnPantalla();
+        tableGer.getItems().clear();
+        tableGer.setVisible(true);
+        try {
+            c.setConn(DriverManager.getConnection(c.getDB_URL(), c.getUSER(), c.getPASS()));
+            c.setStmt(c.getConn().createStatement());
+            String sql = "SELECT * FROM gerente";
+            c.setPst(c.getConn().prepareStatement(sql));
+            ResultSet rst = c.getPst().executeQuery();
+            while (rst.next()) {
+                oblist9.add(new TableGerentes(rst.getString("codigoGerente"),rst.getString("nombre"),rst.getString("telefono"),
+                            rst.getString("direccion"),rst.getString("horaEntrada"),rst.getString("horaSalida"),rst.getString("password")));
+            }
+            c.getConn().close();
+        } catch (Exception e) {
+            System.out.println(e);
+        }
+        claveTableGer.setCellValueFactory(new PropertyValueFactory<>("codigoGerente"));
+        nombreTableGer.setCellValueFactory(new PropertyValueFactory<>("nombre"));;
+        telefTableGer.setCellValueFactory(new PropertyValueFactory<>("telefono"));;
+        direccionTableGer.setCellValueFactory(new PropertyValueFactory<>("direccion"));;
+        horaEntTableGer.setCellValueFactory(new PropertyValueFactory<>("horaEnt"));;
+        horaSalidaTableGer.setCellValueFactory(new PropertyValueFactory<>("horaSal"));;
+        passTableGer.setCellValueFactory(new PropertyValueFactory<>("pass"));;
+        tableGer.setItems(oblist9);
+
+    }
 
 
     // ************************************************************************************//
@@ -1683,6 +1801,24 @@ public class MainMenuManagerController implements Initializable {
         return false;
     }
 
+    /**
+     * Método que busca el último numero de gerente registrado y regresa el siguiente número
+     * @return n = numero de gerente nuevo
+     * @throws SQLException exception
+     */
+    public int generarNumeroGerente() throws  SQLException{
+        int nc = 0;
+        c.setConn(DriverManager.getConnection(c.getDB_URL(), c.getUSER(), c.getPASS()));
+        c.setStmt(c.getConn().createStatement());
+        String sql = "SELECT numGerente FROM gerente";
+        c.setPst(c.getConn().prepareStatement(sql));
+        ResultSet rst = c.getPst().executeQuery();
+        while (rst.next()) {
+            nc = rst.getInt("numGerente");
+        }
+        return nc + 1;
+    }
+
     // ****************************************************************************//
     // <!--------------------------FUNCIONES DE AYUDA--------------------------!> //
     // ***************************************************************************//
@@ -1731,6 +1867,9 @@ public class MainMenuManagerController implements Initializable {
         hacerCheckIn();
     }
 
+    /**
+    * Botón de hacer check-out
+     */
     public void registrarCheckOut() throws SQLException{
         hacerCheckOut();
     }
@@ -1873,6 +2012,20 @@ public class MainMenuManagerController implements Initializable {
         numPersonalEditarArea.setVisible(false);
         numPersonalEditarArea.clear();
         actualizarAreaButton.setVisible(false);
+        nombreGerenteNuevo.setVisible(false);
+        nombreGerenteNuevo.clear();
+        telefonoGerenteNuevo.setVisible(false);
+        telefonoGerenteNuevo.clear();
+        direccionGerenteNuevo.setVisible(false);
+        direccionGerenteNuevo.clear();
+        horaEntGerenteNuevo.setVisible(false);
+        horaEntGerenteNuevo.clear();
+        horaSalidaGerenteNuevo.setVisible(false);
+        horaSalidaGerenteNuevo.clear();
+        crearGerente.setVisible(false);
+        passGerenteNuevo.setVisible(false);
+        passGerenteNuevo.clear();
+        tableGer.setVisible(false);
     }
 }
 

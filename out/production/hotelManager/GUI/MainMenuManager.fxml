@@ -13,7 +13,7 @@
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 
-<AnchorPane fx:id="mainMenuPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="503.0" prefWidth="895.0" styleClass="mainMenubg" stylesheets="style.css" xmlns="http://javafx.com/javafx/11.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.MainMenuManagerController">
+<AnchorPane fx:id="mainMenuPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="503.0" prefWidth="895.0" styleClass="mainMenubg" stylesheets="style.css" xmlns="http://javafx.com/javafx/15.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="Controllers.MainMenuManagerController">
     <children>
         <MenuBar prefHeight="29.0" prefWidth="784.0">
             <menus>
@@ -53,14 +53,16 @@
                 </Menu>
                 <Menu mnemonicParsing="false" text="Gerente">
                     <items>
-                        <MenuItem mnemonicParsing="false" text="Action 1" />
+                        <MenuItem mnemonicParsing="false" onAction="#nuevoGerente" text="Nuevo" />
+                        <MenuItem mnemonicParsing="false" onAction="#editarGerente" text="Editar" />
+                        <MenuItem mnemonicParsing="false" onAction="#borrarGerente" text="Borrar" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Areas">
                     <items>
                         <MenuItem mnemonicParsing="false" onAction="#nuevaArea" text="Nueva" />
-                  <MenuItem mnemonicParsing="false" onAction="#editarArea" text="Editar" />
-                  <MenuItem mnemonicParsing="false" onAction="#borrarArea" text="Borrar" />
+                        <MenuItem mnemonicParsing="false" onAction="#editarArea" text="Editar" />
+                        <MenuItem mnemonicParsing="false" onAction="#borrarArea" text="Borrar" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Mostrar">
@@ -68,7 +70,8 @@
                         <MenuItem mnemonicParsing="false" onAction="#mostrarTablaDep" text="Departamentos" />
                         <MenuItem mnemonicParsing="false" onAction="#mostrarTablaEmp" text="Empleados" />
                         <MenuItem mnemonicParsing="false" onAction="#mostrarVentas" text="Ventas" />
-                  <MenuItem mnemonicParsing="false" onAction="#mostrarAreas" text="Areas" />
+                        <MenuItem mnemonicParsing="false" onAction="#mostrarAreas" text="Areas" />
+                        <MenuItem mnemonicParsing="false" onAction="#mostrarGerentes" text="Gerentes" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Salir">
@@ -197,28 +200,46 @@
         <Button fx:id="buscarTableVenta" focusTraversable="false" layoutX="693.0" layoutY="333.0" mnemonicParsing="false" onAction="#buscarTableVentaOnAction" text="Buscar" visible="false" />
         <TextField fx:id="claveEmpleadoTableVenta" focusTraversable="false" layoutX="639.0" layoutY="268.0" promptText="Clave de Empleado" visible="false" />
         <ComboBox fx:id="filtroVentaComboBox" focusTraversable="false" layoutX="636.0" layoutY="205.0" prefHeight="26.0" prefWidth="168.0" promptText="Filtro" visible="false" />
-      <Button fx:id="nuevaAreaButton" focusTraversable="false" layoutX="152.0" layoutY="238.0" mnemonicParsing="false" onAction="#nuevaAreaOnAction" text="Añadir" visible="false" />
-      <ComboBox fx:id="tipoNuevaArea" focusTraversable="false" layoutX="101.0" layoutY="123.0" prefWidth="150.0" promptText="TIpo" visible="false" />
-      <TextField fx:id="nombreNuevaArea" focusTraversable="false" layoutX="101.0" layoutY="68.0" prefHeight="26.0" prefWidth="150.0" promptText="Nombre" visible="false" />
-      <TextField fx:id="numPersonalArea" focusTraversable="false" layoutX="101.0" layoutY="181.0" prefHeight="26.0" prefWidth="150.0" promptText="Número de Personal" visible="false" />
-      <TableView fx:id="tableAreas" focusTraversable="false" layoutX="93.0" layoutY="68.0" prefHeight="360.0" prefWidth="558.0" visible="false">
-        <columns>
-          <TableColumn fx:id="claveTableAreas" prefWidth="101.0" text="Clave" />
-          <TableColumn fx:id="tipoTableAreas" prefWidth="136.0" text="Tipo" />
-            <TableColumn fx:id="personalTableAreas" prefWidth="140.0" text="Personal maximo" />
-            <TableColumn fx:id="nombreTableAreas" prefWidth="180.0" text="Nombre" />
-        </columns>
-      </TableView>
-      <ComboBox fx:id="filtroTableAreas" focusTraversable="false" layoutX="709.0" layoutY="160.0" prefWidth="150.0" visible="false" />
-      <Button fx:id="buscarTableAreas" focusTraversable="false" layoutX="756.0" layoutY="217.0" mnemonicParsing="false" onAction="#buscarTableAreasOnAction" text="Buscar" visible="false" />
-      <TextField fx:id="claveBorrarArea" focusTraversable="false" layoutX="101.0" layoutY="69.0" promptText="Clave de Area" visible="false" />
-      <PasswordField fx:id="passBorrarArea" focusTraversable="false" layoutX="101.0" layoutY="119.0" promptText="Contraseña" visible="false" />
-      <Button fx:id="borrarAreaButton" focusTraversable="false" layoutX="160.0" layoutY="176.0" mnemonicParsing="false" onAction="#borrarAreaOnAction" text="Borrar" visible="false" />
+        <Button fx:id="nuevaAreaButton" focusTraversable="false" layoutX="152.0" layoutY="238.0" mnemonicParsing="false" onAction="#nuevaAreaOnAction" text="Añadir" visible="false" />
+        <ComboBox fx:id="tipoNuevaArea" focusTraversable="false" layoutX="101.0" layoutY="123.0" prefWidth="150.0" promptText="TIpo" visible="false" />
+        <TextField fx:id="nombreNuevaArea" focusTraversable="false" layoutX="101.0" layoutY="68.0" prefHeight="26.0" prefWidth="150.0" promptText="Nombre" visible="false" />
+        <TextField fx:id="numPersonalArea" focusTraversable="false" layoutX="101.0" layoutY="181.0" prefHeight="26.0" prefWidth="150.0" promptText="Número de Personal" visible="false" />
+        <TableView fx:id="tableAreas" focusTraversable="false" layoutX="93.0" layoutY="68.0" prefHeight="360.0" prefWidth="558.0" visible="false">
+            <columns>
+                <TableColumn fx:id="claveTableAreas" prefWidth="101.0" text="Clave" />
+                <TableColumn fx:id="tipoTableAreas" prefWidth="136.0" text="Tipo" />
+                <TableColumn fx:id="personalTableAreas" prefWidth="140.0" text="Personal maximo" />
+                <TableColumn fx:id="nombreTableAreas" prefWidth="180.0" text="Nombre" />
+            </columns>
+        </TableView>
+        <ComboBox fx:id="filtroTableAreas" focusTraversable="false" layoutX="709.0" layoutY="160.0" prefWidth="150.0" visible="false" />
+        <Button fx:id="buscarTableAreas" focusTraversable="false" layoutX="756.0" layoutY="217.0" mnemonicParsing="false" onAction="#buscarTableAreasOnAction" text="Buscar" visible="false" />
+        <TextField fx:id="claveBorrarArea" focusTraversable="false" layoutX="101.0" layoutY="69.0" promptText="Clave de Area" visible="false" />
+        <PasswordField fx:id="passBorrarArea" focusTraversable="false" layoutX="101.0" layoutY="119.0" promptText="Contraseña" visible="false" />
+        <Button fx:id="borrarAreaButton" focusTraversable="false" layoutX="160.0" layoutY="176.0" mnemonicParsing="false" onAction="#borrarAreaOnAction" text="Borrar" visible="false" />
         <ComboBox fx:id="tipoEditarArea" focusTraversable="false" layoutX="101.0" layoutY="123.0" prefWidth="150.0" promptText="TIpo" visible="false" />
         <TextField fx:id="nombreEditarArea" focusTraversable="false" layoutX="101.0" layoutY="68.0" prefHeight="26.0" prefWidth="150.0" promptText="Nombre" visible="false" />
         <TextField fx:id="numPersonalEditarArea" focusTraversable="false" layoutX="101.0" layoutY="181.0" prefHeight="26.0" prefWidth="150.0" promptText="Número de Personal" visible="false" />
-      <Button fx:id="buscarEditarAreaButton" layoutX="417.0" layoutY="115.0" mnemonicParsing="false" onAction="#buscarEditarAreaOnAction" text="Buscar" visible="false" focusTraversable="false"/>
-      <TextField fx:id="buscarClaveEditarArea" layoutX="363.0" layoutY="67.0" promptText="Clave del area" visible="false" focusTraversable="false"/>
-      <Button fx:id="actualizarAreaButton" layoutX="133.0" layoutY="236.0" mnemonicParsing="false" onAction="#actualizarAreaOnAction" text="Actualizar" visible="false" focusTraversable="false"/>
+        <Button fx:id="buscarEditarAreaButton" focusTraversable="false" layoutX="417.0" layoutY="115.0" mnemonicParsing="false" onAction="#buscarEditarAreaOnAction" text="Buscar" visible="false" />
+        <TextField fx:id="buscarClaveEditarArea" focusTraversable="false" layoutX="363.0" layoutY="67.0" promptText="Clave del area" visible="false" />
+        <Button fx:id="actualizarAreaButton" focusTraversable="false" layoutX="133.0" layoutY="236.0" mnemonicParsing="false" onAction="#actualizarAreaOnAction" text="Actualizar" visible="false" />
+        <TextField fx:id="nombreGerenteNuevo" focusTraversable="false" layoutX="101.0" layoutY="77.0" promptText="Nombre" visible="false" />
+        <TextField fx:id="telefonoGerenteNuevo" focusTraversable="false" layoutX="102.0" layoutY="117.0" promptText="Telefono" visible="false" />
+        <TextField fx:id="direccionGerenteNuevo" focusTraversable="false" layoutX="102.0" layoutY="162.0" promptText="Direccion" visible="false" />
+        <TextField fx:id="horaEntGerenteNuevo" focusTraversable="false" layoutX="101.0" layoutY="204.0" promptText="Hora de entrada (hh:mm)" visible="false" />
+        <TextField fx:id="horaSalidaGerenteNuevo" focusTraversable="false" layoutX="101.0" layoutY="249.0" promptText="Hora de salida (hh:mm)" visible="false" />
+        <Button fx:id="crearGerente" focusTraversable="false" layoutX="157.0" layoutY="335.0" mnemonicParsing="false" onAction="#crearGerenteOnAction" text="Crear" visible="false" />
+        <PasswordField fx:id="passGerenteNuevo" focusTraversable="false" layoutX="102.0" layoutY="294.0" promptText="Contraseña" visible="false" />
+        <TableView fx:id="tableGer" focusTraversable="false" layoutX="14.0" layoutY="56.0" prefHeight="417.0" prefWidth="862.0" visible="true">
+            <columns>
+                <TableColumn fx:id="claveTableGer" prefWidth="79.09392929077148" text="Clave" />
+                <TableColumn fx:id="nombreTableGer" prefWidth="90.90606689453125" text="Nombre" />
+                <TableColumn fx:id="telefTableGer" prefWidth="136.48374938964844" text="Teléfono" />
+                <TableColumn fx:id="direccionTableGer" prefWidth="135.01620483398438" text="Dirección" />
+                <TableColumn fx:id="horaEntTableGer" prefWidth="108.045166015625" text="Hora entrada" />
+                <TableColumn fx:id="horaSalidaTableGer" prefWidth="130.24700927734375" text="Hora salida" />
+                <TableColumn fx:id="passTableGer" prefWidth="181.22149658203125" text="password" />
+            </columns>
+        </TableView>
     </children>
 </AnchorPane>
