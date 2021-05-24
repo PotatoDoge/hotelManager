@@ -576,7 +576,7 @@ public class MainMenuEmployeeController implements Initializable {
                         String SQL = "INSERT into reservacion_habitacion (codigoReservacion,codigoHabitacion,fecha,numPersonas) values ('"+codigoCheckInID.getText()+"','"+
                                 codHab+"','"+fechaCheckInID.getValue()+"',"+Integer.valueOf(numPer[0])+")";
                         c.getStmt().executeUpdate(SQL);
-                        String sql = "UPDATE habitacion SET disponible='D' where codigoHabitacion='"+codHab+"'";
+                        String sql = "UPDATE habitacion SET disponible='O' where codigoHabitacion='"+codHab+"'";
                         c.getStmt().executeUpdate(sql);
                         c.getConn().close();
                         wn.popUpMessage("Habitación asignada","Se le asignó la habitación:\n"+codHab);
