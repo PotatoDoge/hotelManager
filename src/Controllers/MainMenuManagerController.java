@@ -3,7 +3,6 @@ package Controllers;
 import Tools.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -1783,6 +1782,9 @@ public class MainMenuManagerController implements Initializable {
                                  claveEmpleadoDepa.getText()+"','"+claveDepaDepa.getText()+"','"+puestoEmpDepa.getText()+"',"+
                                  sueldoEmpDepa.getText()+")";
                     c.getStmt().executeUpdate(SQL);
+                    int n = addEmpleadoADep(claveDepaDepa.getText());
+                    String SQL2 = "UPDATE departamento set numEmpleados="+n+" where codigoDepartamento='"+claveDepaDepa.getText()+"'";
+                    c.getStmt().executeUpdate(SQL2);
                     wn.popUpMessage("Asignado con éxito","El empleado fue asignado con éxito");
                     claveEmpleadoDepa.clear();
                     claveDepaDepa.clear();
@@ -2002,6 +2004,10 @@ public class MainMenuManagerController implements Initializable {
                             String SQL = "DELETE FROM empleado_departamento where codigoEmpleado='"+claveEmpQuitarDeDep.getText()+
                                     "' and codigoDepartamento='"+claveDepQuitarDeDep.getText()+"'";
                             c.getStmt().executeUpdate(SQL);
+                            int n = addEmpleadoADep(claveDepQuitarDeDep.getText())-2;
+                            //System.out.println(n);
+                            String SQL2 = "UPDATE departamento set numEmpleados="+n+" where codigoDepartamento='"+claveDepQuitarDeDep.getText()+"'";
+                            c.getStmt().executeUpdate(SQL2);
                             c.getConn().close();
                             wn.popUpMessage("Exito","El empleado fue borrado de manera exitosa.");
                             claveEmpQuitarDeDep.clear();
@@ -2542,6 +2548,25 @@ public class MainMenuManagerController implements Initializable {
             }
         }
         return false;
+    }
+
+    /**
+     * Método que añade un empleado al contador en departamentos
+     * @param clave clave del dep
+     * @return numero a cambiar
+     * @throws SQLException exception
+     */
+    public int addEmpleadoADep(String clave) throws SQLException {
+        int nc = 0;
+        c.setConn(DriverManager.getConnection(c.getDB_URL(), c.getUSER(), c.getPASS()));
+        c.setStmt(c.getConn().createStatement());
+        String sql = "SELECT numEmpleados FROM departamento where codigoDepartamento='"+clave+"'";
+        c.setPst(c.getConn().prepareStatement(sql));
+        ResultSet rst = c.getPst().executeQuery();
+        if (rst.next()) {
+            nc = rst.getInt("numEmpleados");
+        }
+        return nc + 1;
     }
 
     // ****************************************************************************//
