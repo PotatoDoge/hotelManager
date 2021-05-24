@@ -74,7 +74,7 @@
                         <MenuItem mnemonicParsing="false" onAction="#mostrarGerentes" text="Gerentes" />
                         <MenuItem mnemonicParsing="false" onAction="#verEmpleadoDepaOnAction" text="Empleados en departamentos" />
                         <MenuItem mnemonicParsing="false" onAction="#verEmpleadoAreaOnAction" text="Empleados en areas" />
-                        <MenuItem mnemonicParsing="false" text="Gerentes en departamentos" />
+                        <MenuItem mnemonicParsing="false" onAction="#verGerenteDepaOnAction" text="Gerentes en departamentos" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Asignar">
@@ -82,9 +82,8 @@
                         <MenuItem mnemonicParsing="false" onAction="#empleadoDepartamentoOnAction" text="Empleado a Departamento" />
                         <MenuItem mnemonicParsing="false" onAction="#empleadoAreaOnAction" text="Empleado a Area" />
                         <MenuItem mnemonicParsing="false" onAction="#gerenteDepartamentoOnAction" text="Gerente a Departamento" />
-                        <MenuItem mnemonicParsing="false" onAction="#salirOnAction" text="Quitar Empleado" />
+                        <MenuItem mnemonicParsing="false" onAction="#quitarEmpleadoOnAction" text="Quitar Empleado" />
                         <MenuItem mnemonicParsing="false" onAction="#salirOnAction" text="Quitar Gerente" />
-                        <MenuItem mnemonicParsing="false" onAction="#salirOnAction" text="Mostrar" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Salir">
@@ -293,5 +292,16 @@
                 <TableColumn fx:id="horarioTableEmpArea" prefWidth="171.56375122070312" text="horario" />
             </columns>
         </TableView>
+      <TableView fx:id="tableGerDepa" focusTraversable="false" layoutX="133.0" layoutY="83.0" prefHeight="336.0" prefWidth="600.0" visible="false">
+        <columns>
+          <TableColumn fx:id="codGerTableGerDep" prefWidth="187.56019592285156" text="Código de gerente" />
+          <TableColumn fx:id="codDepTableGerDep" prefWidth="187.77264404296875" text="Código de departamento" />
+            <TableColumn fx:id="sueldoTableGerDep" prefWidth="224.22732543945312" text="Sueldo" />
+        </columns>
+      </TableView>
+      <TextField fx:id="claveEmpQuitarDeDep" layoutX="131.0" layoutY="76.0" promptText="Clave Empleado" visible="false" focusTraversable="false"/>
+      <TextField fx:id="claveDepQuitarDeDep" layoutX="131.0" layoutY="122.0" promptText="Clave Departamento" visible="false" focusTraversable="false"/>
+      <PasswordField fx:id="passQuitarDeDep" layoutX="131.0" layoutY="170.0" promptText="Contraseña" visible="false" focusTraversable="false"/>
+      <Button fx:id="borrarDeDep" layoutX="183.0" layoutY="226.0" mnemonicParsing="false" onAction="#borrarEmpleadoDeDepOnAcrion" text="Borrar" visible="false" focusTraversable="false"/>
     </children>
 </AnchorPane>
