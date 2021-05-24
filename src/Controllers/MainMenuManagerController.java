@@ -22,10 +22,22 @@ public class MainMenuManagerController implements Initializable {
     private final ConTool c = new ConTool();
     private final User user = new User();
 
-    public TextField claveEmpQuitarDeDep;
-    public TextField claveDepQuitarDeDep;
-    public PasswordField passQuitarDeDep;
-    public Button borrarDeDep;
+    @FXML
+    private TextField claveEmpQuitarDeDep;
+    @FXML
+    private TextField claveDepQuitarDeDep;
+    @FXML
+    private PasswordField passQuitarDeDep;
+    @FXML
+    private Button borrarDeDep;
+    @FXML
+    private TextField claveEmpQuitarDeArea;
+    @FXML
+    private TextField claveAreaQuitarDeArea;
+    @FXML
+    private PasswordField passQuitarDeArea;
+    @FXML
+    private Button borrarDeArea;
     @FXML
     private TableColumn <TableGerenteDepartamento,String>codGerTableGerDep;
     @FXML
@@ -2012,6 +2024,59 @@ public class MainMenuManagerController implements Initializable {
         }
     }
 
+    /**
+     * Método que desbloquea campos para quitar a empleado de area
+     */
+    public void quitarEmpleadoAreaOnAction() {
+        esconderElementosEnPantalla();
+        claveEmpQuitarDeArea.setVisible(true);
+        claveAreaQuitarDeArea.setVisible(true);
+        passQuitarDeArea.setVisible(true);
+        borrarDeArea.setVisible(true);
+    }
+
+    /**
+     * Método que quita el empleado de un area
+     */
+    public void borrarEmpleadoDeAreaOnAcrion() throws SQLException {
+        if(claveEmpQuitarDeArea.getText().isEmpty() || claveAreaQuitarDeArea.getText().isEmpty() || passQuitarDeArea.getText().isEmpty()){
+            wn.popUpMessage("Error","Todos los campos deben de estar llenos\npara poder continuar");
+        }
+        else{
+            if(checarClaveEmpleado(claveEmpQuitarDeArea.getText()) && checarClaveArea(claveAreaQuitarDeArea.getText())){
+                if(checarSiEmpleadoArea(claveEmpQuitarDeArea.getText(),claveAreaQuitarDeArea.getText())){
+                    if(passQuitarDeArea.getText().equals(user.getPassword())){
+                        try{
+                            c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
+                            c.setStmt(c.getConn().createStatement());
+                            String SQL = "DELETE FROM empleado_area where codigoEmpleado='"+claveEmpQuitarDeArea.getText()+
+                                    "' and codigoArea='"+claveAreaQuitarDeArea.getText()+"'";
+                            c.getStmt().executeUpdate(SQL);
+                            c.getConn().close();
+                            wn.popUpMessage("Exito","El empleado fue borrado de manera exitosa.");
+                            claveAreaQuitarDeArea.clear();
+                            claveEmpQuitarDeArea.clear();
+                            passQuitarDeArea.clear();
+                        }
+                        catch (Exception e){
+                            System.out.print("e");
+
+                        }
+                    }
+                    else{
+                        wn.popUpMessage("Error","Contraseña incorrecta.");
+                    }
+                }
+                else{
+                    wn.popUpMessage("Error","El empleado ingresado no forma parte de ese departamento");
+                }
+            }
+            else{
+                wn.popUpMessage("Error","Clave de departamento o empleado\nno es correcta.");
+            }
+        }
+    }
+
     // ************************************************************************************//
     // <!--------------------------FUNCIONES QUE HACEN QUERIES--------------------------!> //
     // ************************************************************************************//
@@ -2661,6 +2726,13 @@ public class MainMenuManagerController implements Initializable {
         passQuitarDeDep.setVisible(false);
         passQuitarDeDep.clear();
         borrarDeDep.setVisible(false);
+        claveEmpQuitarDeArea.setVisible(false);
+        claveEmpQuitarDeArea.clear();
+        claveAreaQuitarDeArea.setVisible(false);
+        claveAreaQuitarDeArea.clear();
+        passQuitarDeArea.setVisible(false);
+        passQuitarDeArea.clear();
+        borrarDeArea.setVisible(false);
     }
 }
 

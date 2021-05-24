@@ -82,7 +82,8 @@
                         <MenuItem mnemonicParsing="false" onAction="#empleadoDepartamentoOnAction" text="Empleado a Departamento" />
                         <MenuItem mnemonicParsing="false" onAction="#empleadoAreaOnAction" text="Empleado a Area" />
                         <MenuItem mnemonicParsing="false" onAction="#gerenteDepartamentoOnAction" text="Gerente a Departamento" />
-                        <MenuItem mnemonicParsing="false" onAction="#quitarEmpleadoOnAction" text="Quitar Empleado" />
+                        <MenuItem mnemonicParsing="false" onAction="#quitarEmpleadoOnAction" text="Quitar Empleado de Departamento" />
+                  <MenuItem mnemonicParsing="false" onAction="#quitarEmpleadoAreaOnAction" text="Quitar Empleado de Area" />
                         <MenuItem mnemonicParsing="false" onAction="#salirOnAction" text="Quitar Gerente" />
                     </items>
                 </Menu>
@@ -299,9 +300,13 @@
             <TableColumn fx:id="sueldoTableGerDep" prefWidth="224.22732543945312" text="Sueldo" />
         </columns>
       </TableView>
-      <TextField fx:id="claveEmpQuitarDeDep" layoutX="131.0" layoutY="76.0" promptText="Clave Empleado" visible="false" focusTraversable="false"/>
-      <TextField fx:id="claveDepQuitarDeDep" layoutX="131.0" layoutY="122.0" promptText="Clave Departamento" visible="false" focusTraversable="false"/>
-      <PasswordField fx:id="passQuitarDeDep" layoutX="131.0" layoutY="170.0" promptText="Contraseña" visible="false" focusTraversable="false"/>
-      <Button fx:id="borrarDeDep" layoutX="183.0" layoutY="226.0" mnemonicParsing="false" onAction="#borrarEmpleadoDeDepOnAcrion" text="Borrar" visible="false" focusTraversable="false"/>
+      <TextField fx:id="claveEmpQuitarDeDep" focusTraversable="false" layoutX="131.0" layoutY="76.0" promptText="Clave Empleado" visible="false" />
+      <TextField fx:id="claveDepQuitarDeDep" focusTraversable="false" layoutX="131.0" layoutY="122.0" promptText="Clave Departamento" visible="false" />
+      <PasswordField fx:id="passQuitarDeDep" focusTraversable="false" layoutX="131.0" layoutY="170.0" promptText="Contraseña" visible="false" />
+      <Button fx:id="borrarDeDep" focusTraversable="false" layoutX="183.0" layoutY="226.0" mnemonicParsing="false" onAction="#borrarEmpleadoDeDepOnAcrion" text="Borrar" visible="false" />
+        <TextField fx:id="claveEmpQuitarDeArea" focusTraversable="false" layoutX="131.0" layoutY="76.0" promptText="Clave Empleado" visible="false" />
+        <TextField fx:id="claveAreaQuitarDeArea" focusTraversable="false" layoutX="131.0" layoutY="122.0" promptText="Clave Departamento" visible="false" />
+        <PasswordField fx:id="passQuitarDeArea" focusTraversable="false" layoutX="131.0" layoutY="170.0" promptText="Contraseña" visible="false" />
+        <Button fx:id="borrarDeArea" focusTraversable="false" layoutX="183.0" layoutY="226.0" mnemonicParsing="false" onAction="#borrarEmpleadoDeAreaOnAcrion" text="Borrar" visible="false" />
     </children>
 </AnchorPane>
