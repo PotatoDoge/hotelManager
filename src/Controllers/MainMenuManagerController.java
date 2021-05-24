@@ -3,6 +3,7 @@ package Controllers;
 import Tools.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.embed.swt.SWTFXUtils;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
@@ -23,14 +24,49 @@ public class MainMenuManagerController implements Initializable {
     private final User user = new User();
 
     @FXML
-    public TextField nombreGerenteEditar;
-    public TextField telefonoGerenteEditar;
-    public TextField direccionGerenteEditar;
-    public TextField horaEntGerenteEditar;
-    public TextField horaSalidaGerenteEditar;
-    public Button actualizarGerenteButton;
-    public Button buscarGerenteEditar;
-    public TextField claveGerenteEditar;
+    private Button registrarEmpAreaButton;
+    @FXML
+    private TextField codigoEmpEmpArea;
+    @FXML
+    private TextField codigoAreaEmpArea;
+    @FXML
+    private TextField horarioEmpArea;
+    @FXML
+    private TextField codigoGerGerDepa;
+    @FXML
+    private TextField sueldoGerDepa;
+    @FXML
+    private TextField codigoDepaGerDepa;
+    @FXML
+    private Button registrarGerDepaButton;
+
+    @FXML
+    private TextField claveEmpleadoDepa;
+    @FXML
+    private TextField claveDepaDepa;
+    @FXML
+    private TextField puestoEmpDepa;
+    @FXML
+    private TextField sueldoEmpDepa;
+    @FXML
+    private Button addEmpleadoDepa;
+    @FXML
+    private TextField nombreGerenteEditar;
+    @FXML
+    private TextField telefonoGerenteEditar;
+    @FXML
+    private TextField direccionGerenteEditar;
+    @FXML
+    private TextField horaEntGerenteEditar;
+    @FXML
+    private TextField horaSalidaGerenteEditar;
+    @FXML
+    private Button actualizarGerenteButton;
+    @FXML
+    private Button buscarGerenteEditar;
+    @FXML
+    private TextField claveGerenteEditar;
+
 
     @FXML
     private TextField borrarClaveGerente;
@@ -1663,8 +1699,139 @@ public class MainMenuManagerController implements Initializable {
         }
     }
 
+    /**
+     * Método que desbloquea campos para asignar el empleado a un departamento
+     */
+    public void empleadoDepartamentoOnAction() {
+        esconderElementosEnPantalla();
+        claveEmpleadoDepa.setVisible(true);
+        claveDepaDepa.setVisible(true);
+        puestoEmpDepa.setVisible(true);
+        sueldoEmpDepa.setVisible(true);
+        addEmpleadoDepa.setVisible(true);
+    }
 
+    /**
+     * Método que registra el empleado con el departamento
+     */
+    public void addEmpleadoDepaOnAction() throws SQLException {
+        if(claveEmpleadoDepa.getText().isEmpty() || claveDepaDepa.getText().isEmpty() || puestoEmpDepa.getText().isEmpty() ||
+           sueldoEmpDepa.getText().isEmpty()){
+            wn.popUpMessage("Llenar campos","Todos los campos debene de estar llenos\npara continuar");
+        }
+        else{
+            if(checarEmpleadoDepartamento(claveEmpleadoDepa.getText(),claveDepaDepa.getText())){
+                wn.popUpMessage("Error","Este empleado ya fue añadido a este departamento");
+            }
+            else{
+                try{
+                    c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
+                    c.setStmt(c.getConn().createStatement());
+                    String SQL = "INSERT INTO empleado_departamento (codigoEmpleado,codigoDepartamento,puesto,sueldo) values('"+
+                                 claveEmpleadoDepa.getText()+"','"+claveDepaDepa.getText()+"','"+puestoEmpDepa.getText()+"',"+
+                                 sueldoEmpDepa.getText()+")";
+                    c.getStmt().executeUpdate(SQL);
+                    wn.popUpMessage("Asignado con éxito","El empleado fue asignado con éxito");
+                    claveEmpleadoDepa.clear();
+                    claveDepaDepa.clear();
+                    puestoEmpDepa.clear();
+                    sueldoEmpDepa.clear();
+                }
+                catch (Exception e){
+                    System.out.println(e);
+                }
+            }
+        }
 
+    }
+
+    /**
+     * Métod que desbloquea campos para asginar un gerente a un departamento
+     */
+    public void gerenteDepartamentoOnAction() {
+        esconderElementosEnPantalla();
+        codigoGerGerDepa.setVisible(true);
+        sueldoGerDepa.setVisible(true);
+        codigoDepaGerDepa.setVisible(true);
+        registrarGerDepaButton.setVisible(true);
+    }
+
+    /**
+     * Método que registra gerente con un departamento
+     */
+    public void registrarGerDepaOnAction() throws SQLException {
+        if(codigoGerGerDepa.getText().isEmpty() || sueldoGerDepa.getText().isEmpty() || codigoDepaGerDepa.getText().isEmpty()){
+            wn.popUpMessage("Error","Todos los campos deben de estar llenos\npara seguir con el proceso.");
+        }
+        else{
+            if(checarClaveDepartamento(codigoDepaGerDepa.getText()) && checarClaveGerente(codigoGerGerDepa.getText())){
+                if(checarGerenteEnDepartamento(codigoGerGerDepa.getText()) || checsrDepartamentoConGerente(codigoDepaGerDepa.getText())){
+                    wn.popUpMessage("Error","Ya fue asignado el gerente a un departamento,o \nal departamento ya se le fue asignado un gerente");
+                }
+                else{
+                    try{
+                        c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
+                        c.setStmt(c.getConn().createStatement());
+                        String SQL = "INSERT INTO gerente_departamento(codigoGerente,codigoDepartamento,sueldo) values('"+
+                                codigoGerGerDepa.getText()+"','"+codigoDepaGerDepa.getText()+"',"+sueldoGerDepa.getText()+")";
+                        c.getStmt().executeUpdate(SQL);
+                        wn.popUpMessage("Exito","El gerente fue registrado con éxito");
+                        codigoDepaGerDepa.clear();
+                        sueldoGerDepa.clear();
+                        codigoGerGerDepa.clear();
+                    }
+                    catch (Exception e){
+                        System.out.println(e);
+                    }
+                }
+            }
+            else{
+                wn.popUpMessage("Error","No existe el gerente o el departamento");
+            }
+
+        }
+    }
+
+    /**
+     * Método que desbloquea campos para poder asignar un empleado a un area
+     */
+    public void empleadoAreaOnAction() {
+        esconderElementosEnPantalla();
+        codigoEmpEmpArea.setVisible(true);
+        codigoAreaEmpArea.setVisible(true);
+        horarioEmpArea.setVisible(true);
+        registrarEmpAreaButton.setVisible(true);
+    }
+
+    /**
+     * Métood que registra empleado con area
+     */
+    public void registrarEmpAreaOnAction() throws SQLException {
+        if(codigoAreaEmpArea.getText().isEmpty() || codigoEmpEmpArea.getText().isEmpty() || horarioEmpArea.getText().isEmpty()){
+            wn.popUpMessage("Error","Todos los campos deben estar llenos\npara continuar con el proceso.");
+        }
+        else{
+            if(checarSiEmpleadoArea(codigoEmpEmpArea.getText(),codigoAreaEmpArea.getText())){
+                wn.popUpMessage("Error","El empleado ya fue asignado a esta area");
+            }
+            else{
+                try{
+                    c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
+                    c.setStmt(c.getConn().createStatement());
+                    String SQL = "INSERT INTO empleado_area(codigoEmpleado,codigoArea,horario) values('"+
+                                 codigoEmpEmpArea.getText()+"','"+codigoAreaEmpArea.getText()+"','"+horarioEmpArea.getText()+"')";
+                    c.getStmt().executeUpdate(SQL);
+                    wn.popUpMessage("Exito","El empleado y el area fueron registrados con éxito");
+                    codigoAreaEmpArea.clear();
+                    codigoEmpEmpArea.clear();
+                    horarioEmpArea.clear();
+                }
+                catch (Exception e){
+                    System.out.println(e);
+                }
+            }
+        }
+    }
 
     // ************************************************************************************//
     // <!--------------------------FUNCIONES QUE HACEN QUERIES--------------------------!> //
@@ -1978,6 +2145,84 @@ public class MainMenuManagerController implements Initializable {
         return false;
     }
 
+    /**
+     * Método que checa si empleado ya fue asignado a departamento
+     * @param c1 codigoEmpleado
+     * @param c2 codigoDepartamento
+     * @return true si ya fue, else false
+     * @throws SQLException exception
+     */
+    public boolean checarEmpleadoDepartamento(String c1,String c2) throws SQLException{
+        c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
+        c.setStmt(c.getConn().createStatement());
+        String SQL = "SELECT codigoEmpleado, codigoDepartamento from empleado_departamento";
+        c.setPst(c.getConn().prepareStatement(SQL));
+        ResultSet rs = c.getPst().executeQuery();
+        while (rs.next()) {
+            if (c1.equals(rs.getString("codigoEmpleado")) && c2.equals(rs.getString("codigoGerente"))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Método que checa si un gerente ya fue asignado a un departamento
+     * c1 = codigo del gerente
+     * @return true si sí, else false
+     */
+    public boolean checarGerenteEnDepartamento(String c1) throws SQLException {
+        c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
+        c.setStmt(c.getConn().createStatement());
+        String SQL = "SELECT codigoGerente from gerente_departamento";
+        c.setPst(c.getConn().prepareStatement(SQL));
+        ResultSet rs = c.getPst().executeQuery();
+        while (rs.next()) {
+            if (c1.equals(rs.getString("codigoGerente"))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Método que checa si a un departamento ya se le fue asignado un gerente
+     * c1 = codigo del departamento
+     * @return true si sí, else false
+     */
+    public boolean checsrDepartamentoConGerente(String c1) throws SQLException {
+        c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
+        c.setStmt(c.getConn().createStatement());
+        String SQL = "SELECT codigoDepartamento from gerente_departamento";
+        c.setPst(c.getConn().prepareStatement(SQL));
+        ResultSet rs = c.getPst().executeQuery();
+        while (rs.next()) {
+            if (c1.equals(rs.getString("codigoDepartamento"))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Método que checa si un empleado ya fue asignado a un area
+     * c1 = clave empleado, c2 = clave area
+     * @return true si ya está asignado, else false
+     */
+    public boolean checarSiEmpleadoArea(String c1,String c2) throws SQLException {
+        c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
+        c.setStmt(c.getConn().createStatement());
+        String SQL = "SELECT codigoEmpleado, codigoArea from empleado_area";
+        c.setPst(c.getConn().prepareStatement(SQL));
+        ResultSet rs = c.getPst().executeQuery();
+        while (rs.next()) {
+            if (c1.equals(rs.getString("codigoEmpleado")) && c2.equals(rs.getString("codigoArea"))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     // ****************************************************************************//
     // <!--------------------------FUNCIONES DE AYUDA--------------------------!> //
     // ***************************************************************************//
@@ -2204,7 +2449,32 @@ public class MainMenuManagerController implements Initializable {
         buscarGerenteEditar.setVisible(false);
         claveGerenteEditar.setVisible(false);
         claveGerenteEditar.clear();
+        claveEmpleadoDepa.setVisible(false);
+        claveEmpleadoDepa.clear();
+        claveDepaDepa.setVisible(false);
+        claveDepaDepa.clear();
+        puestoEmpDepa.setVisible(false);
+        puestoEmpDepa.clear();
+        sueldoEmpDepa.setVisible(false);
+        sueldoEmpDepa.clear();
+        addEmpleadoDepa.setVisible(false);
+        codigoGerGerDepa.setVisible(false);
+        codigoGerGerDepa.clear();
+        sueldoGerDepa.setVisible(false);
+        sueldoGerDepa.clear();
+        codigoDepaGerDepa.setVisible(false);
+        codigoDepaGerDepa.clear();
+        registrarGerDepaButton.setVisible(false);
+        codigoEmpEmpArea.setVisible(false);
+        codigoEmpEmpArea.clear();
+        codigoAreaEmpArea.setVisible(false);
+        codigoAreaEmpArea.clear();
+        horarioEmpArea.setVisible(false);
+        horarioEmpArea.clear();
+        registrarEmpAreaButton.setVisible(false);
     }
+
+
 }
 
 

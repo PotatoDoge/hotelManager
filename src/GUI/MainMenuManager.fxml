@@ -47,7 +47,7 @@
                 <Menu mnemonicParsing="false" text="Empleado">
                     <items>
                         <MenuItem mnemonicParsing="false" onAction="#nuevoEmpleado" text="Nuevo" />
-                        <MenuItem mnemonicParsing="false" onAction="#borrarEmpleado" text="Borrar" />
+                        <!--<MenuItem mnemonicParsing="false" onAction="#borrarEmpleado" text="Borrar" />-->
                         <MenuItem mnemonicParsing="false" onAction="#editarEmpleado" text="Editar" />
                     </items>
                 </Menu>
@@ -72,6 +72,16 @@
                         <MenuItem mnemonicParsing="false" onAction="#mostrarVentas" text="Ventas" />
                         <MenuItem mnemonicParsing="false" onAction="#mostrarAreas" text="Areas" />
                         <MenuItem mnemonicParsing="false" onAction="#mostrarGerentes" text="Gerentes" />
+                    </items>
+                </Menu>
+                <Menu mnemonicParsing="false" text="Asignar">
+                    <items>
+                        <MenuItem mnemonicParsing="false" onAction="#empleadoDepartamentoOnAction" text="Empleado a Departamento" />
+                        <MenuItem mnemonicParsing="false" onAction="#empleadoAreaOnAction" text="Empleado a Area" />
+                        <MenuItem mnemonicParsing="false" onAction="#gerenteDepartamentoOnAction" text="Gerente a Departamento" />
+                        <MenuItem mnemonicParsing="false" onAction="#salirOnAction" text="Quitar Empleado" />
+                        <MenuItem mnemonicParsing="false" onAction="#salirOnAction" text="Quitar Gerente" />
+                        <MenuItem mnemonicParsing="false" onAction="#salirOnAction" text="Mostrar" />
                     </items>
                 </Menu>
                 <Menu mnemonicParsing="false" text="Salir">
@@ -241,16 +251,29 @@
                 <TableColumn fx:id="passTableGer" prefWidth="181.22149658203125" text="password" />
             </columns>
         </TableView>
-      <TextField fx:id="borrarClaveGerente" focusTraversable="false" layoutX="118.0" layoutY="83.0" promptText="Clave Gerente" visible="false" />
-      <PasswordField fx:id="passBorrarGerente" focusTraversable="false" layoutX="119.0" layoutY="132.0" promptText="Contraseña" visible="false" />
-      <Button fx:id="borrarGerenteBoton" focusTraversable="false" layoutX="171.0" layoutY="183.0" mnemonicParsing="false" onAction="#borrarGerenteOnAction" text="Borrar" visible="false" />
+        <TextField fx:id="borrarClaveGerente" focusTraversable="false" layoutX="118.0" layoutY="83.0" promptText="Clave Gerente" visible="false" />
+        <PasswordField fx:id="passBorrarGerente" focusTraversable="false" layoutX="119.0" layoutY="132.0" promptText="Contraseña" visible="false" />
+        <Button fx:id="borrarGerenteBoton" focusTraversable="false" layoutX="171.0" layoutY="183.0" mnemonicParsing="false" onAction="#borrarGerenteOnAction" text="Borrar" visible="false" />
         <TextField fx:id="nombreGerenteEditar" focusTraversable="false" layoutX="101.0" layoutY="77.0" promptText="Nombre" visible="false" />
         <TextField fx:id="telefonoGerenteEditar" focusTraversable="false" layoutX="102.0" layoutY="117.0" promptText="Telefono" visible="false" />
         <TextField fx:id="direccionGerenteEditar" focusTraversable="false" layoutX="102.0" layoutY="162.0" promptText="Direccion" visible="false" />
         <TextField fx:id="horaEntGerenteEditar" focusTraversable="false" layoutX="101.0" layoutY="204.0" promptText="Hora de entrada (hh:mm)" visible="false" />
         <TextField fx:id="horaSalidaGerenteEditar" focusTraversable="false" layoutX="101.0" layoutY="249.0" promptText="Hora de salida (hh:mm)" visible="false" />
-      <Button fx:id="actualizarGerenteButton" focusTraversable="false" layoutX="146.0" layoutY="303.0" mnemonicParsing="false" onAction="#actualizarGerenteOnAction" text="Actualizar" visible="false" />
-      <Button fx:id="buscarGerenteEditar" focusTraversable="false" layoutX="367.0" layoutY="136.0" mnemonicParsing="false" onAction="#buscarGerenteOnAction" text="Buscar" visible="false" />
-      <TextField fx:id="claveGerenteEditar" focusTraversable="false" layoutX="314.0" layoutY="85.0" promptText="Clave de gerente" visible="false" />
+        <Button fx:id="actualizarGerenteButton" focusTraversable="false" layoutX="146.0" layoutY="303.0" mnemonicParsing="false" onAction="#actualizarGerenteOnAction" text="Actualizar" visible="false" />
+        <Button fx:id="buscarGerenteEditar" focusTraversable="false" layoutX="367.0" layoutY="136.0" mnemonicParsing="false" onAction="#buscarGerenteOnAction" text="Buscar" visible="false" />
+        <TextField fx:id="claveGerenteEditar" focusTraversable="false" layoutX="314.0" layoutY="85.0" promptText="Clave de gerente" visible="false" />
+        <TextField fx:id="claveEmpleadoDepa" focusTraversable="false" layoutX="119.0" layoutY="103.0" promptText="Clave empleado" visible="false" />
+        <TextField fx:id="claveDepaDepa" focusTraversable="false" layoutX="119.0" layoutY="149.0" promptText="Clave Departamento" visible="false" />
+        <TextField fx:id="puestoEmpDepa" focusTraversable="false" layoutX="120.0" layoutY="195.0" promptText="Puesto" visible="false" />
+        <TextField fx:id="sueldoEmpDepa" focusTraversable="false" layoutX="121.0" layoutY="244.0" promptText="Sueldo" visible="false" />
+        <Button fx:id="addEmpleadoDepa" focusTraversable="false" layoutX="175.0" layoutY="294.0" mnemonicParsing="false" onAction="#addEmpleadoDepaOnAction" text="Añadir" visible="false" />
+      <TextField fx:id="codigoGerGerDepa" focusTraversable="false" layoutX="73.0" layoutY="67.0" promptText="Código de gerente" visible="false" />
+      <TextField fx:id="codigoDepaGerDepa" focusTraversable="false" layoutX="73.0" layoutY="118.0" promptText="Código de departamento" visible="false" />
+      <TextField fx:id="sueldoGerDepa" focusTraversable="false" layoutX="73.0" layoutY="172.0" promptText="Sueldo" visible="false" />
+      <Button fx:id="registrarGerDepaButton" focusTraversable="false" layoutX="119.0" layoutY="226.0" mnemonicParsing="false" onAction="#registrarGerDepaOnAction" text="Registrar" visible="false" />
+        <TextField fx:id="codigoEmpEmpArea" focusTraversable="false" layoutX="73.0" layoutY="67.0" promptText="Código de empleado" visible="false" />
+        <TextField fx:id="codigoAreaEmpArea" focusTraversable="false" layoutX="73.0" layoutY="118.0" promptText="Código de area" visible="false" />
+        <TextField fx:id="horarioEmpArea" focusTraversable="false" layoutX="73.0" layoutY="172.0" promptText="Horario (hh:mm - hh:mm)" visible="false" />
+        <Button fx:id="registrarEmpAreaButton" focusTraversable="false" layoutX="119.0" layoutY="226.0" mnemonicParsing="false" onAction="#registrarEmpAreaOnAction" text="Registrar" visible="false" />
     </children>
 </AnchorPane>
