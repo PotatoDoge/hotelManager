@@ -22,6 +22,10 @@ public class MainMenuManagerController implements Initializable {
     private final ConTool c = new ConTool();
     private final User user = new User();
 
+    public TextField claveGerQuitarGerente;
+    public TextField claveDepQuitarGerente;
+    public PasswordField passQuitarGerDeDep;
+    public Button borrarGerDeDep;
     @FXML
     private TextField claveEmpQuitarDeDep;
     @FXML
@@ -2077,6 +2081,58 @@ public class MainMenuManagerController implements Initializable {
         }
     }
 
+    /**
+     * Método que desbloquea campos para poder quitar al gerente de un departamento
+     */
+    public void quitarGerente() {
+        esconderElementosEnPantalla();
+        claveGerQuitarGerente.setVisible(true);
+        claveDepQuitarGerente.setVisible(true);
+        passQuitarGerDeDep.setVisible(true);
+        borrarGerDeDep.setVisible(true);
+    }
+
+    /**
+     * Método que quita al gerente del departamento
+     */
+    public void quitarGerenteOnAction() throws SQLException {
+        if(claveGerQuitarGerente.getText().isEmpty() || claveDepQuitarGerente.getText().isEmpty() || passQuitarGerDeDep.getText().isEmpty()){
+            wn.popUpMessage("Error","Todos los campos deben de estar llenos\npara poder continuar");
+        }
+        else{
+            if(checarClaveGerente(claveGerQuitarGerente.getText()) && checarClaveDepartamento(claveDepQuitarGerente.getText())){
+                if(checarSiGerenteDepa(claveGerQuitarGerente.getText(),claveDepQuitarGerente.getText())){
+                    if(passQuitarGerDeDep.getText().equals(user.getPassword())){
+                        try{
+                            c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
+                            c.setStmt(c.getConn().createStatement());
+                            String SQL = "DELETE FROM gerente_departamento where codigoGerente='"+claveGerQuitarGerente.getText()+
+                                    "' and codigoDepartamento='"+claveDepQuitarGerente.getText()+"'";
+                            c.getStmt().executeUpdate(SQL);
+                            c.getConn().close();
+                            wn.popUpMessage("Exito","El gerente fue borrado de manera exitosa.");
+                            claveGerQuitarGerente.clear();
+                            claveDepQuitarGerente.clear();
+                            passQuitarGerDeDep.clear();
+                        }
+                        catch (Exception e){
+                            System.out.print("e");
+                        }
+                    }
+                    else{
+                        wn.popUpMessage("Error","Contraseña incorrecta.");
+                    }
+                }
+                else{
+                    wn.popUpMessage("Error","El empleado ingresado no forma parte de ese departamento");
+                }
+            }
+            else{
+                wn.popUpMessage("Error","Clave de departamento o empleado\nno es correcta.");
+            }
+        }
+    }
+
     // ************************************************************************************//
     // <!--------------------------FUNCIONES QUE HACEN QUERIES--------------------------!> //
     // ************************************************************************************//
@@ -2467,6 +2523,27 @@ public class MainMenuManagerController implements Initializable {
         return false;
     }
 
+    /**
+     * Método que checa si un gerente corresponde a un departamento
+     * @param c1 clave gerente
+     * @param c2 clave departamento
+     * @return true si pertenece, else false
+     * @throws SQLException exception
+     */
+    public boolean checarSiGerenteDepa(String c1,String c2) throws  SQLException{
+        c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
+        c.setStmt(c.getConn().createStatement());
+        String SQL = "SELECT codigoGerente, codigoDepartamento from gerente_departamento";
+        c.setPst(c.getConn().prepareStatement(SQL));
+        ResultSet rs = c.getPst().executeQuery();
+        while (rs.next()) {
+            if (c1.equals(rs.getString("codigoGerente")) && c2.equals(rs.getString("codigoDepartamento"))) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     // ****************************************************************************//
     // <!--------------------------FUNCIONES DE AYUDA--------------------------!> //
     // ***************************************************************************//
@@ -2733,6 +2810,13 @@ public class MainMenuManagerController implements Initializable {
         passQuitarDeArea.setVisible(false);
         passQuitarDeArea.clear();
         borrarDeArea.setVisible(false);
+        claveGerQuitarGerente.setVisible(false);
+        claveGerQuitarGerente.clear();
+        claveDepQuitarGerente.setVisible(false);
+        claveDepQuitarGerente.clear();
+        passQuitarGerDeDep.setVisible(false);
+        passQuitarGerDeDep.clear();
+        borrarGerDeDep.setVisible(false);
     }
 }
 
