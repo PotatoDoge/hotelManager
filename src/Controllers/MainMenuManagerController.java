@@ -3,6 +3,7 @@ package Controllers;
 import Tools.*;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
@@ -21,6 +22,18 @@ public class MainMenuManagerController implements Initializable {
     private final ConTool c = new ConTool();
     private final User user = new User();
 
+    public TextField claveEmpQuitarDeDep;
+    public TextField claveDepQuitarDeDep;
+    public PasswordField passQuitarDeDep;
+    public Button borrarDeDep;
+    @FXML
+    private TableColumn <TableGerenteDepartamento,String>codGerTableGerDep;
+    @FXML
+    private TableColumn <TableGerenteDepartamento,String>codDepTableGerDep;
+    @FXML
+    private TableColumn <TableGerenteDepartamento,Double>sueldoTableGerDep;
+    @FXML
+    private TableView <TableGerenteDepartamento> tableGerDepa;
     @FXML
     private TableColumn<TableEmpArea, String> claveEmpTableEmpArea;
     @FXML
@@ -55,7 +68,6 @@ public class MainMenuManagerController implements Initializable {
     private TextField codigoDepaGerDepa;
     @FXML
     private Button registrarGerDepaButton;
-
     @FXML
     private TextField claveEmpleadoDepa;
     @FXML
@@ -378,6 +390,8 @@ public class MainMenuManagerController implements Initializable {
     private final ObservableList<TableEmpleadoDepa> oblist10 = FXCollections.observableArrayList();
 
     private final ObservableList<TableEmpArea> oblist11 = FXCollections.observableArrayList();
+
+    private final ObservableList<TableGerenteDepartamento> oblist12 = FXCollections.observableArrayList();
 
     private final ObservableList<String> filtroHab = FXCollections.observableArrayList("Sencilla", "Doble", "Premium", "Todo");
 
@@ -1890,7 +1904,7 @@ public class MainMenuManagerController implements Initializable {
      */
     public void verEmpleadoAreaOnAction() {
         esconderElementosEnPantalla();
-        oblist10.clear();
+        oblist11.clear();
         tableEmpArea.getItems().clear();
         tableEmpArea.setVisible(true);
         try{
@@ -1913,6 +1927,89 @@ public class MainMenuManagerController implements Initializable {
             System.out.println(e);
         }
 
+    }
+
+    /**
+     * Método que muestra la tabla gerente_departamento
+     */
+    public void verGerenteDepaOnAction() {
+        oblist12.clear();
+        esconderElementosEnPantalla();
+        tableGerDepa.setVisible(true);
+        tableGerDepa.getItems().clear();
+        try{
+            c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
+            c.setStmt(c.getConn().createStatement());
+            String SQL = "SELECT * FROM gerente_departamento";
+            c.setPst(c.getConn().prepareStatement(SQL));
+            ResultSet rst = c.getPst().executeQuery();
+            while(rst.next()){
+                oblist12.add(new TableGerenteDepartamento(rst.getString("codigoGerente"),
+                             rst.getString("codigoDepartamento"),rst.getDouble("sueldo")));
+            }
+            c.getConn().close();
+            codGerTableGerDep.setCellValueFactory(new PropertyValueFactory<>("claveGerente"));
+            codDepTableGerDep.setCellValueFactory(new PropertyValueFactory<>("claveDepa"));
+            sueldoTableGerDep.setCellValueFactory(new PropertyValueFactory<>("sueldo"));
+            tableGerDepa.setItems(oblist12);
+        }
+        catch (Exception e){
+            System.out.println(e);
+        }
+    }
+
+    /**
+     * Método que desbloquea campos para quitar empleado de un departamento
+     */
+    public void quitarEmpleadoOnAction() {
+        esconderElementosEnPantalla();
+        claveEmpQuitarDeDep.setVisible(true);
+        claveDepQuitarDeDep.setVisible(true);
+        passQuitarDeDep.setVisible(true);
+        borrarDeDep.setVisible(true);
+    }
+
+    /**
+     * Método que borra empleado de tabla empleado_departamento
+     */
+    public void borrarEmpleadoDeDepOnAcrion() throws SQLException {
+        if(claveEmpQuitarDeDep.getText().isEmpty() || claveDepQuitarDeDep.getText().isEmpty() || passQuitarDeDep.getText().isEmpty()){
+            wn.popUpMessage("Error","Todos los campos deben de estar llenos\npara poder continuar");
+        }
+        else{
+            if(checarClaveEmpleado(claveEmpQuitarDeDep.getText()) && checarClaveDepartamento(claveDepQuitarDeDep.getText())){
+                if(checarEmpleadoDepartamento(claveEmpQuitarDeDep.getText(),claveDepQuitarDeDep.getText())){
+                    if(passQuitarDeDep.getText().equals(user.getPassword())){
+                        try{
+                            c.setConn(DriverManager.getConnection(c.getDB_URL(),c.getUSER(),c.getPASS()));
+                            c.setStmt(c.getConn().createStatement());
+                            String SQL = "DELETE FROM empleado_departamento where codigoEmpleado='"+claveEmpQuitarDeDep.getText()+
+                                    "' and codigoDepartamento='"+claveDepQuitarDeDep.getText()+"'";
+                            c.getStmt().executeUpdate(SQL);
+                            c.getConn().close();
+                            wn.popUpMessage("Exito","El empleado fue borrado de manera exitosa.");
+                            claveEmpQuitarDeDep.clear();
+                            claveDepQuitarDeDep.clear();
+                            passQuitarDeDep.clear();
+
+                        }
+                        catch (Exception e){
+                            System.out.print("e");
+
+                        }
+                    }
+                    else{
+                        wn.popUpMessage("Error","Contraseña incorrecta.");
+                    }
+                }
+                else{
+                    wn.popUpMessage("Error","El empleado ingresado no forma parte de ese departamento");
+                }
+            }
+            else{
+                wn.popUpMessage("Error","Clave de departamento o empleado\nno es correcta.");
+            }
+        }
     }
 
     // ************************************************************************************//
@@ -2241,7 +2338,7 @@ public class MainMenuManagerController implements Initializable {
         c.setPst(c.getConn().prepareStatement(SQL));
         ResultSet rs = c.getPst().executeQuery();
         while (rs.next()) {
-            if (c1.equals(rs.getString("codigoEmpleado")) && c2.equals(rs.getString("codigoGerente"))) {
+            if (c1.equals(rs.getString("codigoEmpleado")) && c2.equals(rs.getString("codigoDepartamento"))) {
                 return true;
             }
         }
@@ -2556,6 +2653,14 @@ public class MainMenuManagerController implements Initializable {
         registrarEmpAreaButton.setVisible(false);
         tablaEmpleadoDepa.setVisible(false);
         tableEmpArea.setVisible(false);
+        tableGerDepa.setVisible(false);
+        claveEmpQuitarDeDep.setVisible(false);
+        claveEmpQuitarDeDep.clear();
+        claveDepQuitarDeDep.setVisible(false);
+        claveDepQuitarDeDep.clear();
+        passQuitarDeDep.setVisible(false);
+        passQuitarDeDep.clear();
+        borrarDeDep.setVisible(false);
     }
 }
 
